@@ -1,0 +1,127 @@
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    color: #333;
+    line-height: 1.6;
+  }
+  .container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 0 20px;
+  }
+  
+  /* Header */
+  header {
+    background: #0077b6;
+    color: #fff;
+    padding: 15px 0;
+  }
+  .logo {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  .nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+  }
+  .nav-links a {
+    color: #fff;
+    text-decoration: none;
+  }
+  .nav-toggle {
+    display: none;
+    background: none;
+    font-size: 24px;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+  }
+  
+  /* Hero Section */
+  .hero {
+    background: #caf0f8;
+    padding: 80px 0;
+    text-align: center;
+  }
+  .hero h2 {
+    font-size: 36px;
+    margin-bottom: 10px;
+  }
+  .hero p {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+  .btn {
+    padding: 10px 20px;
+    background: #0077b6;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+  }
+  
+  /* Services Section */
+  .services {
+    padding: 60px 0;
+    background: #f1f1f1;
+  }
+  .services h3 {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  .service-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+  }
+  .service {
+    background: #fff;
+    padding: 20px;
+    width: 280px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  }
+  .service h4 {
+    margin-bottom: 10px;
+  }
+  
+  /* Footer */
+  footer {
+    background: #0077b6;
+    color: #fff;
+    text-align: center;
+    padding: 15px 0;
+    margin-top: 40px;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .nav-links {
+      display: none;
+      flex-direction: column;
+      background: #0077b6;
+      position: absolute;
+      top: 60px;
+      right: 20px;
+      width: 200px;
+      border-radius: 8px;
+    }
+    .nav-links.active {
+      display: flex;
+    }
+    .nav-toggle {
+      display: block;
+    }
+  }
+  
