@@ -1,0 +1,99 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  body {
+    font-family: Arial, sans-serif;
+    background: #f5f8fa;
+    color: #333;
+  }
+  .container {
+    max-width: 1100px;
+    margin: auto;
+    padding: 0 20px;
+  }
+  
+  /* Header */
+  header {
+    background: #0077b6;
+    color: #fff;
+    padding: 15px 0;
+  }
+  .header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .logo {
+    font-size: 24px;
+  }
+  .nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+  }
+  .nav-links a {
+    color: #fff;
+    text-decoration: none;
+  }
+  
+  /* Profile Section */
+  .profile-container {
+    padding: 40px 0;
+  }
+  .hospital-info {
+    margin-bottom: 30px;
+  }
+  .contact-box {
+    background: #e0f7fa;
+    padding: 15px;
+    border-radius: 6px;
+    margin-top: 10px;
+  }
+  .specialties ul {
+    list-style-type: square;
+    margin-left: 20px;
+    margin-top: 10px;
+  }
+  .specialties {
+    margin-bottom: 30px;
+  }
+  
+  /* Doctors Section */
+  .doctor-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .doctor-card {
+    background: #fff;
+    padding: 15px;
+    width: 200px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    text-align: center;
+  }
+  .doctor-card img {
+    width: 100px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+  }
+  
+  /* Footer */
+  footer {
+    background: #0077b6;
+    color: #fff;
+    text-align: center;
+    padding: 15px 0;
+    margin-top: 40px;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .doctor-list {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+  
