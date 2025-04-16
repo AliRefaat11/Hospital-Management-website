@@ -1,77 +1,95 @@
 <!DOCTYPE html>
- <html lang="en">
- <head>
-   <meta charset="UTF-8" />
-   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-   <title>Hospital Profile | HealthyCare</title>
-   <link rel="stylesheet" href="../css/profile_oage.css"/>
- </head>
- <body>
-   <header>
-     <div class="container header-container">
-       <h1 class="logo">HealthyCare</h1>
-       <nav>
-         <ul class="nav-links">
-           <li><a href="#">Home</a></li>
-           <li><a href="#">Profile</a></li>
-           <li><a href="#">Doctors</a></li>
-           <li><a href="#">Contact</a></li>
-         </ul>
-       </nav>
-     </div>
-   </header>
- 
-   <main class="container profile-container">
-     <section class="hospital-info">
-       <h2>HealthyCare Hospital</h2>
-       <p>Located in the heart of the city, HealthyCare is a multi-specialty hospital dedicated to providing top-notch medical care with a human touch.</p>
- 
-       <div class="contact-box">
-         <p><strong>Address:</strong> 123 Wellness Ave, Health City</p>
-         <p><strong>Phone:</strong> +123-456-7890</p>
-         <p><strong>Email:</strong> contact@healthycare.com</p>
-       </div>
-     </section>
- 
-     <section class="specialties">
-       <h3>Our Specialties</h3>
-       <ul>
-         <li>Cardiology</li>
-         <li>Neurology</li>
-         <li>Pediatrics</li>
-         <li>Orthopedics</li>
-         <li>Emergency Care</li>
-       </ul>
-     </section>
- 
-     <section class="doctors">
-       <h3>Meet Our Doctors</h3>
-       <div class="doctor-list">
-         <div class="doctor-card">
-           <img src="https://via.placeholder.com/150" alt="Doctor 1" />
-           <h4>Dr. Sarah Lee</h4>
-           <p>Cardiologist</p>
-         </div>
-         <div class="doctor-card">
-           <img src="https://via.placeholder.com/150" alt="Doctor 2" />
-           <h4>Dr. John Smith</h4>
-           <p>Neurologist</p>
-         </div>
-         <div class="doctor-card">
-           <img src="https://via.placeholder.com/150" alt="Doctor 3" />
-           <h4>Dr. Aisha Patel</h4>
-           <p>Pediatrician</p>
-         </div>
-       </div>
-     </section>
-   </main>
- 
-   <footer>
-     <div class="container">
-       <p>&copy; 2025 HealthyCare Hospital. All rights reserved.</p>
-     </div>
-   </footer>
- 
-   <script src="../javascript/profile_page.js"></script>
- </body>
- </html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HealthCare Hospital - Your Health, Our Priority</title>
+  <link rel="stylesheet" href="../css/home_page.css">
+</head>
+<body>
+  
+  <header>
+    <div class="nav-container">
+      <div class="logo">HealthCare</div>
+      <div class="search-container">
+        <input type="text" placeholder="Search...">
+      </div>
+      <ul class="nav-links">
+        <li><a href="./home_page.html">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#testimonials">Testimonials</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <section class="hero" id="home">
+    <h1>Welcome to HealthCare Hospital</h1>
+    <p>Your health is our priority. Providing world-class medical services with compassion and care.</p>
+    <a href="#services" class="btn">Explore Services</a>
+  </section>
+
+  <section class="about" id="about">
+    <h2>About Us</h2>
+    <p>At HealthCare, we are committed to delivering exceptional healthcare services. With state-of-the-art facilities and a team of experienced professionals, we ensure the best care for our patients.</p>
+    <p>Our mission is to improve lives through innovative medical solutions and compassionate care.</p>
+  </section>
+  
+  <section class="services" id="services">
+    <h2>Our Services</h2>
+    <div class="service-list">
+      <div class="service">
+        <h3>Emergency Care</h3>
+        <p>24/7 emergency services to handle critical situations.</p>
+      </div>
+      <div class="service">
+        <h3>Outpatient Services</h3>
+        <p>Comprehensive outpatient care for all your needs.</p>
+      </div>
+      <div class="service">
+        <h3>Specialized Clinics</h3>
+        <p>Expert care in cardiology, orthopedics, pediatrics, and more.</p>
+      </div>
+      <div class="service">
+        <h3>Diagnostic Services</h3>
+        <p>Advanced diagnostic tools for accurate and timely results.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="testimonials" id="testimonials">
+    <h2>What Our Patients Say</h2>
+    <div class="testimonial-list">
+      <div class="testimonial">
+        <p>"The doctors and staff at HospitalCare are amazing. They saved my life!"</p>
+        <h4>- John Doe</h4>
+      </div>
+      <div class="testimonial">
+        <p>"I received excellent care during my stay. Highly recommend this hospital."</p>
+        <h4>- Jane Smith</h4>
+      </div>
+      <div class="testimonial">
+        <p>"The facilities are top-notch, and the staff is very compassionate."</p>
+        <h4>- Michael Brown</h4>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <h2>Contact Us</h2>
+    <p>Have questions? Reach out to us at:</p>
+    <p><strong>Phone:</strong> (123) 456-7890</p>
+    <p><strong>Email:</strong> info@hospitalcare.com</p>
+    <p><strong>Address:</strong> 123 Health Street, Wellness City, HC 45678</p>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 HospitalCare. All rights reserved.</p>
+  </footer>
+
+  
+
+  <script src="../javascript/home_page.js"></script>
+</body>
+</html>
