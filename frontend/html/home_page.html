@@ -1,59 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HealthCare Hospital - Your Health, Our Priority</title>
+  <title>PrimeCare Hospital - Your Health, Our Priority</title>
   <link rel="stylesheet" href="../css/home_page.css">
 </head>
+
 <body>
-  
   <header>
     <div class="nav-container">
-      <div class="logo">HealthCare</div>
-      <div class="search-container">
-        <input type="text" placeholder="Search...">
-      </div>
-      <ul class="nav-links">
-        <li><a href="./home_page.html">Home</a></li>
-        <li><a href="#about">About</a></li>
-        <li><a href="#services">Services</a></li>
-        <li><a href="#testimonials">Testimonials</a></li>
-        <li><a href="#contact">Contact</a></li>
+      <div class="logo">PrimeCare</div>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="./home_page.html" class="active">HOME</a></li>
+        <li><a href="#">ABOUT US</a></li>
+        <li><a href="#">DEPARTMENTS</a></li>
+        <li><a href="./doctors_page.html">DOCTORS</a></li>
+        <li><a href="#">BOOK NOW</a></li>
       </ul>
+      <div class="auth-buttons">
+        <button class="btn login-btn">Log In</button>
+        <button class="btn signup-btn">Sign Up</button>
+      </div>
+      <button class="nav-toggle" id="nav-toggle">&#9776;</button>
     </div>
   </header>
 
-  <section class="hero" id="home">
-    <h1>Welcome to HealthCare Hospital</h1>
-    <p>Your health is our priority. Providing world-class medical services with compassion and care.</p>
-    <a href="#services" class="btn">Explore Services</a>
+  <section class="Welcome" id="welcome">
+    <h1>Welcome to PrimeCare Hospital</h1>
+    <p>PrimeCare Hospital is a tertiary care, private hospital with a multidisciplinary approach, integrating medical services with cutting edge technology, covering more than 30 specialities at the outpatient centre.</p>
   </section>
 
-  <section class="about" id="about">
-    <h2>About Us</h2>
-    <p>At HealthCare, we are committed to delivering exceptional healthcare services. With state-of-the-art facilities and a team of experienced professionals, we ensure the best care for our patients.</p>
-    <p>Our mission is to improve lives through innovative medical solutions and compassionate care.</p>
+  <section class="updates" id="updates">
+    <h2>Stay Up To Date</h2>
+    <p>There is always something new! Check out the latest news and stay updated with our images and videos.</p>
   </section>
   
-  <section class="services" id="services">
-    <h2>Our Services</h2>
-    <div class="service-list">
-      <div class="service">
-        <h3>Emergency Care</h3>
-        <p>24/7 emergency services to handle critical situations.</p>
+  <section class="profs" id="profs">
+    <h2>Centers of Excellence</h2>
+    <div class="prof-list">
+      <div class="prof">
+        <img src="../images/Cardiology-heart-human-icon-Graphics-25858402-1.jpg" width="100" alt="Cardiac-icon">
+        <h3>Cardiac Sciences</h3>
       </div>
-      <div class="service">
-        <h3>Outpatient Services</h3>
-        <p>Comprehensive outpatient care for all your needs.</p>
+      <div class="prof">
+        <img src="../images/Neurology-Icon-Graphics-13351746-1-1-580x385.jpg" width="100" alt="neuro-icon icon">
+        <h3>Neurosciences</h3>
       </div>
-      <div class="service">
-        <h3>Specialized Clinics</h3>
-        <p>Expert care in cardiology, orthopedics, pediatrics, and more.</p>
+      <div class="prof">
+        <img src="../images/images.png" width="100" alt="Cancer-icon">
+        <h3>Cancer Care</h3>
       </div>
-      <div class="service">
-        <h3>Diagnostic Services</h3>
-        <p>Advanced diagnostic tools for accurate and timely results.</p>
+      <div class="prof">
+        <img src="../images/orthopedic-icon-vector-38225148.jpg" width="100" alt="ortho-icon">
+        <h3>Orthopedics</h3>
       </div>
     </div>
   </section>
@@ -76,20 +76,17 @@
     </div>
   </section>
 
-  <section class="contact" id="contact">
-    <h2>Contact Us</h2>
-    <p>Have questions? Reach out to us at:</p>
-    <p><strong>Phone:</strong> (123) 456-7890</p>
-    <p><strong>Email:</strong> info@hospitalcare.com</p>
-    <p><strong>Address:</strong> 123 Health Street, Wellness City, HC 45678</p>
-  </section>
-
   <footer>
-    <p>&copy; 2025 HospitalCare. All rights reserved.</p>
+    <div class="contact">
+        <h2>Contact Us on:</h2>
+        <ul>
+            <li><strong>Phone:</strong> (123) 456-7890</li>
+            <li><strong>Email:</strong> info@hospitalcare.com</li>
+            <li><strong>Address:</strong> 123 Health Street, Wellness City, HC 45678</li>
+        </ul>
+    </div>
   </footer>
-
   
-
   <script src="../javascript/home_page.js"></script>
 </body>
 </html>

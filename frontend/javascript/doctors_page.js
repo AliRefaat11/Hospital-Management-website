@@ -1,8 +1,10 @@
+// Select the toggle button and nav links
 const navToggle = document.getElementById('nav-toggle');
 const navLinks = document.getElementById('nav-links');
 
+// Add click event listener to toggle button
 navToggle.addEventListener('click', () => {
-  navLinks.classList.toggle('show');
+  navLinks.classList.toggle('show'); // Toggle the "show" class
 });
 
 const navLinksContainer = document.querySelector('.nav-links');
