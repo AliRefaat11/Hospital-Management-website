@@ -53,3 +53,7 @@ const logo = document.querySelector('.logo');
 logo.addEventListener('click', () => {
   document.body.classList.toggle('dark-mode');
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("Footer loaded successfully.");
+});

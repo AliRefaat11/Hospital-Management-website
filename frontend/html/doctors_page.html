@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PrimeCare Hospital - Your Health, Our Priority</title>
+  <title>PrimeCare Hospital - Meet Our Doctors</title>
   <link rel="stylesheet" href="../css/doctors_page.css">
 </head>
-
 <body>
   <header>
     <div class="nav-container">
@@ -26,55 +25,100 @@
     </div>
   </header>
 
-  <section class="DEPARTMENTS" id="DEP">
-    <h2>Cardiology</h2>
-    <div class="cardiology">
-      <div class="DR">
-        <img src="../images/account-icon-33.png" alt="doc_img" class="profile-pic">
-        <h3>DR.      </h3>
-        <p></p>
-      </div>
-      <div class="DR">
-        <img src="../images/account-icon-33.png" alt="doc_img" class="profile-pic">
-        <h3>DR.      </h3>
-        <p></p>
-      </div>
-      <div class="DR">
-        <img src="../images/account-icon-33.png" alt="doc_img" class="profile-pic">
-        <h3>DR.      </h3>
-        <p></p>
-      </div>
-    </div>
+  <section class="hero">
+    <h1>Meet Our Expert Doctors</h1>
+    <p>Our team of highly skilled and compassionate doctors is here to provide you with the best care possible.</p>
+  </section>
+  
+  <section class="search-bar">
+    <input type="text" id="doctor-search" placeholder="Search for a doctor..." onkeyup="filterDoctors()">
+  </section>
 
-    <h2>Neurology</h2>
-    <div class="Neurology">
-      <div class="DR">
-        <img src="../images/account-icon-33.png" alt="doc_img" class="profile-pic">
-        <h3>DR.      </h3>
-        <p></p>
+  <section class="doctors" id="doctors">
+    <h2>Our Doctors</h2>
+    <div class="doctor-list" id="doctor-list">
+      <div class="doctor-card" data-name="John Doe">
+        <div class="doctor-img-container">
+          <img src="../images/account-icon-33.png" alt="Doctor 1" class="doctor-img">
+        </div>
+        <h3>Dr. John Doe</h3>
+        <p>Cardiologist</p>
+        <button class="btn book-btn">Book Appointment</button>
       </div>
-      <div class="DR">
-        <img src="../images/account-icon-33.png" alt="doc_img" class="profile-pic">
-        <h3>DR.      </h3>
-        <p></p>
+      <div class="doctor-card" data-name="Jane Smith">
+        <div class="doctor-img-container">
+          <img src="../images/account-icon-33.png" alt="Doctor 2" class="doctor-img">
+        </div>
+        <h3>Dr. Jane Smith</h3>
+        <p>Neurologist</p>
+        <button class="btn book-btn">Book Appointment</button>
       </div>
-      <div class="DR">
-        <img src="../images/account-icon-33.png" alt="doc_img" class="profile-pic">
-        <h3>DR.      </h3>
-        <p></p>
+      <div class="doctor-card" data-name="Michael Brown">
+        <div class="doctor-img-container">
+          <img src="../images/account-icon-33.png" alt="Doctor 3" class="doctor-img">
+        </div>
+        <h3>Dr. Michael Brown</h3>
+        <p>Orthopedic Surgeon</p>
+        <button class="btn book-btn">Book Appointment</button>
+      </div>
+      <div class="doctor-card" data-name="Emily Davis">
+        <div class="doctor-img-container">
+          <img src="../images/account-icon-33.png" alt="Doctor 4" class="doctor-img">
+        </div>
+        <h3>Dr. Emily Davis</h3>
+        <p>Oncologist</p>
+        <button class="btn book-btn">Book Appointment</button>
+      </div>
+      <!-- New Doctor 1 -->
+      <div class="doctor-card" data-name="Sarah Johnson">
+        <div class="doctor-img-container">
+          <img src="../images/account-icon-33.png" alt="Doctor 5" class="doctor-img">
+        </div>
+        <h3>Dr. Sarah Johnson</h3>
+        <p>Pediatrician</p>
+        <button class="btn book-btn">Book Appointment</button>
+      </div>
+      <!-- New Doctor 2 -->
+      <div class="doctor-card" data-name="David Wilson">
+        <div class="doctor-img-container">
+          <img src="../images/account-icon-33.png" alt="Doctor 6" class="doctor-img">
+        </div>
+        <h3>Dr. David Wilson</h3>
+        <p>Dermatologist</p>
+        <button class="btn book-btn">Book Appointment</button>
       </div>
     </div>
   </section>
 
   <footer>
-    <div class="contact">
-        <h2>Contact Us on:</h2>
+    <div class="footer-container">
+      <div class="footer-column">
+        <h3>About Us</h3>
+        <p>Providing exceptional healthcare services with compassion and care.</p>
+      </div>
+      <div class="footer-column">
+        <h3>Quick Links</h3>
         <ul>
-            <li><strong>Phone:</strong> (123) 456-7890</li>
-            <li><strong>Email:</strong> info@hospitalcare.com</li>
-            <li><strong>Address:</strong> 123 Health Street, Wellness City, HC 45678</li>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Services</a></li>
+          <li><a href="#">Appointments</a></li>
+          <li><a href="#">Contact</a></li>
         </ul>
+      </div>
+      <div class="footer-column">
+        <h3>Contact</h3>
+        <p>123 Health St., Wellness City<br />+123 456 7890<br />info@hospital.com</p>
+      </div>
+      <div class="footer-column">
+        <h3>Follow Us</h3>
+        <div class="social-icons">
+          <a href="#">🔵</a>
+          <a href="#">🐦</a>
+          <a href="#">📸</a>
+        </div>
+      </div>
     </div>
+    <div class="bottom-bar">&copy; 2025 PrimeCare Hospital. All rights reserved.</div>
   </footer>
 
   <script src="../javascript/doctors_page.js"></script>
