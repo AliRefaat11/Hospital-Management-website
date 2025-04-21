@@ -1,0 +1,142 @@
+/* General Styles */
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: #F2F2F0;
+    color: #000;
+}
+
+header {
+    background-color: #F6F1F4;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1rem;
+}
+
+.logo {
+    font-size: 25px;
+    font-weight: bold;
+    color: #0076CE;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 15px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #191C20;
+    padding: 5px 10px;
+    font-weight: bold;
+}
+
+.nav-links a.active,
+.nav-links a:hover {
+    color: #FFF;
+    background-color: #0076CE;
+    border-radius: 5px;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.auth-buttons .btn {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.auth-buttons .login-btn {
+    background-color: #0076CE;
+    color: #FFF;
+}
+
+.auth-buttons .signup-btn {
+    background-color: #FFF;
+    color: #0076CE;
+    border: 1px solid #0076CE;
+}
+
+/* Departments Section */
+/* Departments Section */
+#departments {
+    padding: 2rem;
+    background-color: #F2F2F0;
+    color: #000;
+    text-align: center;
+}
+
+#departments h2 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: #0076CE;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.department-section {
+    margin-bottom: 2rem;
+}
+
+.department-section h3 {
+    font-size: 1.5rem;
+    color: #191C20;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.department-grid {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.department-card {
+    background-color: #FFF;
+    border: 1px solid #0076CE;
+    border-radius: 10px;
+    padding: 1rem;
+    width: 250px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.department-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.doctor-image {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 1rem;
+    border-radius: 50%;
+    background-color: #0076CE;
+    display: inline-block;
+    padding: 0.5rem;
+}
+
+.department-card h4 {
+    font-size: 1.2rem;
+    color: #0076CE;
+    margin-bottom: 0.5rem;
+}
+
+.department-card p {
+    font-size: 0.9rem;
+    color: #333;
+}
+
