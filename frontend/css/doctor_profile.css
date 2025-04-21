@@ -1,0 +1,598 @@
+:root {
+  --primary-color: #2d5f7c;
+  --secondary-color: #1a4761;
+  --accent-color: #5bb0d5;
+  --text-color: #333;
+  --light-gray: #f5f7fa;
+  --border-color: #e0e0e0;
+  --success-color: #4caf50;
+  --linkedin-color: #0077B5;
+  --tag-bg: rgba(91, 176, 213, 0.1);
+  --green-button: #48bb78;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  color: var(--text-color);
+  line-height: 1.6;
+  background-color: var(--light-gray);
+  width: 100%;
+  max-width: 100%;
+}
+
+header {
+  background: linear-gradient(to right, #2d5f7c, #1e4e75);
+  padding: 1rem 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.nav-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+}
+
+.logo {
+  color: white;
+  font-size: 1.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.logo::before {
+  content: "";
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  background-color: #5bb0d5;
+  margin-right: 10px;
+  border-radius: 50%;
+}
+
+nav {
+  display: flex;
+  justify-content: center;
+  flex-grow: 1;
+}
+
+nav ul {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: white;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: color 0.2s ease;
+  padding: 0.5rem 0;
+}
+
+nav ul li a:hover {
+  color: #8ecae6;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.btn {
+  padding: 0.6rem 1.5rem;
+  border-radius: 50px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.btn-primary {
+  background-color: #5bb0d5;
+  color: white;
+  border: none;
+}
+
+.btn-secondary {
+  background-color: var(--green-button);
+  color: white;
+  border: none;
+}
+
+.btn-outline {
+  background-color: transparent;
+  border: 1px solid white;
+  color: white;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.container {
+  width: 100%;
+  padding: 3rem 4rem;
+  max-width: 1800px;
+  margin: 0 auto;
+}
+
+.quick-appointment {
+  text-align: center;
+  margin: 2rem 0 4rem;
+  background-color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.quick-appointment h1 {
+  color: var(--secondary-color);
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.quick-appointment p {
+  color: #666;
+  font-size: 1.2rem;
+  max-width: 600px;
+  margin: 0 auto 1.5rem;
+}
+
+.language-switch {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background-color: #f1f5f9;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  color: var(--primary-color);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin: 1rem 0;
+}
+
+.language-switch:hover {
+  background-color: #e2e8f0;
+}
+
+.profile-container {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: 3rem;
+  background: #fff;
+  border-radius: 12px;
+  padding: 3rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  width: 100%;
+  margin-top: 2rem;
+}
+
+.profile-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: center;
+}
+
+.profile-image {
+  position: relative;
+}
+
+.profile-image img {
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--light-gray);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+
+.contact-info, .availability, .insurance-info, .languages-box {
+  background-color: var(--light-gray);
+  padding: 1.75rem;
+  border-radius: 10px;
+  width: 100%;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.section-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1.2rem;
+  color: var(--accent-color);
+  border-bottom: 2px solid var(--accent-color);
+  padding-bottom: 0.5rem;
+}
+
+.contact-info p {
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+}
+
+.contact-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  width: 100%;
+}
+
+.btn-appointment, .btn-linkedin {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.btn-appointment {
+  background-color: var(--accent-color);
+  color: white;
+  border: none;
+}
+
+.btn-appointment:hover {
+  background-color: #4999bd;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.btn-linkedin {
+  background-color: var(--linkedin-color);
+  color: white;
+  border: none;
+}
+
+.btn-linkedin:hover {
+  background-color: #006099;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.availability ul, .insurance-info ul {
+  list-style: none;
+  font-size: 1rem;
+}
+
+.availability ul li, .insurance-info ul li {
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.availability ul li:last-child, .insurance-info ul li:last-child {
+  border-bottom: none;
+}
+
+.telehealth-badge {
+  display: inline-block;
+  background-color: var(--tag-bg);
+  color: var(--accent-color);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-top: 1.2rem;
+}
+
+.language-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.language-tag {
+  background-color: var(--tag-bg);
+  color: var(--accent-color);
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.language-tag.fluent {
+  background-color: rgba(76, 175, 80, 0.1);
+  color: var(--success-color);
+}
+
+.language-level {
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.profile-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.main-header {
+  margin-bottom: 0.5rem;
+}
+
+.main-header h1 {
+  color: var(--primary-color);
+  font-size: 2.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.main-header p {
+  color: #666;
+  font-size: 1.2rem;
+}
+
+.status-badges {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.2rem;
+}
+
+.new-patient-status, .board-certified-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.new-patient-status {
+  background-color: rgba(76, 175, 80, 0.1);
+  color: var(--success-color);
+}
+
+.board-certified-badge {
+  background-color: var(--tag-bg);
+  color: var(--accent-color);
+}
+
+.patient-info {
+  display: flex;
+  gap: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.patient-info > div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.value {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-bottom: 0.3rem;
+}
+
+.label {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.rating {
+  color: #ffc107;
+  font-size: 1.5rem;
+}
+
+.main-sections {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.section {
+  margin-bottom: 2.5rem;
+}
+
+.about-text {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: #444;
+  margin-top: 1rem;
+}
+
+.specialties-list, .certifications-list {
+  list-style: disc;
+  padding-left: 1.5rem;
+  margin-top: 1rem;
+}
+
+.specialties-list li, .certifications-list li {
+  margin-bottom: 0.75rem;
+  font-size: 1.05rem;
+}
+
+.collapsible {
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--border-color);
+}
+
+.collapsible-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 1.2rem 1.5rem;
+  background-color: var(--light-gray);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.collapsible-header:hover {
+  background-color: #e8eef3;
+}
+
+.collapsible-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  background-color: white;
+}
+
+.collapsible.active .collapsible-content {
+  max-height: 500px;
+  padding: 1.5rem;
+}
+
+.career-item {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 1.5rem;
+  row-gap: 0.3rem;
+  margin-bottom: 1.5rem;
+}
+
+.career-item:last-child {
+  margin-bottom: 0;
+}
+
+.career-year {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  font-weight: 600;
+  color: var(--accent-color);
+}
+
+.career-role {
+  grid-column: 2;
+  grid-row: 1;
+  font-weight: 600;
+}
+
+.career-location {
+  grid-column: 2;
+  grid-row: 2;
+  color: #666;
+}
+
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+@media (max-width: 1200px) {
+  .profile-container {
+    grid-template-columns: 350px 1fr;
+  }
+  
+  header {
+    padding: 1rem 2rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .container {
+    padding: 2rem;
+  }
+  
+  .profile-container {
+    grid-template-columns: 1fr;
+    padding: 2rem;
+  }
+  
+  header {
+    padding: 1rem 1.5rem;
+    flex-wrap: wrap;
+  }
+  
+  .nav-toggle {
+    display: block;
+  }
+  
+  nav ul {
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+    transition: all 0.3s ease;
+  }
+  
+  .nav-links {
+    display: none;
+  }
+  
+  .nav-links.active {
+    display: flex;
+  }
+  
+  nav {
+    order: 3;
+    width: 100%;
+    margin-top: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: 1.5rem;
+  }
+  
+  .profile-image img {
+    width: 180px;
+    height: 180px;
+  }
+  
+  .quick-appointment h1 {
+    font-size: a2rem;
+  }
+  
+  .auth-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .btn {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+  }
+  
+  .main-header h1 {
+    font-size: 1.8rem;
+  }
+}
+
+/* Add animation for sections */
+section {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
