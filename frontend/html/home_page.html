@@ -1,77 +1,112 @@
 <!DOCTYPE html>
- <html lang="en">
- <head>
-   <meta charset="UTF-8" />
-   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-   <title>Hospital Profile | HealthyCare</title>
-   <link rel="stylesheet" href="../css/profile_oage.css"/>
- </head>
- <body>
-   <header>
-     <div class="container header-container">
-       <h1 class="logo">HealthyCare</h1>
-       <nav>
-         <ul class="nav-links">
-           <li><a href="#">Home</a></li>
-           <li><a href="#">Profile</a></li>
-           <li><a href="#">Doctors</a></li>
-           <li><a href="#">Contact</a></li>
-         </ul>
-       </nav>
-     </div>
-   </header>
- 
-   <main class="container profile-container">
-     <section class="hospital-info">
-       <h2>HealthyCare Hospital</h2>
-       <p>Located in the heart of the city, HealthyCare is a multi-specialty hospital dedicated to providing top-notch medical care with a human touch.</p>
- 
-       <div class="contact-box">
-         <p><strong>Address:</strong> 123 Wellness Ave, Health City</p>
-         <p><strong>Phone:</strong> +123-456-7890</p>
-         <p><strong>Email:</strong> contact@healthycare.com</p>
-       </div>
-     </section>
- 
-     <section class="specialties">
-       <h3>Our Specialties</h3>
-       <ul>
-         <li>Cardiology</li>
-         <li>Neurology</li>
-         <li>Pediatrics</li>
-         <li>Orthopedics</li>
-         <li>Emergency Care</li>
-       </ul>
-     </section>
- 
-     <section class="doctors">
-       <h3>Meet Our Doctors</h3>
-       <div class="doctor-list">
-         <div class="doctor-card">
-           <img src="https://via.placeholder.com/150" alt="Doctor 1" />
-           <h4>Dr. Sarah Lee</h4>
-           <p>Cardiologist</p>
-         </div>
-         <div class="doctor-card">
-           <img src="https://via.placeholder.com/150" alt="Doctor 2" />
-           <h4>Dr. John Smith</h4>
-           <p>Neurologist</p>
-         </div>
-         <div class="doctor-card">
-           <img src="https://via.placeholder.com/150" alt="Doctor 3" />
-           <h4>Dr. Aisha Patel</h4>
-           <p>Pediatrician</p>
-         </div>
-       </div>
-     </section>
-   </main>
- 
-   <footer>
-     <div class="container">
-       <p>&copy; 2025 HealthyCare Hospital. All rights reserved.</p>
-     </div>
-   </footer>
- 
-   <script src="../javascript/profile_page.js"></script>
- </body>
- </html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PrimeCare Hospital - Your Health, Our Priority</title>
+  <link rel="stylesheet" href="../css/home_page.css">
+</head>
+
+<body>
+  <header>
+    <div class="nav-container">
+      <div class="logo">PrimeCare</div>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="./home_page.html" class="active">HOME</a></li>
+        <li><a href="#">ABOUT US</a></li>
+        <li><a href="#">DEPARTMENTS</a></li>
+        <li><a href="./doctors_page.html">DOCTORS</a></li>
+        <li><a href="#">BOOK NOW</a></li>
+      </ul>
+      <div class="auth-buttons">
+        <button class="btn login-btn">Log In</button>
+        <button class="btn signup-btn">Sign Up</button>
+      </div>
+      <button class="nav-toggle" id="nav-toggle">&#9776;</button>
+    </div>
+  </header>
+
+  <section class="Welcome" id="welcome">
+    <h1>Welcome to PrimeCare Hospital</h1>
+    <p>PrimeCare Hospital is a tertiary care, private hospital with a multidisciplinary approach, integrating medical services with cutting edge technology, covering more than 30 specialities at the outpatient centre.</p>
+  </section>
+
+  <section class="updates" id="updates">
+    <h2>Stay Up To Date</h2>
+    <p>There is always something new! Check out the latest news and stay updated with our images and videos.</p>
+  </section>
+  
+  <section class="profs" id="profs">
+    <h2>Centers of Excellence</h2>
+    <div class="prof-list">
+      <div class="prof">
+        <img src="../images/Cardiology-heart-human-icon-Graphics-25858402-1.jpg" width="100" alt="Cardiac-icon">
+        <h3>Cardiac Sciences</h3>
+      </div>
+      <div class="prof">
+        <img src="../images/Neurology-Icon-Graphics-13351746-1-1-580x385.jpg" width="100" alt="neuro-icon icon">
+        <h3>Neurosciences</h3>
+      </div>
+      <div class="prof">
+        <img src="../images/images.png" width="100" alt="Cancer-icon">
+        <h3>Cancer Care</h3>
+      </div>
+      <div class="prof">
+        <img src="../images/orthopedic-icon-vector-38225148.jpg" width="100" alt="ortho-icon">
+        <h3>Orthopedics</h3>
+      </div>
+    </div>
+  </section>
+
+  <section class="testimonials" id="testimonials">
+    <h2>What Our Patients Say</h2>
+    <div class="testimonial-list">
+      <div class="testimonial">
+        <p>"The doctors and staff at HospitalCare are amazing. They saved my life!"</p>
+        <h4>- John Doe</h4>
+      </div>
+      <div class="testimonial">
+        <p>"I received excellent care during my stay. Highly recommend this hospital."</p>
+        <h4>- Jane Smith</h4>
+      </div>
+      <div class="testimonial">
+        <p>"The facilities are top-notch, and the staff is very compassionate."</p>
+        <h4>- Michael Brown</h4>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-container">
+      <div class="footer-column">
+        <h3>About Us</h3>
+        <p>Providing exceptional healthcare services with compassion and care.</p>
+      </div>
+      <div class="footer-column">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Services</a></li>
+          <li><a href="#">Appointments</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3>Contact</h3>
+        <p>123 Health St., Wellness City<br />+123 456 7890<br />info@hospital.com</p>
+      </div>
+      <div class="footer-column">
+        <h3>Follow Us</h3>
+        <div class="social-icons">
+          <a href="#">🔵</a>
+          <a href="#">🐦</a>
+          <a href="#">📸</a>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-bar">&copy; 2025 PrimeCare Hospital. All rights reserved.</div>
+  </footer>
+  
+  <script src="../javascript/home_page.js"></script>
+</body>
+</html>
