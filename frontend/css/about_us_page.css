@@ -1,0 +1,105 @@
+/* General Styles */
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: #F2F2F0;
+    color: #000;
+}
+
+header {
+    background-color: #F6F1F4;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1rem;
+}
+
+.logo {
+    font-size: 25px;
+    font-weight: bold;
+    color: #0076CE;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 15px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #191C20;
+    padding: 5px 10px;
+    font-weight: bold;
+}
+
+.nav-links a.active,
+.nav-links a:hover {
+    color: #FFF;
+    background-color: #0076CE;
+    border-radius: 5px;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.auth-buttons .btn {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.auth-buttons .login-btn {
+    background-color: #0076CE;
+    color: #FFF;
+}
+
+.auth-buttons .signup-btn {
+    background-color: #FFF;
+    color: #0076CE;
+    border: 1px solid #0076CE;
+}
+
+/* About Us Section */
+main {
+    padding: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+section {
+    margin-bottom: 2rem;
+    background-color: #FFF;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    color: #0076CE;
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 2px solid #0076CE;
+    padding-bottom: 0.3rem;
+}
+
+p {
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+/* Hover Effects for Mission Section */
+#mission-text {
+    transition: color 0.3s ease;
+}
+#mission-text:hover {
+    color: #A5D7FC;
+}
