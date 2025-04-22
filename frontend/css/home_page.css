@@ -1,3 +1,10 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', 'Roboto', sans-serif;
+}
+
 .nav-container {
   top: 0;
   left: 0;
@@ -9,6 +16,7 @@
   align-items: center;
   padding: 0.5rem 1rem;
   justify-content: space-between;
+  background: linear-gradient(135deg, #F6F1F4, #87c8f3);
   background-color: #F6F1F4;
   box-shadow: 0 2px 5px #1E1E1E;
 }
@@ -19,7 +27,12 @@
   color: #0076CE;
   margin-left: 10px;
   text-shadow: 1px 1px 2px #0E0F52;
-  font-family: 'Poppins', sans-serif;
+}
+
+.logo::before {
+  content: "💉";
+  margin-right: 10px;
+  font-size: 1.5rem;
 }
 
 .nav-links {
@@ -36,13 +49,12 @@
   padding: 7px;
   font-size: small;
   font-weight: bold;
-  font-family: 'Poppins', sans-serif;
   transition: color 0.3s ease, background-color 0.3s ease;
 }
 
 .nav-links a:hover {
   color: #0076CE;
-  background-color: #F6F1F4;
+  background-color: linear-gradient(135deg, #F6F1F4, #000298);
   border-radius: 20px;
 }
 
@@ -66,7 +78,6 @@
   border-radius: 20px;
   cursor: pointer;
   box-shadow: 0 2px 5px #1E1E1E;
-  font-family: 'Poppins', sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -98,7 +109,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: #0076CE;
+  color: #000298;
 }
 
 @media screen and (max-width: 768px) {
@@ -166,7 +177,6 @@ header {
   font-size: 20px;
   margin-bottom: 30px;
   color: #23282e;
-  font-family: Arial, Helvetica, sans-serif;
 }
 
 .updates {

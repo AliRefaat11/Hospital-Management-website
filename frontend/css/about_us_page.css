@@ -1,5 +1,151 @@
-/* General Styles */
-body {
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.nav-container {
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+  display: flex;
+  position: fixed;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #F6F1F4, #87c8f3);
+  background-color: #F6F1F4;
+  box-shadow: 0 2px 5px #1E1E1E;
+}
+
+.logo {
+  font-size: 25px;
+  font-weight: bold;
+  color: #0076CE;
+  margin-left: 10px;
+  text-shadow: 1px 1px 2px #0E0F52;
+}
+
+.logo::before {
+  content: "💉";
+  margin-right: 10px;
+  font-size: 1.5rem;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links a {
+  color: #191C20;
+  text-decoration: none;
+  padding: 7px;
+  font-size: small;
+  font-weight: bold;
+  transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: #0076CE;
+  background-color: linear-gradient(135deg, #F6F1F4, #000298);
+  border-radius: 20px;
+}
+
+.nav-links a.active {
+  color: #F6F1F4;
+  background-color: #0076CE;
+  text-shadow: 1px 1px 2px #191C20;
+  border-radius: 20px;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.auth-buttons .btn {
+  padding: 6px 8px;
+  font-size: 14px;
+  font-weight: bold;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  box-shadow: 0 2px 5px #1E1E1E;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.auth-buttons .login-btn {
+  background-color: #0076CE;
+  text-shadow: 1px 1px 2px #191C20;
+  color: #FDFCFA;
+}
+
+.auth-buttons .login-btn:hover {
+  background-color: #005BB5;
+}
+
+.auth-buttons .signup-btn {
+  background-color: #20bd61;
+  color: #FDFCFA;
+  margin-right: 20px;
+  text-shadow: 1px 1px 2px #191C20;
+}
+
+.auth-buttons .signup-btn:hover {
+  background-color: #0d853f;
+}
+
+.nav-toggle {
+  display: none;
+  font-size: 24px;
+  margin-right: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #000298;
+}
+
+@media screen and (max-width: 768px) {
+  .nav-container {
+    justify-content: space-between;
+  }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    background-color: #F6F1F4;
+    position: absolute;
+    top: 60px;
+    right: 10px;
+    width: 200px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 10px;
+  }
+
+  .nav-links.show {
+    display: flex;
+  }
+
+  .auth-buttons {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .nav-toggle {
+    display: block;
+  }
+}
+
+  body {
     margin: 0;
     font-family: 'Poppins', sans-serif;
     background-color: #F2F2F0;
@@ -11,62 +157,6 @@ header {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.nav-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.5rem 1rem;
-}
-
-.logo {
-    font-size: 25px;
-    font-weight: bold;
-    color: #0076CE;
-}
-
-.nav-links {
-    list-style: none;
-    display: flex;
-    gap: 15px;
-}
-
-.nav-links a {
-    text-decoration: none;
-    color: #191C20;
-    padding: 5px 10px;
-    font-weight: bold;
-}
-
-.nav-links a.active,
-.nav-links a:hover {
-    color: #FFF;
-    background-color: #0076CE;
-    border-radius: 5px;
-}
-
-.auth-buttons {
-    display: flex;
-    gap: 10px;
-}
-
-.auth-buttons .btn {
-    padding: 5px 10px;
-    border: none;
-    border-radius: 5px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.auth-buttons .login-btn {
-    background-color: #0076CE;
-    color: #FFF;
-}
-
-.auth-buttons .signup-btn {
-    background-color: #FFF;
-    color: #0076CE;
-    border: 1px solid #0076CE;
-}
 
 /* About Us Section */
 main {
