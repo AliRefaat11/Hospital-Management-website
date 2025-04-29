@@ -1,8 +1,9 @@
 const navToggle = document.getElementById('nav-toggle');
 const navLinks = document.getElementById('nav-links');
 
+// Add click event listener to toggle button
 navToggle.addEventListener('click', () => {
-  navLinks.classList.toggle('show');
+  navLinks.classList.toggle('active'); // Toggle the 'active' class
 });
 
 const navLinksContainer = document.querySelector('.nav-links');
@@ -32,26 +33,11 @@ window.addEventListener('scroll', revealSection);
 
 revealSection();
 
-const navLinksElements = document.querySelectorAll('.nav-links a');
-
-navLinksElements.forEach(link => {
-  link.addEventListener('click', () => {
-    navLinksElements.forEach(nav => nav.classList.remove('active'));
-    link.classList.add('active');
-  });
-});
-
 const currentPath = window.location.href;
 navLinksElements.forEach(link => {
   if (link.href === currentPath) {
     link.classList.add('active');
   }
-});
-
-const logo = document.querySelector('.logo');
-
-logo.addEventListener('click', () => {
-  document.body.classList.toggle('dark-mode');
 });
 
 document.addEventListener("DOMContentLoaded", () => {
