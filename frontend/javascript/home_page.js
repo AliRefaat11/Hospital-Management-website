@@ -1,16 +1,15 @@
 const navToggle = document.getElementById('nav-toggle');
-const navLinks = document.getElementById('nav-links');
+const navLinks = document.querySelector('.nav-links');
 
-// Add click event listener to toggle button
+// Toggle the visibility of the navigation links
 navToggle.addEventListener('click', () => {
-  navLinks.classList.toggle('active'); // Toggle the 'active' class
+  navLinks.classList.toggle('active'); // Add or remove the 'active' class
 });
 
-const navLinksContainer = document.querySelector('.nav-links');
-
-navLinksContainer.addEventListener('click', (event) => {
+// Close the navigation menu when a link is clicked
+navLinks.addEventListener('click', (event) => {
   if (event.target.tagName === 'A') {
-    navLinksContainer.classList.remove('active');
+    navLinks.classList.remove('active'); // Remove the 'active' class
   }
 });
 
@@ -42,4 +41,30 @@ navLinksElements.forEach(link => {
 
 document.addEventListener("DOMContentLoaded", () => {
   console.log("Footer loaded successfully.");
+});
+
+const searchBar = document.querySelector('.search-bar');
+const searchContainer = document.querySelector('.search-container');
+
+// Handle "Enter" key press
+searchBar.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') {
+    event.preventDefault(); // Prevent default form submission
+    const searchQuery = searchBar.value.trim(); // Store the search input in a variable
+    console.log('Search Query:', searchQuery); // Log the search query (for testing)
+    searchBar.value = ''; // Clear the search bar
+  }
+});
+
+// Hide the search bar when clicking outside
+document.addEventListener('click', (event) => {
+  if (!searchContainer.contains(event.target)) {
+    searchBar.style.width = '0'; // Collapse the search bar
+    searchBar.style.opacity = '0'; // Hide the search bar
+  }
+});
+
+// Prevent the search bar from collapsing when clicked
+searchBar.addEventListener('click', (event) => {
+  event.stopPropagation(); // Prevent the click from propagating to the document
 });
