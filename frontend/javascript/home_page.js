@@ -68,3 +68,4 @@ document.addEventListener('click', (event) => {
 searchBar.addEventListener('click', (event) => {
   event.stopPropagation(); // Prevent the click from propagating to the document
 });
+
