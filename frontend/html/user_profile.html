@@ -1,161 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patient Profile - PrimeCare</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/user_profile.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Patient Profile - PrimeCare</title>
+<link rel="stylesheet" href="../css/user_profile.css">
+<link rel="stylesheet" href="../css/settings_profile.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <!-- Header Navigation -->
-    <header class="header">
-        <div class="container">
-            <div class="logo">PrimeCare</div>
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#">About Us</a></li>
-                    <li><a href="#">Departments</a></li>
-                    <li><a href="#">Doctors</a></li>
-                    <li><a href="#">Book Now</a></li>
-                </ul>
-            </nav>
-            <div class="auth-buttons">
-                <button class="btn btn-outline">Log In</button>
-                <button class="btn btn-primary">Sign Up</button>
-            </div>
-            <button class="mobile-menu-toggle" id="mobileMenuToggle">
-                <i class="fas fa-bars"></i>
-            </button>
+
+<!-- Header -->
+<header class="header">
+    <div class="container">
+        <div class="logo">PrimeCare</div>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Departments</a></li>
+                <li><a href="#">Doctors</a></li>
+                <li><a href="#">Book Now</a></li>
+            </ul>
+        </nav>
+        <div class="auth-buttons">
+            <button class="btn btn-outline">Log In</button>
+            <button class="btn btn-primary">Sign Up</button>
         </div>
-    </header>
+        <button class="mobile-menu-toggle" id="mobileMenuToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+</header>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <div class="container">
-            <!-- Profile Header -->
-            <section class="profile-card">
-                <div class="profile-header">
-                    <div class="profile-image">
-                        <img src="../images/download (1).jpeg" alt="Patient Profile" id="profileImage">
+<!-- Main Content -->
+<main class="main-content">
+    <div class="container">
+
+        <!-- Profile Header -->
+        <section class="profile-card">
+            <div class="profile-header">
+                <div class="profile-image">
+                    <img src="../images/download.jpeg" alt="Patient Profile" id="profileImage">
+                </div>
+                <div class="profile-info">
+                    <h1 class="profile-name" id="userName">John Smith</h1>
+                    <div class="profile-email">
+                        <i class="fas fa-envelope"></i>
+                        <span id="userEmail">john.smith@example.com</span>
                     </div>
-                    <div class="profile-info">
-                        <h1 class="profile-name" id="userName">John Smith</h1>
-                        <div class="profile-email">
-                            <i class="fas fa-envelope"></i>
-                            <span id="userEmail">john.smith@example.com</span>
-                        </div>
-                        <div class="profile-status">
-                            <span class="status-badge active">Active Patient</span>
-                        </div>
+                    <div class="profile-status">
+                        <span class="status-badge active">Active Patient</span>
                     </div>
-                </div>
-            </section>
-
-            <!-- Action Buttons -->
-            <section class="action-buttons">
-                <button class="btn btn-primary btn-action">
-                    <i class="fas fa-calendar-alt"></i>
-                    <span>Appointments</span>
-                </button>
-                <button class="btn btn-outline btn-action">
-                    <i class="fas fa-edit"></i>
-                    <span>Edit Profile</span>
-                </button>
-                <button class="btn btn-outline btn-action">
-                    <i class="fas fa-cog"></i>
-                    <span>Settings</span>
-                </button>
-            </section>
-
-            <!-- Upcoming Appointments -->
-            <section class="content-card">
-                <div class="card-header">
-                    <h2>Upcoming Appointments</h2>
-                    <button class="btn btn-sm btn-primary">
-                        <i class="fas fa-plus"></i> New Appointment
-                    </button>
-                </div>
-                <div class="card-body" id="appointmentsList">
-                    <!-- Appointments will be loaded here -->
-                </div>
-            </section>
-
-            <!-- Profile Information -->
-            <section class="content-card">
-                <div class="card-header">
-                    <h2>Profile Information</h2>
-                    <button class="btn btn-sm btn-outline">
-                        <i class="fas fa-edit"></i> Edit
-                    </button>
-                </div>
-                <div class="card-body">
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <div class="info-label">Date of Birth</div>
-                            <div class="info-value" id="userDob">February 10, 1990</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Gender</div>
-                            <div class="info-value" id="userGender">Male</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Phone</div>
-                            <div class="info-value">
-                                <i class="fas fa-phone"></i>
-                                <span id="userPhone">(128) 456-7890</span>
-                            </div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Address</div>
-                            <div class="info-value">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span id="userAddress">123 Elm St, Springfield, IL 62701</span>
-                            </div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Primary Doctor</div>
-                            <div class="info-value" id="userDoctor">Dr. Emily Johnson</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Insurance</div>
-                            <div class="info-value" id="userInsurance">BlueCross HealthPlus</div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Medical Records -->
-            <section class="content-card">
-                <div class="card-header">
-                    <h2>Medical Records</h2>
-                    <button class="btn btn-sm btn-outline">
-                        <i class="fas fa-download"></i> Download All
-                    </button>
-                </div>
-                <div class="card-body">
-                    <div class="records-list" id="medicalRecordsList">
-                        <!-- Medical records will be loaded here -->
-                    </div>
-                </div>
-            </section>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-logo">PrimeCare</div>
-                <div class="footer-copyright">
-                    &copy; 2025 PrimeCare Health Services. All rights reserved.
                 </div>
             </div>
-        </div>
-    </footer>
+        </section>
 
-    <script src="script.js"></script>
+        <!-- Action Buttons (with links) -->
+        <section class="action-buttons">
+            <a href="#appointments" class="btn btn-primary btn-action">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Appointments</span>
+            </a>
+            <a href="edit_profile.html" class="btn btn-outline btn-action">
+                <i class="fas fa-edit"></i>
+                <span>Edit Profile</span>
+            </a>
+            <a href="settings_profile.html" class="btn btn-outline btn-action">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </section>
+
+        <!-- Overview -->
+        <section class="content-card">
+            <div class="card-header">
+                <h2>Profile Overview</h2>
+            </div>
+            <div class="card-body">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Appointments</div>
+                        <div class="info-value"><i class="fas fa-calendar-check"></i> 4 upcoming</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Medical Records</div>
+                        <div class="info-value"><i class="fas fa-file-medical"></i> 12 records</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Upcoming Appointments -->
+        <section class="content-card">
+            <div class="card-header">
+                <h2>Upcoming Appointments</h2>
+                <button class="btn btn-sm btn-primary">
+                    <i class="fas fa-plus"></i> New Appointment
+                </button>
+            </div>
+            <div class="card-body" id="appointmentsList">
+                <!-- Appointments will be loaded here -->
+            </div>
+        </section>
+
+        <!-- Profile Information -->
+        <section class="content-card">
+            <div class="card-header">
+                <h2>Profile Information</h2>
+                <a href="edit_profile.html" class="btn btn-sm btn-outline">
+                    <i class="fas fa-edit"></i> Edit
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Date of Birth</div>
+                        <div class="info-value" id="userDob">February 10, 1990</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Gender</div>
+                        <div class="info-value" id="userGender">Male</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Phone</div>
+                        <div class="info-value">
+                            <i class="fas fa-phone"></i>
+                            <span id="userPhone">(128) 456-7890</span>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Address</div>
+                        <div class="info-value">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span id="userAddress">123 Elm St, Springfield, IL 62701</span>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Primary Doctor</div>
+                        <div class="info-value" id="userDoctor">Dr. Emily Johnson</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Insurance</div>
+                        <div class="info-value" id="userInsurance">BlueCross HealthPlus</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Medical Records -->
+        <section class="content-card">
+            <div class="card-header">
+                <h2>Medical Records</h2>
+                <button class="btn btn-sm btn-outline">
+                    <i class="fas fa-download"></i> Download All
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="records-list" id="medicalRecordsList">
+                    <!-- Medical records will be loaded here -->
+                </div>
+            </div>
+        </section>
+
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-logo">PrimeCare</div>
+            <div class="footer-copyright">
+                &copy; 2025 PrimeCare Health Services. All rights reserved.
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="../javascript/user_profile.js"></script>
 </body>
 </html>
