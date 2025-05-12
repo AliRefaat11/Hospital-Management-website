@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrimeCare Hospital Sign Up</title>
+    <link rel="stylesheet" href="../css/sign_up_page.css">
+</head>
+<body>
+    <header>
+        <div class="nav-container">
+            <div class="logo">PrimeCare</div>
+            <ul class="nav-links">
+              <li>
+                <a href="./home_page.html" title="Home Page">
+                  <i class="fas fa-home"></i> 
+                  <span class="nav-title">Home</span>
+                </a>
+              </li>
+              <li>
+                <a href="./about_us_page.html" title="About Us">
+                  <i class="fas fa-info-circle"></i> 
+                  <span class="nav-title">About Us</span>
+                </a>
+              </li>
+              <li>
+                <a href="./department_page.html" title="Departments">
+                  <i class="fas fa-building"></i> 
+                  <span class="nav-title">Departments</span>
+                </a>
+              </li>
+              <li>
+                <a href="./doctors_page.html" title="Doctors">
+                  <i class="fas fa-user-md"></i> 
+                  <span class="nav-title">Doctors</span>
+                </a>
+              </li>
+              <li>
+                <a href="./quick-appointment.html" title="Book Appointment">
+                  <i class="fas fa-calendar-check"></i> 
+                  <span class="nav-title">Book Appointment</span>
+                </a>
+              </li>
+              <li class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-bar" placeholder="Search...">
+              </li>
+            </ul>
+            <div class="auth-buttons">
+              <a class="btn login-btn" href="./login_page.html">Log In</a>
+              <a class="btn signup-btn" href="./sign_up_page.html" class="active">Sign Up</a>
+            </div>
+            <button class="nav-toggle" id="nav-toggle">&#9776;</button>
+          </div>
+      </header>
+
+    <!-- Sign Up Form -->
+    <div class="container">
+        <h2>Sign Up</h2>
+        <div class="input-group">
+          <input type="text" id="firstName" placeholder=" " required>
+          <label for="firstName">First Name</label>
+      </div>
+      <div class="input-group">
+          <input type="text" id="lastName" placeholder=" " required>
+          <label for="lastName">Last Name</label>
+      </div>
+      <div class="input-group">
+          <input type="tel" id="phoneNumber" placeholder=" " required>
+          <label for="phoneNumber">Phone Number</label>
+      </div>
+        <div class="input-group">
+            <input type="text" id="username" placeholder=" " required>
+            <label for="username">Username</label>
+        </div>
+        <div class="input-group">
+            <input type="email" id="email" placeholder=" " required>
+            <label for="email">Email</label>
+        </div>
+        <div class="input-group">
+            <input type="password" id="password" placeholder=" " required maxlength="12">
+            <label for="password">Password</label>
+        </div>
+        <div class="input-group">
+            <input type="password" id="confirm-password" placeholder=" " required maxlength="12">
+            <label for="confirm-password">Confirm Password</label>
+        </div>
+        <button class="signup-btnm" onclick="handleSignUp()">Sign Up</button>
+        <a href="./login_page.html" class="login-link">Already have an account? Log In</a>
+        <div class="error-message" id="errorMessage"></div>
+    </div>
+    <script src="../javascript/sign_up_page.js"></script>
+</body>
+</html>
