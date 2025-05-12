@@ -1,0 +1,24 @@
+{
+  "name": "hospital-management-website-1",
+  "version": "1.0.0",
+  "description": "my first program",
+  "homepage": "https://github.com/AliRefaat11/Hospital-Management-website#readme",
+  "bugs": {
+    "url": "https://github.com/AliRefaat11/Hospital-Management-website/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AliRefaat11/Hospital-Management-website.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^5.1.0"
+  }
+}
