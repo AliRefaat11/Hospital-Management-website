@@ -3,84 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - PrimeCare</title>
+    <title>Admin Dashboard - PrimeCare Hospital</title>
     <link rel="stylesheet" href="../css/admin_dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <!-- Sidebar -->
     <aside class="sidebar">
         <div class="sidebar-header">
-            <div class="logo">
-                <a href="../index.html">PrimeCare</a>
+            <a href="index.html" class="logo">
+                <img src="../assets/images/logo.png" alt="PrimeCare Hospital">
+                <span>PrimeCare</span>
+            </a>
+        </div>
+
+        <div class="admin-info">
+            <div class="admin-avatar-container">
+                <img src="../assets/images/admin-avatar.jpg" alt="Admin" class="admin-avatar">
+                <span class="admin-status"></span>
             </div>
-            <div class="admin-info">
-                <img src="../images/admin-avatar.jpg" alt="Admin" class="admin-avatar">
-                <div class="admin-details">
-                    <h3>Admin Name</h3>
-                    <p>Hospital Administrator</p>
-                </div>
+            <div class="admin-details">
+                <h3>Dr. Sarah Wilson</h3>
+                <p>Hospital Administrator</p>
             </div>
         </div>
+
         <nav class="sidebar-nav">
-            <ul>
-                <li class="active">
-                    <a href="#dashboard">
-                        <i class="fas fa-home"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#doctors">
-                        <i class="fas fa-user-md"></i>
-                        <span>Doctors</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#patients">
-                        <i class="fas fa-users"></i>
-                        <span>Patients</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#appointments">
-                        <i class="fas fa-calendar-alt"></i>
-                        <span>Appointments</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#departments">
-                        <i class="fas fa-hospital"></i>
-                        <span>Departments</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#staff">
-                        <i class="fas fa-user-nurse"></i>
-                        <span>Staff</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#reports">
-                        <i class="fas fa-chart-bar"></i>
-                        <span>Reports</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#settings">
-                        <i class="fas fa-cog"></i>
-                        <span>Settings</span>
-                    </a>
-                </li>
-            </ul>
+            <a href="#dashboard" class="nav-link active">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#doctors" class="nav-link">
+                <i class="fas fa-user-md"></i>
+                <span>Doctors</span>
+            </a>
+            <a href="#patients" class="nav-link">
+                <i class="fas fa-users"></i>
+                <span>Patients</span>
+            </a>
+            <a href="#appointments" class="nav-link">
+                <i class="fas fa-calendar-check"></i>
+                <span>Appointments</span>
+            </a>
+            <a href="#departments" class="nav-link">
+                <i class="fas fa-hospital"></i>
+                <span>Departments</span>
+            </a>
+            <a href="#staff" class="nav-link">
+                <i class="fas fa-user-nurse"></i>
+                <span>Staff</span>
+            </a>
+            <a href="#reports" class="nav-link">
+                <i class="fas fa-chart-bar"></i>
+                <span>Reports</span>
+            </a>
+            <a href="#settings" class="nav-link">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
         </nav>
+
         <div class="sidebar-footer">
-            <a href="user_profile.html" class="btn btn-outline">
+            <a href="user_profile.html" class="footer-link">
                 <i class="fas fa-user"></i>
                 <span>View Profile</span>
             </a>
-            <a href="../index.html" class="btn btn-outline">
+            <a href="#" class="footer-link" id="logout-btn">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>Logout</span>
             </a>
@@ -90,7 +79,7 @@
     <!-- Main Content -->
     <main class="main-content">
         <!-- Top Bar -->
-        <header class="top-bar">
+        <div class="top-bar">
             <div class="search-bar">
                 <i class="fas fa-search"></i>
                 <input type="text" placeholder="Search patients, doctors, appointments...">
@@ -100,178 +89,169 @@
                     <i class="fas fa-bell"></i>
                     <span class="notification-badge">3</span>
                 </button>
-                <div class="profile-dropdown">
-                    <button class="profile-btn">
-                        <img src="../images/admin-avatar.jpg" alt="Admin">
-                        <span>Admin Name</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <div class="dropdown-menu">
-                        <a href="user_profile.html"><i class="fas fa-user"></i> Profile</a>
-                        <a href="settings_profile.html"><i class="fas fa-cog"></i> Settings</a>
-                        <a href="../index.html"><i class="fas fa-sign-out-alt"></i> Logout</a>
-                    </div>
+                <div class="profile-btn">
+                    <img src="../assets/images/admin-avatar.jpg" alt="Admin">
+                    <span class="profile-name">Dr. Sarah Wilson</span>
                 </div>
             </div>
-        </header>
+        </div>
 
         <!-- Dashboard Content -->
-        <div class="dashboard-content">
-            <!-- Stats Cards -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-user-md"></i>
+        <div id="dashboard" class="tab-content active">
+            <div class="dashboard-content">
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Total Doctors</h3>
+                            <p class="stat-number">45</p>
+                            <span class="stat-change positive">+5 this month</span>
+                        </div>
                     </div>
-                    <div class="stat-info">
-                        <h3>Total Doctors</h3>
-                        <p class="stat-number">45</p>
-                        <p class="stat-change positive">+2 this month</p>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Total Patients</h3>
+                            <p class="stat-number">1,234</p>
+                            <span class="stat-change positive">+12% this month</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Appointments</h3>
+                            <p class="stat-number">89</p>
+                            <span class="stat-change">Today</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-procedures"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Available Beds</h3>
+                            <p class="stat-number">24</p>
+                            <span class="stat-change negative">-3 this week</span>
+                        </div>
                     </div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>Total Patients</h3>
-                        <p class="stat-number">1,234</p>
-                        <p class="stat-change positive">+15% this month</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-calendar-check"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>Appointments</h3>
-                        <p class="stat-number">89</p>
-                        <p class="stat-change">Today</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-hospital"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>Departments</h3>
-                        <p class="stat-number">12</p>
-                        <p class="stat-change">Active</p>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Recent Activity -->
-            <div class="dashboard-section">
-                <div class="section-header">
-                    <h2>Recent Activity</h2>
-                    <button class="btn btn-outline">View All</button>
+                <!-- Recent Activity -->
+                <div class="recent-activity">
+                    <div class="section-header">
+                        <h2>Recent Activity</h2>
+                        <button class="btn btn-outline">View All</button>
+                    </div>
+                    <div class="activity-list">
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
+                            <div class="activity-details">
+                                <h4>New Patient Registration</h4>
+                                <p>John Smith registered as a new patient</p>
+                                <span class="activity-time">2 minutes ago</span>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-calendar-plus"></i>
+                            </div>
+                            <div class="activity-details">
+                                <h4>Appointment Scheduled</h4>
+                                <p>Dr. Wilson scheduled a new appointment</p>
+                                <span class="activity-time">15 minutes ago</span>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-file-medical"></i>
+                            </div>
+                            <div class="activity-details">
+                                <h4>Medical Record Updated</h4>
+                                <p>Patient record updated by Dr. Brown</p>
+                                <span class="activity-time">1 hour ago</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="activity-list">
-                    <div class="activity-item">
-                        <div class="activity-icon">
-                            <i class="fas fa-user-plus"></i>
-                        </div>
-                        <div class="activity-details">
-                            <h4>New Patient Registration</h4>
-                            <p>John Smith registered as a new patient</p>
-                            <span class="activity-time">2 hours ago</span>
-                        </div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon">
-                            <i class="fas fa-calendar-plus"></i>
-                        </div>
-                        <div class="activity-details">
-                            <h4>New Appointment</h4>
-                            <p>Dr. Emily Johnson scheduled a new appointment</p>
-                            <span class="activity-time">3 hours ago</span>
-                        </div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon">
-                            <i class="fas fa-file-medical"></i>
-                        </div>
-                        <div class="activity-details">
-                            <h4>Medical Record Updated</h4>
-                            <p>Sarah Wilson's medical record was updated</p>
-                            <span class="activity-time">5 hours ago</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Quick Actions -->
-            <div class="dashboard-section">
-                <div class="section-header">
-                    <h2>Quick Actions</h2>
-                </div>
+                <!-- Quick Actions -->
                 <div class="quick-actions">
-                    <button class="action-btn" data-action="add-patient">
-                        <i class="fas fa-user-plus"></i>
-                        <span>Add Patient</span>
-                    </button>
-                    <button class="action-btn" data-action="add-doctor">
-                        <i class="fas fa-user-md"></i>
-                        <span>Add Doctor</span>
-                    </button>
-                    <button class="action-btn" data-action="schedule-appointment">
-                        <i class="fas fa-calendar-plus"></i>
-                        <span>Schedule Appointment</span>
-                    </button>
-                    <button class="action-btn" data-action="add-medical-record">
-                        <i class="fas fa-file-medical"></i>
-                        <span>Add Medical Record</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Upcoming Appointments -->
-            <div class="dashboard-section">
-                <div class="section-header">
-                    <h2>Upcoming Appointments</h2>
-                    <button class="btn btn-outline">View All</button>
-                </div>
-                <div class="appointments-list">
-                    <div class="appointment-item">
-                        <div class="appointment-time">
-                            <span class="time">09:00 AM</span>
-                            <span class="date">Today</span>
-                        </div>
-                        <div class="appointment-details">
-                            <h4>Dr. Michael Chen</h4>
-                            <p>Cardiology Consultation</p>
-                            <span class="patient-name">Patient: Robert Johnson</span>
-                        </div>
-                        <div class="appointment-actions">
-                            <button class="btn btn-sm btn-outline">Reschedule</button>
-                            <button class="btn btn-sm btn-primary">Start</button>
-                        </div>
+                    <div class="section-header">
+                        <h2>Quick Actions</h2>
                     </div>
-                    <div class="appointment-item">
-                        <div class="appointment-time">
-                            <span class="time">11:30 AM</span>
-                            <span class="date">Today</span>
+                    <div class="actions-grid">
+                        <button class="action-btn" data-action="add-patient">
+                            <i class="fas fa-user-plus"></i>
+                            <span>Add Patient</span>
+                        </button>
+                        <button class="action-btn" data-action="add-doctor">
+                            <i class="fas fa-user-md"></i>
+                            <span>Add Doctor</span>
+                        </button>
+                        <button class="action-btn" data-action="schedule-appointment">
+                            <i class="fas fa-calendar-plus"></i>
+                            <span>Schedule Appointment</span>
+                        </button>
+                        <button class="action-btn" data-action="add-medical-record">
+                            <i class="fas fa-file-medical"></i>
+                            <span>Add Medical Record</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Upcoming Appointments -->
+                <div class="upcoming-appointments">
+                    <div class="section-header">
+                        <h2>Upcoming Appointments</h2>
+                        <button class="btn btn-outline">View All</button>
+                    </div>
+                    <div class="appointments-list">
+                        <div class="appointment-item">
+                            <div class="appointment-time">
+                                <span class="time">09:00 AM</span>
+                                <span class="date">Today</span>
+                            </div>
+                            <div class="appointment-details">
+                                <h4>Dr. Sarah Wilson</h4>
+                                <p>General Checkup - John Smith</p>
+                                <span class="appointment-status confirmed">Confirmed</span>
+                            </div>
+                            <div class="appointment-actions">
+                                <button class="btn btn-sm btn-outline">Reschedule</button>
+                                <button class="btn btn-sm btn-primary">Start Session</button>
+                            </div>
                         </div>
-                        <div class="appointment-details">
-                            <h4>Dr. Sarah Wilson</h4>
-                            <p>General Checkup</p>
-                            <span class="patient-name">Patient: Emily Brown</span>
-                        </div>
-                        <div class="appointment-actions">
-                            <button class="btn btn-sm btn-outline">Reschedule</button>
-                            <button class="btn btn-sm btn-primary">Start</button>
+                        <div class="appointment-item">
+                            <div class="appointment-time">
+                                <span class="time">10:30 AM</span>
+                                <span class="date">Today</span>
+                            </div>
+                            <div class="appointment-details">
+                                <h4>Dr. Michael Brown</h4>
+                                <p>Follow-up - Emily Johnson</p>
+                                <span class="appointment-status pending">Pending</span>
+                            </div>
+                            <div class="appointment-actions">
+                                <button class="btn btn-sm btn-outline">Reschedule</button>
+                                <button class="btn btn-sm btn-primary">Start Session</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </main>
 
-    <!-- Tab Content Sections -->
-    <div class="tab-content">
-        <!-- Doctors Tab -->
-        <section id="doctors" class="tab-pane">
+        <!-- Other Tab Contents -->
+        <div id="doctors" class="tab-content">
             <div class="section-header">
                 <h2>Doctors Management</h2>
                 <button class="btn btn-primary" id="addDoctorBtn">
@@ -296,10 +276,9 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <!-- Patients Tab -->
-        <section id="patients" class="tab-pane">
+        <div id="patients" class="tab-content">
             <div class="section-header">
                 <h2>Patients Management</h2>
                 <button class="btn btn-primary" id="addPatientBtn">
@@ -333,10 +312,9 @@
                     </tbody>
                 </table>
             </div>
-        </section>
+        </div>
 
-        <!-- Appointments Tab -->
-        <section id="appointments" class="tab-pane">
+        <div id="appointments" class="tab-content">
             <div class="section-header">
                 <h2>Appointments Management</h2>
                 <button class="btn btn-primary" id="newAppointmentBtn">
@@ -346,10 +324,9 @@
             <div class="appointments-calendar">
                 <!-- Calendar view will be implemented here -->
             </div>
-        </section>
+        </div>
 
-        <!-- Departments Tab -->
-        <section id="departments" class="tab-pane">
+        <div id="departments" class="tab-content">
             <div class="section-header">
                 <h2>Departments Management</h2>
                 <button class="btn btn-primary" id="addDepartmentBtn">
@@ -372,10 +349,9 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <!-- Staff Tab -->
-        <section id="staff" class="tab-pane">
+        <div id="staff" class="tab-content">
             <div class="section-header">
                 <h2>Staff Management</h2>
                 <button class="btn btn-primary" id="addStaffBtn">
@@ -397,10 +373,9 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <!-- Reports Tab -->
-        <section id="reports" class="tab-pane">
+        <div id="reports" class="tab-content">
             <div class="section-header">
                 <h2>Reports & Analytics</h2>
                 <button class="btn btn-primary" id="generateReportBtn">
@@ -420,10 +395,9 @@
                     <button class="btn btn-sm btn-primary" onclick="viewReport('patient-stats')">View Report</button>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <!-- Settings Tab -->
-        <section id="settings" class="tab-pane">
+        <div id="settings" class="tab-content">
             <div class="section-header">
                 <h2>System Settings</h2>
             </div>
@@ -443,20 +417,13 @@
                     </form>
                 </div>
             </div>
-        </section>
-    </div>
+        </div>
+    </main>
 
-    <!-- Modals -->
-    <div class="modal" id="addDoctorModal">
-        <!-- Add Doctor Form -->
-    </div>
-    <div class="modal" id="addPatientModal">
-        <!-- Add Patient Form -->
-    </div>
-    <div class="modal" id="addAppointmentModal">
-        <!-- Add Appointment Form -->
-    </div>
+    <!-- Toast Container -->
+    <div class="toast-container"></div>
 
+    <!-- Scripts -->
     <script src="../javascript/admin_dashboard.js"></script>
 </body>
 </html> 
