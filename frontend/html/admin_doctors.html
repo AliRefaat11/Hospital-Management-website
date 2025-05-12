@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctors Management - PrimeCare Hospital</title>
+    <link rel="stylesheet" href="../css/admin_dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Sidebar (copy from admin_dashboard.html) -->
+    <!-- ... existing sidebar code ... -->
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Bar (copy from admin_dashboard.html) -->
+        <!-- ... existing top bar code ... -->
+        <div class="tab-content active">
+            <div class="section-header">
+                <h2>Doctors Management</h2>
+                <button class="btn btn-primary" id="addDoctorBtn">
+                    <i class="fas fa-plus"></i> Add New Doctor
+                </button>
+            </div>
+            <div class="doctors-grid">
+                <!-- Sample Doctor Cards -->
+                <div class="doctor-card">
+                    <img src="../images/doctor1.jpg" alt="Dr. Emily Johnson">
+                    <div class="doctor-info">
+                        <h3>Dr. Emily Johnson</h3>
+                        <p>Cardiology</p>
+                        <div class="doctor-stats">
+                            <span><i class="fas fa-user-md"></i> 15 years exp.</span>
+                            <span><i class="fas fa-star"></i> 4.9</span>
+                        </div>
+                    </div>
+                    <div class="doctor-actions">
+                        <button class="btn btn-sm btn-outline" onclick="editDoctor(1)">Edit</button>
+                        <button class="btn btn-sm btn-primary" onclick="viewSchedule(1)">Schedule</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <div class="toast-container"></div>
+    <script src="../javascript/admin_dashboard.js"></script>
+</body>
+</html> 
