@@ -4,7 +4,8 @@ const translations = {
   en: {
     formTitle: 'Personal Information',
     sectionTitle: 'Appointment Details',
-    labelName: 'Your Name',
+    labelFirstName: 'First Name',
+    labelLastName: 'Last Name',
     labelPhone: 'Phone Number',
     labelEmail: 'Email Address',
     labelGender: 'Gender',
@@ -14,6 +15,8 @@ const translations = {
     labelDepartment: 'Department',
     labelReason: 'Reason for Visit',
     labelTerms: 'I agree to the terms and privacy policy',
+    labelInsuranceID: 'Insurance ID',
+    labelInsuranceProvider: 'Insurance Provider',
     submitBtn: 'Confirm Appointment',
     processing: 'Processing...',
     modalTitle: 'Appointment Confirmed',
@@ -29,14 +32,32 @@ const translations = {
       'Pediatrics',
       'Neurology'
     ],
+    insuranceOptions: [
+      'Select Insurance Provider',
+      'AXA Medical',
+      'Bupa Health',
+      'Cigna Healthcare',
+      'MetLife',
+      'Allianz Care',
+      'None/Self-pay'
+    ],
     switchLang: 'Switch to Arabic',
     pastTimeAlert: 'Cannot book an appointment in the past. Please select a future date and time.',
-    errorTitle: 'Invalid Time Selection'
+    errorTitle: 'Invalid Time Selection',
+    // Placeholders
+    firstNamePlaceholder: 'Enter your first name',
+    lastNamePlaceholder: 'Enter your last name',
+    phonePlaceholder: '11-digit phone number',
+    emailPlaceholder: 'your.email@example.com',
+    agePlaceholder: 'Your age',
+    reasonPlaceholder: 'Describe your symptoms or concerns...',
+    insuranceIDPlaceholder: 'Enter your insurance ID number'
   },
   ar: {
     formTitle: 'المعلومات الشخصية',
     sectionTitle: 'تفاصيل الموعد',
-    labelName: 'الاسم الكامل',
+    labelFirstName: 'الاسم الأول',
+    labelLastName: 'اسم العائلة',
     labelPhone: 'رقم الهاتف',
     labelEmail: 'البريد الإلكتروني',
     labelGender: 'الجنس',
@@ -46,6 +67,8 @@ const translations = {
     labelDepartment: 'القسم',
     labelReason: 'سبب الزيارة',
     labelTerms: 'أوافق على الشروط وسياسة الخصوصية',
+    labelInsuranceID: 'رقم التأمين الصحي',
+    labelInsuranceProvider: 'شركة التأمين',
     submitBtn: 'تأكيد الموعد',
     processing: 'جاري المعالجة...',
     modalTitle: 'تم تأكيد الموعد',
@@ -61,9 +84,26 @@ const translations = {
       'طب الأطفال',
       'الأعصاب'
     ],
+    insuranceOptions: [
+      'اختر شركة التأمين',
+      'أكسا الطبية',
+      'بوبا للصحة',
+      'سيجنا للرعاية الصحية',
+      'ميتلايف',
+      'أليانز كير',
+      'بدون تأمين/دفع ذاتي'
+    ],
     switchLang: 'التبديل إلى الإنجليزية',
     pastTimeAlert: 'لا يمكن حجز موعد في الماضي. يرجى اختيار تاريخ ووقت مستقبلي.',
-    errorTitle: 'اختيار وقت غير صالح'
+    errorTitle: 'اختيار وقت غير صالح',
+    // Placeholders
+    firstNamePlaceholder: 'أدخل الاسم الأول',
+    lastNamePlaceholder: 'أدخل اسم العائلة',
+    phonePlaceholder: 'رقم هاتف مكون من 11 رقم',
+    emailPlaceholder: 'بريدك@مثال.كوم',
+    agePlaceholder: 'عمرك',
+    reasonPlaceholder: 'صف الأعراض أو المخاوف الصحية...',
+    insuranceIDPlaceholder: 'أدخل رقم بطاقة التأمين الصحي'
   }
 };
 
@@ -76,6 +116,12 @@ const closeModalBtn = document.getElementById('closeModalBtn');
 const langButton = document.getElementById('langButton');
 const dateInput = document.getElementById('appointmentDate');
 const timeInput = document.getElementById('appointmentTime');
+const firstName = document.getElementById('patientFirstName');
+const lastName = document.getElementById('patientLastName');
+const phone = document.getElementById('patientPhone');
+const email = document.getElementById('patientEmail');
+const age = document.getElementById('patientAge');
+const reason = document.getElementById('reason');
 
 // Custom error modal elements - Add to the HTML dynamically
 const errorModal = document.createElement('div');
@@ -100,6 +146,9 @@ closeErrorModalBtn.addEventListener('click', function() {
 
 // Initialize date input with minimum date of today
 window.addEventListener('DOMContentLoaded', () => {
+  // Add Insurance fields to the form
+  addInsuranceFields();
+  
   const today = new Date().toISOString().split('T')[0];
   dateInput.setAttribute('min', today);
   
@@ -112,7 +161,44 @@ window.addEventListener('DOMContentLoaded', () => {
   
   // Add validation for date and time together
   setupDateTimeValidation();
+  
+  // Initialize placeholders
+  updatePlaceholders();
 });
+
+// Function to add insurance fields to the form
+function addInsuranceFields() {
+  // Create insurance section
+  const departmentGroup = document.querySelector('label[for="departmentSelect"]').parentElement;
+  
+  // Create insurance ID field
+  const insuranceIDGroup = document.createElement('div');
+  insuranceIDGroup.className = 'form-group';
+  insuranceIDGroup.innerHTML = `
+    <label for="insuranceID" id="labelInsuranceID">Insurance ID</label>
+    <input type="text" id="insuranceID" placeholder="Enter your insurance ID number" />
+  `;
+  
+  // Create insurance provider field
+  const insuranceProviderGroup = document.createElement('div');
+  insuranceProviderGroup.className = 'form-group';
+  insuranceProviderGroup.innerHTML = `
+    <label for="insuranceProvider" id="labelInsuranceProvider">Insurance Provider</label>
+    <select id="insuranceProvider">
+      <option value="" disabled selected>Select Insurance Provider</option>
+      <option value="axa">AXA Medical</option>
+      <option value="bupa">Bupa Health</option>
+      <option value="cigna">Cigna Healthcare</option>
+      <option value="metlife">MetLife</option>
+      <option value="allianz">Allianz Care</option>
+      <option value="none">None/Self-pay</option>
+    </select>
+  `;
+  
+  // Insert the new fields after department selection
+  departmentGroup.insertAdjacentElement('afterend', insuranceProviderGroup);
+  departmentGroup.insertAdjacentElement('afterend', insuranceIDGroup);
+}
 
 // Setup combined date and time validation
 function setupDateTimeValidation() {
@@ -199,6 +285,39 @@ function toggleLanguage() {
   updateLanguage();
 }
 
+// Update placeholders
+function updatePlaceholders() {
+  const t = translations[currentLanguage];
+  
+  firstName.placeholder = t.firstNamePlaceholder;
+  lastName.placeholder = t.lastNamePlaceholder;
+  phone.placeholder = t.phonePlaceholder;
+  email.placeholder = t.emailPlaceholder;
+  age.placeholder = t.agePlaceholder;
+  reason.placeholder = t.reasonPlaceholder;
+  
+  // Update insurance ID placeholder if it exists
+  const insuranceID = document.getElementById('insuranceID');
+  if (insuranceID) {
+    insuranceID.placeholder = t.insuranceIDPlaceholder;
+  }
+}
+
+// Reorder the name fields depending on language
+function reorderNameFields() {
+  const firstNameGroup = firstName.parentElement;
+  const lastNameGroup = lastName.parentElement;
+  const formRow = firstNameGroup.parentElement;
+  
+  if (currentLanguage === 'ar') {
+    // In Arabic, last name should come before first name
+    formRow.insertBefore(lastNameGroup, firstNameGroup);
+  } else {
+    // In English, first name should come before last name
+    formRow.insertBefore(firstNameGroup, lastNameGroup);
+  }
+}
+
 // Update UI with selected language
 function updateLanguage() {
   const t = translations[currentLanguage];
@@ -209,7 +328,11 @@ function updateLanguage() {
   // Update form labels
   document.getElementById('formTitle').textContent = t.formTitle;
   document.querySelector('.section-title').textContent = t.sectionTitle;
-  document.querySelector('label[for="patientName"]').textContent = t.labelName;
+  
+  // Update name fields labels
+  document.querySelector('label[for="patientFirstName"]').textContent = t.labelFirstName;
+  document.querySelector('label[for="patientLastName"]').textContent = t.labelLastName;
+  
   document.querySelector('label[for="patientPhone"]').textContent = t.labelPhone;
   document.querySelector('label[for="patientEmail"]').textContent = t.labelEmail;
   document.querySelector('label[for="patientGender"]').textContent = t.labelGender;
@@ -219,6 +342,14 @@ function updateLanguage() {
   document.querySelector('label[for="departmentSelect"]').textContent = t.labelDepartment;
   document.querySelector('label[for="reason"]').textContent = t.labelReason;
   document.getElementById('labelTerms').textContent = t.labelTerms;
+  
+  // Update insurance fields labels if they exist
+  if (document.getElementById('labelInsuranceID')) {
+    document.getElementById('labelInsuranceID').textContent = t.labelInsuranceID;
+  }
+  if (document.getElementById('labelInsuranceProvider')) {
+    document.getElementById('labelInsuranceProvider').textContent = t.labelInsuranceProvider;
+  }
   
   // Update button text
   submitBtn.querySelector('span').textContent = t.submitBtn;
@@ -242,11 +373,20 @@ function updateLanguage() {
   // Update select options
   updateSelectOptions('patientGender', t.genderOptions);
   updateSelectOptions('departmentSelect', t.departmentOptions);
+  updateSelectOptions('insuranceProvider', t.insuranceOptions);
+  
+  // Update placeholders
+  updatePlaceholders();
+  
+  // Reorder name fields based on language
+  reorderNameFields();
 }
 
 // Helper function to update select options
 function updateSelectOptions(selectId, options) {
   const select = document.getElementById(selectId);
+  if (!select) return;
+  
   select.innerHTML = '';
   
   options.forEach((option, index) => {
@@ -256,7 +396,7 @@ function updateSelectOptions(selectId, options) {
       optionElement.selected = true;
       optionElement.value = '';
     } else {
-      optionElement.value = option.toLowerCase().replace(/\s+/g, '_');
+      optionElement.value = option.toLowerCase().replace(/\s+/g, '_').replace(/[\/]/g, '_');
     }
     optionElement.textContent = option;
     select.appendChild(optionElement);
@@ -297,17 +437,17 @@ function validateInput(input) {
   switch (input.type) {
     case 'email':
       isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value);
-      if (!isValid) showError(input, 'Please enter a valid email address');
+      if (!isValid) showError(input, currentLanguage === 'en' ? 'Please enter a valid email address' : 'يرجى إدخال بريد إلكتروني صحيح');
       break;
       
     case 'tel':
       isValid = /^\d{11}$/.test(input.value);
-      if (!isValid) showError(input, 'Please enter a valid 11-digit phone number');
+      if (!isValid) showError(input, currentLanguage === 'en' ? 'Please enter a valid 11-digit phone number' : 'يرجى إدخال رقم هاتف صحيح مكون من 11 رقم');
       break;
       
     case 'number':
       isValid = input.value > 0 && input.value <= 120;
-      if (!isValid) showError(input, 'Please enter a valid age (1-120)');
+      if (!isValid) showError(input, currentLanguage === 'en' ? 'Please enter a valid age (1-120)' : 'يرجى إدخال عمر صحيح (1-120)');
       break;
       
     case 'date':
@@ -315,23 +455,23 @@ function validateInput(input) {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       isValid = selectedDate >= today;
-      if (!isValid) showError(input, 'Please select a date today or in the future');
+      if (!isValid) showError(input, currentLanguage === 'en' ? 'Please select a date today or in the future' : 'يرجى اختيار تاريخ اليوم أو في المستقبل');
       break;
       
     case 'time':
       const time = input.value;
       isValid = time >= '09:00' && time <= '17:00';
-      if (!isValid) showError(input, 'Please select a time between 9 AM and 5 PM');
+      if (!isValid) showError(input, currentLanguage === 'en' ? 'Please select a time between 9 AM and 5 PM' : 'يرجى اختيار وقت بين 9 صباحًا و 5 مساءً');
       break;
       
     case 'select-one':
       isValid = input.value !== '';
-      if (!isValid) showError(input, 'Please make a selection');
+      if (!isValid) showError(input, currentLanguage === 'en' ? 'Please make a selection' : 'يرجى الاختيار');
       break;
       
     default:
       isValid = input.value.trim() !== '';
-      if (!isValid) showError(input, 'This field is required');
+      if (!isValid) showError(input, currentLanguage === 'en' ? 'This field is required' : 'هذا الحقل مطلوب');
       break;
   }
   
@@ -359,7 +499,7 @@ function showError(input, message) {
 }
 
 function validateForm() {
-  const inputs = appointmentForm.querySelectorAll('input, select, textarea');
+  const inputs = appointmentForm.querySelectorAll('input[required], select[required], textarea[required]');
   let isFormValid = true;
   
   inputs.forEach(input => {

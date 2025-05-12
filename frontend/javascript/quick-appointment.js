@@ -12,12 +12,14 @@ document.getElementById("quickAppointmentForm").addEventListener("submit", funct
   const inputs = this.querySelectorAll("input, select");
   inputs.forEach(input => {
     input.classList.remove("error");
-    const errorElement = document.getElementById(input.id.replace("quick", "") + "Error");
+    const errorId = input.id.replace("quick", "").toLowerCase() + "Error";
+    const errorElement = document.getElementById(errorId);
     if (errorElement) errorElement.style.display = "none";
   });
   
   // Get form values
-  const name = document.getElementById("quickName").value.trim();
+  const firstName = document.getElementById("quickFirstName").value.trim();
+  const lastName = document.getElementById("quickLastName").value.trim();
   const phone = document.getElementById("quickPhone").value.trim();
   const email = document.getElementById("quickEmail").value.trim();
   const department = document.getElementById("quickDepartment").value;
@@ -27,6 +29,19 @@ document.getElementById("quickAppointmentForm").addEventListener("submit", funct
   
   // Validation flags
   let hasErrors = false;
+  
+  // Name validation
+  if (firstName === '') {
+    document.getElementById("quickFirstName").classList.add("error");
+    document.getElementById("firstNameError").style.display = "block";
+    hasErrors = true;
+  }
+  
+  if (lastName === '') {
+    document.getElementById("quickLastName").classList.add("error");
+    document.getElementById("lastNameError").style.display = "block";
+    hasErrors = true;
+  }
   
   // Phone number validation
   if (!/^\d{11}$/.test(phone)) {
@@ -88,9 +103,14 @@ document.getElementById("quickAppointmentForm").addEventListener("submit", funct
     return;
   }
   
+  // Combine first and last name for full name
+  const fullName = `${firstName} ${lastName}`;
+  
   // Create appointment object
   const appointment = {
-    name,
+    firstName,
+    lastName,
+    fullName,
     phone,
     email,
     department,
@@ -121,6 +141,7 @@ document.getElementById("quickAppointmentForm").addEventListener("submit", funct
   const departmentName = document.querySelector(`#quickDepartment option[value="${department}"]`).textContent;
   document.getElementById("appointmentDetails").innerHTML = `
     <div style="background-color: #f5f7fa; padding: 15px; border-radius: 8px; margin: 15px 0; text-align: ${currentLanguage === 'ar' ? 'right' : 'left'};">
+      <p><strong>${currentLanguage === 'en' ? 'Name' : 'الاسم'}:</strong> ${fullName}</p>
       <p><strong>${currentLanguage === 'en' ? 'Department' : 'القسم'}:</strong> ${departmentName}</p>
       <p><strong>${currentLanguage === 'en' ? 'Date' : 'التاريخ'}:</strong> ${formattedDate}</p>
       <p><strong>${currentLanguage === 'en' ? 'Time' : 'الوقت'}:</strong> ${formattedTime}</p>
@@ -174,7 +195,8 @@ function setLanguage(lang) {
       formSubtitle: "Schedule your doctor appointment in just a few steps",
       personalInfoTitle: "Personal Information",
       appointmentDetailsTitle: "Appointment Details",
-      labelName: "Your Name",
+      labelFirstName: "First Name",
+      labelLastName: "Last Name",
       labelPhone: "Phone Number",
       labelEmail: "Email Address",
       labelDepartment: "Select Department",
@@ -192,7 +214,8 @@ function setLanguage(lang) {
       formSubtitle: "جدولة موعدك مع الطبيب في خطوات قليلة",
       personalInfoTitle: "المعلومات الشخصية",
       appointmentDetailsTitle: "تفاصيل الموعد",
-      labelName: "الاسم",
+      labelFirstName: "الاسم الأول",
+      labelLastName: "اسم العائلة",
       labelPhone: "رقم الهاتف",
       labelEmail: "البريد الإلكتروني",
       labelDepartment: "اختر القسم",
@@ -214,7 +237,8 @@ function setLanguage(lang) {
   document.getElementById("formSubtitle").textContent = t.formSubtitle;
   document.getElementById("personalInfoTitle").textContent = t.personalInfoTitle;
   document.getElementById("appointmentDetailsTitle").textContent = t.appointmentDetailsTitle;
-  document.getElementById("labelName").textContent = t.labelName;
+  document.getElementById("labelFirstName").textContent = t.labelFirstName;
+  document.getElementById("labelLastName").textContent = t.labelLastName;
   document.getElementById("labelPhone").textContent = t.labelPhone;
   document.getElementById("labelEmail").textContent = t.labelEmail;
   document.getElementById("labelDepartment").textContent = t.labelDepartment;
@@ -229,13 +253,15 @@ function setLanguage(lang) {
   
   // Update placeholders
   if (lang === 'ar') {
-    document.getElementById("quickName").placeholder = "أدخل اسمك الكامل";
+    document.getElementById("quickFirstName").placeholder = "أدخل اسمك الأول";
+    document.getElementById("quickLastName").placeholder = "أدخل اسم العائلة";
     document.getElementById("quickPhone").placeholder = "رقم هاتف من 11 رقم";
     document.getElementById("quickEmail").placeholder = "بريدك@مثال.كوم";
     document.getElementById("quickNotes").placeholder = "صف بإيجاز أعراضك أو أي مخاوف محددة";
     document.querySelector("#quickDepartment option[disabled]").textContent = "اختر القسم الطبي";
   } else {
-    document.getElementById("quickName").placeholder = "Enter your full name";
+    document.getElementById("quickFirstName").placeholder = "Enter your first name";
+    document.getElementById("quickLastName").placeholder = "Enter your last name";
     document.getElementById("quickPhone").placeholder = "11-digit phone number";
     document.getElementById("quickEmail").placeholder = "your.email@example.com";
     document.getElementById("quickNotes").placeholder = "Briefly describe your symptoms or any specific concerns";
@@ -253,6 +279,12 @@ function setLanguage(lang) {
   
   // Update body direction and text alignment
   document.body.style.direction = lang === 'ar' ? 'rtl' : 'ltr';
+  
+  // Update name row direction for RTL/LTR
+  const nameRow = document.querySelector(".name-row");
+  if (nameRow) {
+    nameRow.style.flexDirection = lang === 'ar' ? 'row-reverse' : 'row';
+  }
   
   // Update any appointment details currently displayed in modal
   if (document.getElementById("quickModal").style.display === "flex") {
@@ -279,8 +311,14 @@ function setLanguage(lang) {
         minute: '2-digit'
       });
       
+      // Get first and last name for display
+      const firstName = document.getElementById("quickFirstName").value || "";
+      const lastName = document.getElementById("quickLastName").value || "";
+      const fullName = firstName && lastName ? `${firstName} ${lastName}` : "";
+      
       document.getElementById("appointmentDetails").innerHTML = `
         <div style="background-color: #f5f7fa; padding: 15px; border-radius: 8px; margin: 15px 0; text-align: ${lang === 'ar' ? 'right' : 'left'};">
+          <p><strong>${lang === 'en' ? 'Name' : 'الاسم'}:</strong> ${fullName}</p>
           <p><strong>${lang === 'en' ? 'Department' : 'القسم'}:</strong> ${departmentName}</p>
           <p><strong>${lang === 'en' ? 'Date' : 'التاريخ'}:</strong> ${formattedDate}</p>
           <p><strong>${lang === 'en' ? 'Time' : 'الوقت'}:</strong> ${formattedTime}</p>

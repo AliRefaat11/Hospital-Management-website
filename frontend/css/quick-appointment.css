@@ -152,6 +152,18 @@ form {
   margin-bottom: 0.75rem;
 }
 
+/* Name row styling for first and last name */
+.name-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 0.75rem;
+}
+
+.name-row .form-group {
+  flex: 1;
+  margin-bottom: 0;
+}
+
 /* Inputs */
 input, select, textarea {
   width: 100%;
@@ -312,6 +324,12 @@ button[type="submit"]:hover {
   
   form {
     padding: 1.5rem;
+  }
+  
+  /* Make name fields stack on smaller screens */
+  .name-row {
+    flex-direction: column;
+    gap: 0.75rem;
   }
 }
 
