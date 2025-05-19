@@ -197,6 +197,9 @@ header {
   padding: 60px 20px;
   background: #FDFCFA;
   text-align: center;
+  background: 
+    linear-gradient(rgba(255,255,255,0.60), rgba(255,255,255,0.60)),
+    url('../images/doctor_cover.jpg') center center/cover no-repeat;
 }
 
 .hero h1 {
