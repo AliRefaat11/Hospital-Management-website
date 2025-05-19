@@ -296,6 +296,7 @@ header {
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
+
 .contact-info, .availability, .insurance-info, .languages-box {
   background-color: var(--light-gray);
   padding: 1.75rem;
