@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Management - Prime Care</title>
+    <link rel="stylesheet" href="../css/admin_management.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="sidebar" id="sidebarNav">
+        <div class="sidebar-header">
+            <a href="admin_profile.html" class="site-name">Prime Care</a>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        <div class="admin-profile">
+            <div class="admin-avatar">
+                <img id="adminProfileImage" src="../images/admin-avatar.png" alt="Admin">
+            </div>
+            <div class="admin-info">
+                <h3 id="adminName">Sarah Johnson</h3>
+                <span class="admin-role">System Administrator</span>
+            </div>
+        </div>
+        <div class="sidebar-content">
+            <ul class="nav-links">
+                <li><a href="admin_profile.html"><i class="fas fa-home"></i><span>Dashboard</span></a></li>
+                <li class="active"><a href="admin_management.html"><i class="fas fa-user-shield"></i><span>Admins</span></a></li>
+                <li><a href="staff_management.html"><i class="fas fa-users"></i><span>Staff</span></a></li>
+                <li><a href="patient_management.html"><i class="fas fa-user-injured"></i><span>Patients</span></a></li>
+                <li><a href="appointments_management.html"><i class="fas fa-calendar-check"></i><span>Appointments</span></a></li>
+                <li><a href="reports.html"><i class="fas fa-chart-bar"></i><span>Reports</span></a></li>
+                <li><a href="admin_settings.html"><i class="fas fa-cog"></i><span>Settings</span></a></li>
+            </ul>
+        </div>
+        <div class="sidebar-footer">
+            <a href="#" class="logout-btn"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="dashboard-background"></div>
+        <div class="dashboard-header">
+            <div class="header-left">
+                <h1>Admin Management</h1>
+                <p class="welcome-message">Manage system administrators and their access levels</p>
+            </div>
+            <div class="header-right">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="adminSearch" placeholder="Search admins...">
+                </div>
+                <div class="header-actions">
+                    <button class="btn-icon" title="Notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <button class="btn-icon" title="Messages">
+                        <i class="fas fa-envelope"></i>
+                        <span class="message-badge">5</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Statistics -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Total Admins</h3>
+                    <p class="stat-value" id="totalAdmins">0</p>
+                    <p class="stat-change positive">+2 this month</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-user-check"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Active Admins</h3>
+                    <p class="stat-value" id="activeAdmins">0</p>
+                    <p class="stat-change">Currently Online</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>System Admins</h3>
+                    <p class="stat-value" id="systemAdmins">0</p>
+                    <p class="stat-change">Full Access</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-user-lock"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Department Admins</h3>
+                    <p class="stat-value" id="departmentAdmins">0</p>
+                    <p class="stat-change">Limited Access</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="admin-management">
+            <div class="actions">
+                <button class="btn btn-outline" id="addAdminBtn">
+                    <i class="fas fa-plus"></i> Add New Admin
+                </button>
+                <div class="filter-actions">
+                    <select id="roleFilter" class="filter-select">
+                        <option value="">All Roles</option>
+                        <option value="System Administrator">System Administrator</option>
+                        <option value="Department Admin">Department Admin</option>
+                        <option value="Support Admin">Support Admin</option>
+                    </select>
+                    <select id="accessFilter" class="filter-select">
+                        <option value="">All Access Levels</option>
+                        <option value="Full Access">Full Access</option>
+                        <option value="Limited Access">Limited Access</option>
+                    </select>
+                </div>
+            </div>
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Department</th>
+                            <th>Last Login</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Admin Access Control Section -->
+        <section class="additional-details">
+            <div class="section-header">
+                <h2>Admin Access Control</h2>
+                <div class="section-actions">
+                    <button class="btn btn-outline">
+                        <i class="fas fa-download"></i> Export Access Log
+                    </button>
+                </div>
+            </div>
+            <div class="access-control-grid">
+                <div class="access-card">
+                    <div class="access-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="access-info">
+                        <h3>Access Permissions</h3>
+                        <div class="permission-list">
+                            <div class="permission-item">
+                                <span class="permission-name">Patient Records</span>
+                                <div class="permission-controls">
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="permission-item">
+                                <span class="permission-name">Staff Management</span>
+                                <div class="permission-controls">
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="permission-item">
+                                <span class="permission-name">Financial Reports</span>
+                                <div class="permission-controls">
+                                    <label class="switch">
+                                        <input type="checkbox">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="permission-item">
+                                <span class="permission-name">System Settings</span>
+                                <div class="permission-controls">
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="access-card">
+                    <div class="access-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="access-info">
+                        <h3>Access Schedule</h3>
+                        <div class="schedule-info">
+                            <div class="schedule-item">
+                                <span class="schedule-day">Monday - Friday</span>
+                                <span class="schedule-time">9:00 AM - 6:00 PM</span>
+                            </div>
+                            <div class="schedule-item">
+                                <span class="schedule-day">Saturday</span>
+                                <span class="schedule-time">10:00 AM - 4:00 PM</span>
+                            </div>
+                            <div class="schedule-item">
+                                <span class="schedule-day">Sunday</span>
+                                <span class="schedule-time">Closed</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="access-card">
+                    <div class="access-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <div class="access-info">
+                        <h3>Security Settings</h3>
+                        <div class="security-settings">
+                            <div class="security-item">
+                                <span class="security-name">Two-Factor Authentication</span>
+                                <div class="security-controls">
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="security-item">
+                                <span class="security-name">Session Timeout</span>
+                                <select class="security-select">
+                                    <option value="15">15 minutes</option>
+                                    <option value="30" selected>30 minutes</option>
+                                    <option value="60">1 hour</option>
+                                </select>
+                            </div>
+                            <div class="security-item">
+                                <span class="security-name">Login Attempts</span>
+                                <select class="security-select">
+                                    <option value="3">3 attempts</option>
+                                    <option value="5" selected>5 attempts</option>
+                                    <option value="10">10 attempts</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Admin Details Modal -->
+        <div class="modal" id="adminDetailsModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Admin Details</h2>
+                    <button class="btn-icon close-details" id="closeDetailsModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="details-content">
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <span class="detail-label">Name</span>
+                            <span class="detail-value" id="detailName">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Email</span>
+                            <span class="detail-value" id="detailEmail">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Role</span>
+                            <span class="detail-value" id="detailRole">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Department</span>
+                            <span class="detail-value" id="detailDepartment">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Phone</span>
+                            <span class="detail-value" id="detailPhone">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Access Level</span>
+                            <span class="detail-value" id="detailAccess">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Last Login</span>
+                            <span class="detail-value" id="detailLastLogin">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Status</span>
+                            <span class="detail-value" id="detailStatus">-</span>
+                        </div>
+                    </div>
+                    <div class="details-actions">
+                        <button class="btn btn-outline" id="editFromDetails">
+                            <i class="fas fa-edit"></i> Edit Admin
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add/Edit Admin Modal -->
+        <div class="modal" id="adminModal">
+            <div class="modal-content compact">
+                <div class="modal-header">
+                    <h2 id="modalTitle">Add New Admin</h2>
+                    <button class="btn-icon close-modal" id="closeModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <form id="adminForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="adminId">ID</label>
+                            <input type="text" id="adminId" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="adminNameInput">Name <span class="required">*</span></label>
+                            <input type="text" id="adminNameInput" required>
+                            <span class="validation-message">Please enter the admin's name</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="adminEmail">Email <span class="required">*</span></label>
+                            <input type="email" id="adminEmail" required>
+                            <span class="validation-message">Please enter a valid email address</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="adminPhone">Phone <span class="required">*</span></label>
+                            <input type="tel" id="adminPhone" required maxlength="11" pattern="[0-9]{11}">
+                            <span class="validation-message">Please enter a valid 11-digit phone number</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="adminRole">Role <span class="required">*</span></label>
+                            <select id="adminRole" required>
+                                <option value="">Select Role</option>
+                                <option value="System Administrator">System Administrator</option>
+                                <option value="Department Admin">Department Admin</option>
+                                <option value="Support Admin">Support Admin</option>
+                            </select>
+                            <span class="validation-message">Please select a role</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="adminDepartment">Department <span class="required">*</span></label>
+                            <select id="adminDepartment" required>
+                                <option value="">Select Department</option>
+                                <option value="Administration">Administration</option>
+                                <option value="Cardiology">Cardiology</option>
+                                <option value="Neurology">Neurology</option>
+                                <option value="Orthopedics">Orthopedics</option>
+                                <option value="General Medicine">General Medicine</option>
+                                <option value="IT Support">IT Support</option>
+                                <option value="Human Resources">Human Resources</option>
+                                <option value="Finance">Finance</option>
+                            </select>
+                            <span class="validation-message">Please select a department</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="adminAccess">Access Level <span class="required">*</span></label>
+                            <select id="adminAccess" required>
+                                <option value="">Select Access Level</option>
+                                <option value="Full Access">Full Access</option>
+                                <option value="Limited Access">Limited Access</option>
+                            </select>
+                            <span class="validation-message">Please select an access level</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="adminPassword">Password <span class="required">*</span></label>
+                            <input type="password" id="adminPassword" required>
+                            <span class="validation-message">Please enter a password</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="adminConfirmPassword">Confirm Password <span class="required">*</span></label>
+                            <input type="password" id="adminConfirmPassword" required>
+                            <span class="validation-message">Passwords must match</span>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline" id="cancelBtn">Cancel</button>
+                        <button type="submit" class="btn" id="saveBtn">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Custom Delete Confirmation Modal -->
+        <div class="modal" id="deleteConfirmModal">
+            <div class="modal-content compact">
+                <div class="modal-header">
+                    <h2>Delete Admin</h2>
+                </div>
+                <div class="form-group">
+                    <p>Are you sure you want to delete this admin?</p>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" id="cancelDeleteBtn">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../javascript/admin_management.js"></script>
+</body>
+</html>
