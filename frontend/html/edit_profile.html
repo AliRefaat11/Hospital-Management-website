@@ -4,75 +4,81 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Edit Profile - PrimeCare</title>
+<link rel="stylesheet" href="../css/book-appointment.css" />
 <link rel="stylesheet" href="../css/user_profile.css">
 <link rel="stylesheet" href="../css/edit_profile.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="../javascript/edit_profile.js"></script>
 </head>
 <body>
-<header class="header">
+  <nav>
+    <div class="navbar-container">
+      <a href="#" class="site-name">Prime Care</a>
+      <div class="navbar-links">
+        <a href="./home_page.html">HOME</a>
+        <a href="./about_us_page.html">ABOUT US</a>
+        <a href="./department_page.html">DEPARTMENTS</a>
+        <a href="./doctors_page.html">DOCTORS</a>
+        <a href="./quick-appointment.html" class="active">BOOK NOW</a>
+        <a href="./login_page.html">Login</a>
+        <a href="./sign_up_page.html" class="signup-btn">Sign Up</a>
+      </div>
+    </div>
+  </nav>
+  <main>
     <div class="container">
-        <div class="logo">PrimeCare</div>
-        <nav class="main-nav">
-            <ul>
-                <li><a href="user_profile.html">Profile</a></li>
-                <li><a href="settings_profile.html">Settings</a></li>
-            </ul>
-        </nav>
+      <div class="edit-profile-form">
+          <h2>Edit Profile</h2>
+          <form id="editProfileForm">
+              <!-- All form fields (same as before) -->
+              <div class="form-group">
+                  <label for="name">Full Name</label>
+                  <input type="text" id="name" value="John Smith">
+              </div>
+              <div class="form-group">
+                  <label for="email">Email</label>
+                  <input type="email" id="email" value="john.smith@example.com">
+              </div>
+              <div class="form-group">
+                  <label for="dob">Date of Birth</label>
+                  <input type="date" id="dob" value="1990-02-10">
+              </div>
+              <div class="form-group">
+                  <label for="gender">Gender</label>
+                  <select id="gender">
+                      <option>Male</option>
+                      <option>Female</option>
+                      <option>Other</option>
+                  </select>
+              </div>
+              <div class="form-group">
+                  <label for="phone">Phone</label>
+                  <input type="tel" id="phone" value="1284567890">
+              </div>
+              <div class="form-group">
+                  <label for="address">Address</label>
+                  <input type="text" id="address" value="123 Elm St, Springfield, IL 62701">
+              </div>
+              <div class="form-group">
+                  <label for="doctor">Primary Doctor</label>
+                  <input type="text" id="doctor" value="Dr. Emily Johnson">
+              </div>
+              <div class="form-group">
+                  <label for="insurance">Insurance</label>
+                  <input type="text" id="insurance" value="BlueCross HealthPlus">
+              </div>
+              <div class="form-group">
+                  <label for="profileImage">Profile Image</label>
+                  <input type="file" id="profileImage">
+              </div>
+              <div class="form-actions">
+                  <a href="user_profile.html" class="btn btn-outline">Cancel</a>
+                  <button type="submit" class="btn btn-primary">Save Changes</button>
+              </div>
+          </form>
+      </div>
     </div>
-</header>
-<main class="main-content">
-    <div class="edit-profile-form">
-        <h2>Edit Profile</h2>
-        <form id="editProfileForm">
-            <!-- All form fields (same as before) -->
-            <div class="form-group">
-                <label for="name">Full Name</label>
-                <input type="text" id="name" value="John Smith">
-            </div>
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" value="john.smith@example.com">
-            </div>
-            <div class="form-group">
-                <label for="dob">Date of Birth</label>
-                <input type="date" id="dob" value="1990-02-10">
-            </div>
-            <div class="form-group">
-                <label for="gender">Gender</label>
-                <select id="gender">
-                    <option>Male</option>
-                    <option>Female</option>
-                    <option>Other</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="phone">Phone</label>
-                <input type="tel" id="phone" value="1284567890">
-            </div>
-            <div class="form-group">
-                <label for="address">Address</label>
-                <input type="text" id="address" value="123 Elm St, Springfield, IL 62701">
-            </div>
-            <div class="form-group">
-                <label for="doctor">Primary Doctor</label>
-                <input type="text" id="doctor" value="Dr. Emily Johnson">
-            </div>
-            <div class="form-group">
-                <label for="insurance">Insurance</label>
-                <input type="text" id="insurance" value="BlueCross HealthPlus">
-            </div>
-            <div class="form-group">
-                <label for="profileImage">Profile Image</label>
-                <input type="file" id="profileImage">
-            </div>
-            <div class="form-actions">
-                <a href="user_profile.html" class="btn btn-outline">Cancel</a>
-                <button type="submit" class="btn btn-primary">Save Changes</button>
-            </div>
-        </form>
-    </div>
-</main>
-<script src="../javascript/edit_profile.js"></script>
+  </main>
+  <!-- (Optional: Add a unified footer here if you want) -->
 </body>
 </html>

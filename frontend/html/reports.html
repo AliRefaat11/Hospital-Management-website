@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports - PrimeCare</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/reports.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="sidebar" id="sidebarNav">
+        <div class="sidebar-header">
+            <a href="admin_profile.html" class="site-name">Prime Care</a>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        <div class="admin-profile">
+            <div class="admin-avatar">
+                <img id="adminProfileImage" src="../images/admin-avatar.png" alt="Admin">
+            </div>
+            <div class="admin-info">
+                <h3 id="adminName">Sarah Johnson</h3>
+                <span class="admin-role">System Administrator</span>
+            </div>
+        </div>
+        <div class="sidebar-content">
+            <ul class="nav-links">
+                <li><a href="admin_profile.html"><i class="fas fa-home"></i><span>Dashboard</span></a></li>
+                <li><a href="admin_management.html"><i class="fas fa-user-shield"></i><span>Admins</span></a></li>
+                <li><a href="staff_management.html"><i class="fas fa-users"></i><span>Staff</span></a></li>
+                <li><a href="patient_management.html"><i class="fas fa-user-injured"></i><span>Patients</span></a></li>
+                <li><a href="appointments_management.html"><i class="fas fa-calendar-check"></i><span>Appointments</span></a></li>
+                <li class="active"><a href="reports.html"><i class="fas fa-chart-bar"></i><span>Reports</span></a></li>
+                <li><a href="admin_settings.html"><i class="fas fa-cog"></i><span>Settings</span></a></li>
+            </ul>
+        </div>
+        <div class="sidebar-footer">
+            <a href="#" class="logout-btn"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="dashboard-background"></div>
+        <div class="dashboard-header">
+            <div class="header-left">
+                <h1>Reports & Analytics</h1>
+                <p class="welcome-message">Generate insights and track performance metrics</p>
+            </div>
+            <div class="header-right">
+                <div class="date-range-picker">
+                    <i class="fas fa-calendar-alt"></i>
+                    <select id="dateRange" class="date-range-select">
+                        <option value="7">Last 7 days</option>
+                        <option value="30" selected>Last 30 days</option>
+                        <option value="90">Last 3 months</option>
+                        <option value="365">Last year</option>
+                        <option value="custom">Custom range</option>
+                    </select>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-icon" title="Notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <button class="btn-icon" title="Messages">
+                        <i class="fas fa-envelope"></i>
+                        <span class="message-badge">5</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-file-alt"></i></div>
+                <div class="stat-info">
+                    <h3>Total Reports</h3>
+                    <p class="stat-value" id="totalReports">0</p>
+                    <p class="stat-change positive" id="totalReportsChange">+12 this month</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-download"></i></div>
+                <div class="stat-info">
+                    <h3>Downloads</h3>
+                    <p class="stat-value" id="totalDownloads">0</p>
+                    <p class="stat-change">This month</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                <div class="stat-info">
+                    <h3>Avg. Generation Time</h3>
+                    <p class="stat-value" id="avgGenTime">0.8s</p>
+                    <p class="stat-change">Per report</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+                <div class="stat-info">
+                    <h3>Revenue Insights</h3>
+                    <p class="stat-value" id="revenueInsights">$45.2K</p>
+                    <p class="stat-change positive">+8.5% from last month</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="reports-dashboard">
+            <div class="report-types-section">
+                <h2>Quick Report Generation</h2>
+                <div class="report-types-grid">
+                    <div class="report-type-card" data-type="patient">
+                        <div class="report-icon">
+                            <i class="fas fa-user-injured"></i>
+                        </div>
+                        <h3>Patient Reports</h3>
+                        <p>Demographics, visits, and medical history</p>
+                        <button class="btn generate-btn" data-type="patient">
+                            <i class="fas fa-plus"></i> Generate
+                        </button>
+                    </div>
+                    <div class="report-type-card" data-type="financial">
+                        <div class="report-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <h3>Financial Reports</h3>
+                        <p>Revenue, expenses, and billing analytics</p>
+                        <button class="btn generate-btn" data-type="financial">
+                            <i class="fas fa-plus"></i> Generate
+                        </button>
+                    </div>
+                    <div class="report-type-card" data-type="appointment">
+                        <div class="report-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <h3>Appointment Reports</h3>
+                        <p>Scheduling efficiency and attendance rates</p>
+                        <button class="btn generate-btn" data-type="appointment">
+                            <i class="fas fa-plus"></i> Generate
+                        </button>
+                    </div>
+                    <div class="report-type-card" data-type="staff">
+                        <div class="report-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3>Staff Reports</h3>
+                        <p>Performance metrics and workload analysis</p>
+                        <button class="btn generate-btn" data-type="staff">
+                            <i class="fas fa-plus"></i> Generate
+                        </button>
+                    </div>
+                    <div class="report-type-card" data-type="operational">
+                        <div class="report-icon">
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                        <h3>Operational Reports</h3>
+                        <p>Resource utilization and efficiency metrics</p>
+                        <button class="btn generate-btn" data-type="operational">
+                            <i class="fas fa-plus"></i> Generate
+                        </button>
+                    </div>
+                    <div class="report-type-card" data-type="custom">
+                        <div class="report-icon">
+                            <i class="fas fa-chart-pie"></i>
+                        </div>
+                        <h3>Custom Reports</h3>
+                        <p>Build your own analytics dashboard</p>
+                        <button class="btn generate-btn" data-type="custom">
+                            <i class="fas fa-plus"></i> Generate
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="charts-section">
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>Patient Growth</h3>
+                            <div class="chart-controls">
+                                <button class="btn-icon" title="Refresh">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                                <button class="btn-icon" title="Export">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="patientGrowthChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>Revenue Overview</h3>
+                            <div class="chart-controls">
+                                <button class="btn-icon" title="Refresh">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                                <button class="btn-icon" title="Export">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>Appointment Status</h3>
+                            <div class="chart-controls">
+                                <button class="btn-icon" title="Refresh">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                                <button class="btn-icon" title="Export">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="appointmentStatusChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>Department Performance</h3>
+                            <div class="chart-controls">
+                                <button class="btn-icon" title="Refresh">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                                <button class="btn-icon" title="Export">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="departmentChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reports-table-section">
+                <div class="table-header">
+                    <h2>Recent Reports</h2>
+                    <div class="table-actions">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="reportSearch" placeholder="Search reports...">
+                        </div>
+                        <div class="filter-actions">
+                            <select id="typeFilter" class="filter-select">
+                                <option value="">All Types</option>
+                                <option value="patient">Patient</option>
+                                <option value="financial">Financial</option>
+                                <option value="appointment">Appointment</option>
+                                <option value="staff">Staff</option>
+                                <option value="operational">Operational</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                            <select id="statusFilter" class="filter-select">
+                                <option value="">All Status</option>
+                                <option value="completed">Completed</option>
+                                <option value="processing">Processing</option>
+                                <option value="failed">Failed</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="reports-table">
+                        <thead>
+                            <tr>
+                                <th>Report Name</th>
+                                <th>Type</th>
+                                <th>Generated By</th>
+                                <th>Date Created</th>
+                                <th>Status</th>
+                                <th>File Size</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Report Generation Modal -->
+        <div class="modal" id="reportModal">
+            <div class="modal-content large">
+                <div class="modal-header">
+                    <h2 id="reportModalTitle">Generate Report</h2>
+                    <button class="btn-icon" id="closeReportModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <form id="reportForm">
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label for="reportName">Report Name *</label>
+                            <input type="text" id="reportName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="reportType">Report Type *</label>
+                            <select id="reportType" required>
+                                <option value="">Select Type</option>
+                                <option value="patient">Patient Report</option>
+                                <option value="financial">Financial Report</option>
+                                <option value="appointment">Appointment Report</option>
+                                <option value="staff">Staff Report</option>
+                                <option value="operational">Operational Report</option>
+                                <option value="custom">Custom Report</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="reportFormat">Format *</label>
+                            <select id="reportFormat" required>
+                                <option value="pdf">PDF</option>
+                                <option value="excel">Excel</option>
+                                <option value="csv">CSV</option>
+                                <option value="json">JSON</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="dateFrom">From Date *</label>
+                            <input type="date" id="dateFrom" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="dateTo">To Date *</label>
+                            <input type="date" id="dateTo" required>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="reportDescription">Description</label>
+                            <textarea id="reportDescription" rows="3" placeholder="Optional description for the report"></textarea>
+                        </div>
+                        <div class="form-group full-width" id="reportOptions">
+                            <label>Report Options</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="includeCharts" checked>
+                                    <span class="checkmark"></span>
+                                    Include Charts & Graphs
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="includeSummary" checked>
+                                    <span class="checkmark"></span>
+                                    Include Executive Summary
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="includeRawData">
+                                    <span class="checkmark"></span>
+                                    Include Raw Data Appendix
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="emailReport">
+                                    <span class="checkmark"></span>
+                                    Email report when ready
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline" id="cancelReportBtn">Cancel</button>
+                        <button type="submit" class="btn" id="generateReportBtn">
+                            <i class="fas fa-chart-bar"></i> Generate Report
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Report Details Modal -->
+        <div class="modal" id="reportDetailsModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Report Details</h2>
+                    <button class="btn-icon" id="closeDetailsModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="details-content">
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <span class="detail-label">Report Name</span>
+                            <span class="detail-value" id="detailReportName">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Type</span>
+                            <span class="detail-value" id="detailReportType">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Format</span>
+                            <span class="detail-value" id="detailReportFormat">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Generated By</span>
+                            <span class="detail-value" id="detailGeneratedBy">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Date Created</span>
+                            <span class="detail-value" id="detailDateCreated">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Status</span>
+                            <span class="detail-value" id="detailStatus">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">File Size</span>
+                            <span class="detail-value" id="detailFileSize">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Download Count</span>
+                            <span class="detail-value" id="detailDownloadCount">-</span>
+                        </div>
+                        <div class="detail-item full-width">
+                            <span class="detail-label">Description</span>
+                            <span class="detail-value" id="detailDescription">-</span>
+                        </div>
+                    </div>
+                    <div class="details-actions">
+                        <button class="btn btn-outline" id="downloadReportBtn">
+                            <i class="fas fa-download"></i> Download
+                        </button>
+                        <button class="btn btn-outline" id="shareReportBtn">
+                            <i class="fas fa-share"></i> Share
+                        </button>
+                        <button class="btn" id="regenerateReportBtn">
+                            <i class="fas fa-sync-alt"></i> Regenerate
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Custom Date Range Modal -->
+        <div class="modal" id="customDateModal">
+            <div class="modal-content compact">
+                <div class="modal-header">
+                    <h2>Custom Date Range</h2>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="customDateFrom">From Date</label>
+                        <input type="date" id="customDateFrom">
+                    </div>
+                    <div class="form-group">
+                        <label for="customDateTo">To Date</label>
+                        <input type="date" id="customDateTo">
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" id="cancelCustomDateBtn">Cancel</button>
+                    <button type="button" class="btn" id="applyCustomDateBtn">Apply</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+    <script src="../javascript/reports.js"></script>
+</body>
+</html>
