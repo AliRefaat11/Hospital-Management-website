@@ -8,6 +8,7 @@ app.use(express.static("./frontend"));
 app.use('/Doctors', DocRouter);
 app.use('/Patients', PatRouter);
 app.use('/Appointments', AppRouter);
+
 const port = 3000;
 
 
