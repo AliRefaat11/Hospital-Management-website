@@ -1,111 +1,113 @@
-const navToggle = document.createElement('button');
-navToggle.classList.add('nav-toggle');
-navToggle.innerHTML = '☰';
-document.querySelector('.nav-container').prepend(navToggle);
-
-const navLinksContainer = document.querySelector('.nav-links');
-
-navToggle.addEventListener('click', () => {
-    navLinksContainer.classList.toggle('active');
-});
-
-navLinksContainer.addEventListener('click', (event) => {
-    if (event.target.tagName === 'A') {
-        navLinksContainer.classList.remove('active');
-    }
-});
-
-const navLinksi = document.querySelectorAll('.nav-links a');
-
-navLinks.forEach(link => {
-    link.addEventListener('click', () => {
-        navLinks.forEach(nav => nav.classList.remove('active'));
-        link.classList.add('active');
-    });
-});
-
-const currentPath = window.location.href;
-navLinks.forEach(link => {
-    if (link.href === currentPath) {
-        link.classList.add('active');
-    }
-});
-
-document.addEventListener('DOMContentLoaded', function() {    
-    const savedCredentials = localStorage.getItem('primecare_credentials');
-    
-    if (savedCredentials) {
-        const credentials = JSON.parse(savedCredentials);
-        document.getElementById('username').value = credentials.username;
-        document.getElementById('password').value = credentials.password;
-        document.getElementById('rememberMe').checked = true;
-    }
-});
-
-// Login
-function handleLogin() {
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-    const rememberMe = document.getElementById('rememberMe').checked;
-    const errorMessage = document.getElementById('errorMessage');
-
-    
-    if (!username || !password) {
-        errorMessage.style.display = 'block';
-        errorMessage.textContent = 'Please fill in all fields';
-        return;
-    }
-    
-    const mockCredentials = {
+const LOGIN_CONFIG = {
+    mockCredentials: {
         doctor: { username: 'doc123', password: 'pass123' },
         nurse: { username: 'nurse456', password: 'pass456' },
         admin: { username: 'admin789', password: 'pass789' },
         patient: { username: 'patient101', password: 'pass101' }
-    };
+    },
+    storageKey: 'primecare_credentials'
+};
 
-    const valid = Object.values(mockCredentials).some(cred => 
-        username === cred.username && password === cred.password
+// DOM Elements
+const navToggle = document.getElementById('nav-toggle');
+const navLinks = document.querySelector('.navbar-links');
+const usernameInput = document.getElementById('username');
+const passwordInput = document.getElementById('password');
+const rememberMeCheckbox = document.getElementById('rememberMe');
+const errorMessage = document.getElementById('errorMessage');
+const loginButton = document.getElementById('loginButton');
+
+// Load Saved Credentials
+function loadSavedCredentials() {
+    const savedCredentials = localStorage.getItem(LOGIN_CONFIG.storageKey);
+    
+    if (savedCredentials) {
+        try {
+            const credentials = JSON.parse(savedCredentials);
+            usernameInput.value = credentials.username;
+            passwordInput.value = credentials.password;
+            rememberMeCheckbox.checked = true;
+        } catch (error) {
+            console.error('Error loading saved credentials:', error);
+        }
+    }
+}
+
+// Validate Credentials
+function validateCredentials(username, password) {
+    return Object.values(LOGIN_CONFIG.mockCredentials).some(
+        cred => cred.username === username && cred.password === password
     );
+}
 
-    if (valid) {
+// Show Error Message
+function showError(message) {
+    errorMessage.textContent = message;
+    errorMessage.style.display = 'block';
+}
+
+// Handle Login
+function handleLogin() {
+    const username = usernameInput.value.trim();
+    const password = passwordInput.value.trim();
+    const rememberMe = rememberMeCheckbox.checked;
+
+    // Basic validation
+    if (!username || !password) {
+        showError('Please fill in all fields');
+        return;
+    }
+
+    // Check credentials
+    if (validateCredentials(username, password)) {
+        // Clear any previous error
         errorMessage.style.display = 'none';
         
-        //remember me
+        // Handle "Remember Me"
         if (rememberMe) {
-         
-            localStorage.setItem('primecare_credentials', JSON.stringify({
+            localStorage.setItem(LOGIN_CONFIG.storageKey, JSON.stringify({
                 username: username,
                 password: password
             }));
         } else {
-        
-            localStorage.removeItem('primecare_credentials');
+            localStorage.removeItem(LOGIN_CONFIG.storageKey);
         }
         
+        // Redirect or show success message
         alert('Login successful! Redirecting to dashboard...');
+        // You might want to replace this with an actual redirect
+        // window.location.href = './dashboard.html';
     } else {
-        errorMessage.style.display = 'block';
-        errorMessage.textContent = 'Invalid credentials';
+        showError('Invalid credentials');
     }
 }
 
-document.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        handleLogin();
-    }
+// Event Listeners
+document.addEventListener('DOMContentLoaded', () => {
+    // Load saved credentials
+    loadSavedCredentials();
+
+    // Login button click
+    loginButton.addEventListener('click', handleLogin);
+
+    // Allow login on Enter key press
+    document.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            handleLogin();
+        }
+    });
 });
 
-const navToggle = document.getElementById('nav-toggle');
-const navLinks = document.querySelector('.nav-links');
+// Navigation Toggle for Responsive Design
+if (navToggle) {
+    navToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+    });
+}
 
-// Toggle the visibility of the navigation links
-navToggle.addEventListener('click', () => {
-  navLinks.classList.toggle('active');
-});
-
-// Close the navigation menu when a link is clicked
+// Close navigation menu when a link is clicked
 navLinks.addEventListener('click', (event) => {
-  if (event.target.tagName === 'A') {
-    navLinks.classList.remove('active');
-  }
+    if (event.target.tagName === 'A') {
+        navLinks.classList.remove('active');
+    }
 });

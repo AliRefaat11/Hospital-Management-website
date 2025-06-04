@@ -6,28 +6,26 @@
     <meta name="description" content="Book an appointment with Dr. Sophia Chen, Neurologist at PrimeCare Hospital, specializing in Movement Disorders and Parkinson's Disease.">
     <meta name="keywords" content="Dr. Sophia Chen, Neurologist, Parkinson's Disease, Movement Disorders, San Francisco, PrimeCare">
     <title>Dr. Sophia Chen - PrimeCare Hospital</title>
-    <link rel="stylesheet" href="../css/doctor_profile.css">
+    <link rel="stylesheet" href="../css/book-appointment.css" />
+    <link rel="stylesheet" href="../css/doctor_profile.css" />
 </head>
 <body>
-    <header>
-        <div class="nav-container">
-            <div class="logo">PrimeCare</div>
-            <ul class="nav-links" id="nav-links">
-                <li><a href="./home_page.html">HOME</a></li>
-                <li><a href="./about_us_page.html">ABOUT US</a></li>
-                <li><a href="./department_page.html">DEPARTMENTS</a></li>
-                <li><a href="./doctors_page.html">DOCTORS</a></li>
-                <li><a href="./quick-appointment.html">BOOK NOW</a></li>
-            </ul>
-            <div class="auth-buttons">
-                <button class="btn login-btn">Log In</button>
-                <button class="btn signup-btn">Sign Up</button>
-            </div>
-            <button class="nav-toggle" id="nav-toggle">&#9776;</button>
+    <nav>
+      <div class="navbar-container">
+        <a href="#" class="site-name">Prime Care</a>
+        <div class="navbar-links">
+          <a href="./home_page.html">HOME</a>
+          <a href="./about_us_page.html">ABOUT US</a>
+          <a href="./department_page.html">DEPARTMENTS</a>
+          <a href="./doctors_page.html">DOCTORS</a>
+          <a href="./quick-appointment.html" class="active">BOOK NOW</a>
+          <a href="./login_page.html">Login</a>
+          <a href="./sign_up_page.html" class="signup-btn">Sign Up</a>
         </div>
-    </header>
-
-    <div class="container">
+      </div>
+    </nav>
+    <main>
+      <div class="container">
         <div class="profile-container">
             <div class="profile-sidebar">
                 <div class="profile-image">
@@ -189,6 +187,7 @@
             </div>
         </div>
     </div>
+    </main>
 
     <script>
         // Enhanced collapsible functionality

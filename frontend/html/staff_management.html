@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Management - PrimeCare</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/staff_management.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="sidebar" id="sidebarNav">
+        <div class="sidebar-header">
+            <a href="admin_profile.html" class="site-name">Prime Care</a>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        <div class="admin-profile">
+            <div class="admin-avatar">
+                <img id="adminProfileImage" src="../images/admin-avatar.png" alt="Admin">
+            </div>
+            <div class="admin-info">
+                <h3 id="adminName">Sarah Johnson</h3>
+                <span class="admin-role">System Administrator</span>
+            </div>
+        </div>
+        <div class="sidebar-content">
+            <ul class="nav-links">
+                <li><a href="admin_profile.html"><i class="fas fa-home"></i><span>Dashboard</span></a></li>
+                <li><a href="admin_management.html"><i class="fas fa-user-shield"></i><span>Admins</span></a></li>
+                <li class="active"><a href="staff_management.html"><i class="fas fa-users"></i><span>Staff</span></a></li>
+                <li><a href="patient_management.html"><i class="fas fa-user-injured"></i><span>Patients</span></a></li>
+                <li><a href="appointments_management.html"><i class="fas fa-calendar-check"></i><span>Appointments</span></a></li>
+                <li><a href="reports.html"><i class="fas fa-chart-bar"></i><span>Reports</span></a></li>
+                <li><a href="admin_settings.html"><i class="fas fa-cog"></i><span>Settings</span></a></li>
+            </ul>
+        </div>
+        <div class="sidebar-footer">
+            <a href="#" class="logout-btn"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="dashboard-background"></div>
+        <div class="dashboard-header">
+            <div class="header-left">
+                <h1>Staff Management</h1>
+                <p class="welcome-message">Manage staff members and their roles</p>
+            </div>
+            <div class="header-right">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="staffSearch" placeholder="Search staff...">
+                </div>
+                <div class="header-actions">
+                    <button class="btn-icon" title="Notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <button class="btn-icon" title="Messages">
+                        <i class="fas fa-envelope"></i>
+                        <span class="message-badge">5</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                <div class="stat-info">
+                    <h3>Total Staff</h3>
+                    <p class="stat-value" id="totalStaff">0</p>
+                    <p class="stat-change" id="totalStaffChange"></p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-user-check"></i></div>
+                <div class="stat-info">
+                    <h3>Active Staff</h3>
+                    <p class="stat-value" id="activeStaff">0</p>
+                    <p class="stat-change">Currently Active</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-user-clock"></i></div>
+                <div class="stat-info">
+                    <h3>Full-Time Staff</h3>
+                    <p class="stat-value" id="fullTimeStaff">0</p>
+                    <p class="stat-change">Full-Time</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-user-clock"></i></div>
+                <div class="stat-info">
+                    <h3>Part-Time Staff</h3>
+                    <p class="stat-value" id="partTimeStaff">0</p>
+                    <p class="stat-change">Part-Time</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="staff-management">
+            <div class="actions">
+                <button class="btn btn-outline" id="addStaffBtn">
+                    <i class="fas fa-plus"></i> Add New Staff
+                </button>
+                <div class="filter-actions">
+                    <select id="roleFilter" class="filter-select">
+                        <option value="">All Roles</option>
+                        <option value="Doctor">Doctor</option>
+                        <option value="Nurse">Nurse</option>
+                        <option value="Technician">Technician</option>
+                        <option value="Support Staff">Support Staff</option>
+                    </select>
+                    <select id="statusFilter" class="filter-select">
+                        <option value="">All Statuses</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+            </div>
+            <div class="table-container">
+                <table class="staff-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Department</th>
+                            <th>Last Active</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="staffTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="recent-activity">
+            <h2>Recent Activity</h2>
+            <div id="activityList" class="activity-list">
+                <!-- Activity items will be dynamically added here -->
+            </div>
+        </div>
+
+        <div class="modal" id="staffModal">
+            <div class="modal-content compact">
+                <div class="modal-header">
+                    <h2 id="modalTitle">Add New Staff</h2>
+                </div>
+                <form id="staffForm" data-has-attempted-submit="false">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="staffId">ID</label>
+                            <input type="text" id="staffId" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="staffNameInput">Name *</label>
+                            <input type="text" id="staffNameInput" required>
+                            <span class="validation-message">Please enter the staff's name</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="staffEmail">Email *</label>
+                            <input type="email" id="staffEmail" required>
+                            <span class="validation-message">Please enter a valid email address</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="staffPhone">Phone *</label>
+                            <input type="tel" id="staffPhone" required>
+                            <span class="validation-message">Please enter a valid phone number</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="staffRole">Role *</label>
+                            <select id="staffRole" required>
+                                <option value="">Select Role</option>
+                                <option value="Doctor">Doctor</option>
+                                <option value="Nurse">Nurse</option>
+                                <option value="Technician">Technician</option>
+                                <option value="Support Staff">Support Staff</option>
+                            </select>
+                            <span class="validation-message">Please select a role</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="staffDepartment">Department *</label>
+                            <select id="staffDepartment" required>
+                                <option value="">Select Department</option>
+                                <option value="Cardiology">Cardiology</option>
+                                <option value="Neurology">Neurology</option>
+                                <option value="Orthopedics">Orthopedics</option>
+                                <option value="General Medicine">General Medicine</option>
+                                <option value="Radiology">Radiology</option>
+                            </select>
+                            <span class="validation-message">Please select a department</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="employmentType">Employment Type *</label>
+                            <select id="employmentType" required>
+                                <option value="">Select Employment Type</option>
+                                <option value="Full-Time">Full-Time</option>
+                                <option value="Part-Time">Part-Time</option>
+                            </select>
+                            <span class="validation-message">Please select an employment type</span>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline" id="cancelBtn">Cancel</button>
+                        <button type="submit" class="btn" id="saveBtn">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="modal" id="staffDetailsModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Staff Details</h2>
+                    <button class="btn-icon" id="closeDetailsModal"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="details-content">
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <span class="detail-label">Name</span>
+                            <span class="detail-value" id="detailName">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Email</span>
+                            <span class="detail-value" id="detailEmail">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Role</span>
+                            <span class="detail-value" id="detailRole">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Department</span>
+                            <span class="detail-value" id="detailDepartment">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Phone</span>
+                            <span class="detail-value" id="detailPhone">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Employment Type</span>
+                            <span class="detail-value" id="detailEmploymentType">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Last Active</span>
+                            <span class="detail-value" id="detailLastActive">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Status</span>
+                            <span class="detail-value" id="detailStatus">-</span>
+                        </div>
+                    </div>
+                    <div class="details-actions">
+                        <button class="btn btn-outline" id="editFromDetails">Edit Staff</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="deleteConfirmModal">
+            <div class="modal-content">
+                <h2>Delete Staff</h2>
+                <p>Are you sure you want to delete this staff member?</p>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" id="cancelDeleteBtn">Cancel</button>
+                    <button type="button" class="btn" id="confirmDeleteBtn">Delete</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script src="../javascript/staff_management.js"></script>
+</body>
+</html>

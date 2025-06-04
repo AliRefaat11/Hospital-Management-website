@@ -5,58 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PrimeCare Hospital - Meet Our Doctors</title>
   <link rel="stylesheet" href="../css/doctors_page.css">
+  <link rel="icon" href="../images/logo.jpeg" type="image/jpeg">
 </head>
+
 <body>
-  <header>
-    <div class="nav-container">
-      <div class="logo">PrimeCare</div>
-      <ul class="nav-links">
-        <li>
-          <a href="./home_page.html" title="Home Page">
-            <i class="fas fa-home"></i> <span class="nav-title">Home</span>
-          </a>
-        </li>
-        <li>
-          <a href="./about_us_page.html" title="About Us">
-            <i class="fas fa-info-circle"></i> <span class="nav-title">About Us</span>
-          </a>
-        </li>
-        <li>
-          <a href="./department_page.html" title="Departments">
-            <i class="fas fa-building"></i> <span class="nav-title">Departments</span>
-          </a>
-        </li>
-        <li>
-          <a href="./doctors_page.html" title="Doctors" class="active">
-            <i class="fas fa-user-md"></i> <span class="nav-title">Doctors</span>
-          </a>
-        </li>
-        <li>
-          <a href="./quick-appointment.html" title="Book Appointment">
-            <i class="fas fa-calendar-check"></i> <span class="nav-title">Book Appointment</span>
-          </a>
-        </li>
-        <li class="search-container">
-          <i class="fas fa-search search-icon"></i>
-          <input type="text" class="search-bar" placeholder="Search...">
-        </li>
-      </ul>
-      <div class="auth-buttons">
-        <a class="btn login-btn" href="./login_page.html">Log In</a>
-        <a class="btn signup-btn" href="./sign_up_page.html">Sign Up</a>
+  <nav>
+    <div class="navbar-container">
+      <a href="#" class="site-name">Prime Care</a>
+      <div class="navbar-links">
+        <a href="./home_page.html">HOME</a></li>
+        <a href="./about_us_page.html">ABOUT US</a>
+        <a href="./department_page.html">DEPARTMENTS</a>
+        <a href="./doctors_page.html" class="active">DOCTORS</a>
+        <a href="./quick-appointment.html">BOOK NOW</a>
+        <a href="./login_page.html">Login</a>
+        <a href="./sign_up_page.html" class="signup-btn">Sign Up</a>
       </div>
-      <button class="nav-toggle" id="nav-toggle">&#9776;</button>
     </div>
-  </header>
+  </nav>
 
   <section class="hero">
     <h1>Meet Our Expert Doctors</h1>
     <p>Our team of highly skilled and compassionate doctors is here to provide you with the best care possible.</p>
   </section>
   
-  <section class="search-bar">
-    <input type="text" id="doctor-search" placeholder="Search for a doctor..." onkeyup="filterDoctors()">
-  </section>
+  <form action="">
+    <input type="search" id="search" placeholder="Search..." />
+    <i class="fa fa-search"></i>
+  </form>
 
   <section class="doctors" id="doctors">
     <h2>Our Doctors</h2>
@@ -65,7 +41,8 @@
         <div class="doctor-img-container">
           <img src="../images/account-icon-33.png" alt="Doctor 1" class="doctor-img">
         </div>
-        <h3><a href="../html/doctor_profile.html">Dr. John Doe</a></h3>
+        <h3>
+          <a href="../html/doctor_profile.html">Dr. John Doe</a></h3>
         <p>Cardiologist</p>
         <div class="card-actions">
           <a class="btn book-btn" href="../html/book-appointment.html">Book Appointment</a>
@@ -75,7 +52,9 @@
         <div class="doctor-img-container">
           <img src="../images/account-icon-33.png" alt="Doctor 2" class="doctor-img">
         </div>
-        <h3><a href="../html/doctor_profile.html">Dr. Jane Smith</a></h3>
+        <h3>
+          <a href="../html/doctor_profile.html">Dr. Jane Smith</a>
+        </h3>
         <p>Neurologist</p>
         <div class="card-actions">
           <a class="btn book-btn" href="../html/book-appointment.html">Book Appointment</a>
@@ -85,7 +64,9 @@
         <div class="doctor-img-container">
           <img src="../images/account-icon-33.png" alt="Doctor 3" class="doctor-img">
         </div>
-        <h3><a href="../html/doctor_profile.html">Dr. Michael Brown</a></h3>
+        <h3>
+          <a href="../html/doctor_profile.html">Dr. Michael Brown</a>
+        </h3>
         <p>Orthopedic Surgeon</p>
         <div class="card-actions">
           <a class="btn book-btn" href="../html/book-appointment.html">Book Appointment</a>
@@ -95,7 +76,9 @@
         <div class="doctor-img-container">
           <img src="../images/account-icon-33.png" alt="Doctor 4" class="doctor-img">
         </div>
-        <h3><a href="../html/doctor_profile.html">Dr. Emily Davis</a></h3>
+        <h3>
+          <a href="../html/doctor_profile.html">Dr. Emily Davis</a>
+        </h3>
         <p>Oncologist</p>
         <div class="card-actions">
           <a class="btn book-btn" href="../html/book-appointment.html">Book Appointment</a>
@@ -105,7 +88,9 @@
         <div class="doctor-img-container">
           <img src="../images/account-icon-33.png" alt="Doctor 5" class="doctor-img">
         </div>
-        <h3><a href="../html/doctor_profile.html">Dr. Sarah Johnson</a></h3>
+        <h3>
+          <a href="../html/doctor_profile.html">Dr. Sarah Johnson</a>
+        </h3>
         <p>Pediatrician</p>
         <div class="card-actions">
           <a class="btn book-btn" href="../html/book-appointment.html">Book Appointment</a>
@@ -115,7 +100,9 @@
         <div class="doctor-img-container">
           <img src="../images/account-icon-33.png" alt="Doctor 6" class="doctor-img">
         </div>
-        <h3><a href="../html/doctor_profile.html">Dr. David Wilson</a></h3>
+        <h3>
+          <a href="../html/doctor_profile.html">Dr. David Wilson</a>
+        </h3>
         <p>Dermatologist</p>
         <div class="card-actions">
           <a class="btn book-btn" href="../html/book-appointment.html">Book Appointment</a>
@@ -127,14 +114,16 @@
   <footer>
     <div class="footer-container">
       <div class="footer-column">
-        <h3>About Us</h3>
-        <p>Providing exceptional healthcare services with compassion and care.</p>
+        <h3>Location</h3>
+        <div class="map-container">
+        <img src="../images/location_map_icon.jpg" width="30" height="30" style="border:0;" allowfullscreen="" loading="lazy"></img>
+    </div>
       </div>
       <div class="footer-column">
         <h3>Quick Links</h3>
         <ul>
           <li><a href="#">Home</a></li>
-          <li><a href="#">Services</a></li>
+          <li><a href="#services">Services</a></li>
           <li><a href="#">Appointments</a></li>
           <li><a href="#">Contact</a></li>
         </ul>

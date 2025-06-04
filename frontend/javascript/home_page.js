@@ -1,3 +1,6 @@
+window.addEventListener('DOMContentLoaded', () => {
+    console.log("Welcome to HealthyCare's profile page!");
+  });
 const navToggle = document.getElementById('nav-toggle');
 const navLinks = document.querySelector('.nav-links');
 
