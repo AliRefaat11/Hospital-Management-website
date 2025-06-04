@@ -9,7 +9,7 @@ const patientSchema = new mongoose.Schema(
 class PatientModel {
     constructor() {
         mongoose.connect();
-        this.PatMod=mongoose.model('Patient', patientSchema);
+        this.PatMod = mongoose.model('Patient', patientSchema);
     }
     async getAllPatients() {
         let data = await this.PatMod.find({});

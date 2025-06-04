@@ -1,4 +1,4 @@
-const model = require("../models/Doctor_mod");
+const model = require("../models/doctorModel");
 const DocModel = new model();
 
 getAll=async (req, res) => {
