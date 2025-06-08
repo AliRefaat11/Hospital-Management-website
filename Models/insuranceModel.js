@@ -4,17 +4,7 @@ const insuranceSchema = new mongoose.Schema(
   {
     company: {
       type: String,
-      enum: {
-        values: [
-          "AXA Medical",
-          "Bupa Health",
-          "Cigna Healthcare",
-          "MetLife",
-          "Allianz Care",
-          "None/Self-pay"
-        ],
-        message: "{VALUE} is not a supported insurance provider"
-      },
+      enum:["AXA Medical","Bupa Health","Cigna Healthcare","MetLife","Allianz Care","None/Self-pay"],
       required: [true, "Company name is required"]
     },
     policyNumber: {
