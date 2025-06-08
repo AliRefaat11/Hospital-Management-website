@@ -2,38 +2,34 @@ const mongoose = require('mongoose');
 
 const doctorSchema = new mongoose.Schema(
     {
-        name: {
-            type: String,
-            required: true
+        userId:{
+            type:mongoose.Schema.ObjectId,
+            ref:"User",
+            unique:[true,"user id already exists"],
+            required:[true,"user id is required"],
         },
-        id: {
-            type: String,
-            required: true
-        },
-        email: {
-            type: String,
-            required: true
-        },
-        password:{
-            type: String,
-            required: true
-        },
-        phone: {
-            type: String,
-            required: true
-        },
-        address: {
-            type: String,
-            required: true
+        departmentId:{
+            type:mongoose.Schema.ObjectId,
+            ref:"Department",
+            required:[true,"Department id is required"]
         },
         specialization: {
             type: String,
-            required: true
+            trim:true,
+            required:[true,"speciality is required"],
+            enum:[">cardiology","dermatology","orthopedics","pediatrics","Neurology"]
         },
         rating: {
             type: Number,
+            min:1,
+            max:5,
             required: true
         },
+        schedule: {
+            type: String,
+            required:[true,"working days is required"],
+            enum:["saturday","sunday","monday","tuesday","wednesday","thursday"]
+        }
     }
 );
 
