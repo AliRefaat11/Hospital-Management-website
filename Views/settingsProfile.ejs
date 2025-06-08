@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title || 'Settings - PrimeCare' %></title>
+    <link rel="stylesheet" href="../css/book-appointment.css" />
+    <link rel="stylesheet" href="../css/user_profile.css">
+    <link rel="stylesheet" href="../css/settings_profile.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <nav>
+        <div class="navbar-container">
+            <a href="#" class="site-name">Prime Care</a>
+            <div class="navbar-links">
+                <a href="./home_page.html" class="<%= currentPage === 'home' ? 'active' : '' %>">HOME</a>
+                <a href="./about_us_page.html" class="<%= currentPage === 'about' ? 'active' : '' %>">ABOUT US</a>
+                <a href="./department_page.html" class="<%= currentPage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
+                <a href="./doctors_page.html" class="<%= currentPage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
+                <a href="./quick-appointment.html" class="<%= currentPage === 'book' ? 'active' : '' %>">BOOK NOW</a>
+                <% if (typeof user !== 'undefined' && user) { %>
+                    <a href="./user_profile.html" class="<%= currentPage === 'profile' ? 'active' : '' %>">Profile</a>
+                    <a href="/logout" class="logout-btn">Logout</a>
+                <% } else { %>
+                    <a href="./login_page.html" class="<%= currentPage === 'login' ? 'active' : '' %>">Login</a>
+                    <a href="./sign_up_page.html" class="signup-btn <%= currentPage === 'signup' ? 'active' : '' %>">Sign Up</a>
+                <% } %>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+            <div class="settings-form">
+                <h2><%= pageTitle || 'Settings' %></h2>
+                
+                <% if (typeof successMessage !== 'undefined' && successMessage) { %>
+                    <div class="success-message">
+                        <i class="fas fa-check-circle"></i>
+                        <%= successMessage %>
+                    </div>
+                <% } %>
+                
+                <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <%= errorMessage %>
+                    </div>
+                <% } %>
+
+                <form id="settingsForm" action="/settings" method="POST">
+                    <h3 class="section-title">Notification Preferences</h3>
+                    <div class="settings-group">
+                        <label>
+                            <input type="checkbox" id="emailNotif" name="emailNotifications" 
+                                   <%= (typeof userSettings !== 'undefined' && userSettings.emailNotifications) ? 'checked' : '' %>>
+                            Email Notifications
+                        </label>
+                        <label>
+                            <input type="checkbox" id="smsNotif" name="smsNotifications"
+                                   <%= (typeof userSettings !== 'undefined' && userSettings.smsNotifications) ? 'checked' : '' %>>
+                            SMS Notifications
+                        </label>
+                        <label>
+                            <input type="checkbox" id="privacySetting" name="privateProfile"
+                                   <%= (typeof userSettings !== 'undefined' && userSettings.privateProfile) ? 'checked' : '' %>>
+                            Only show profile to doctors
+                        </label>
+                    </div>
+
+                    <% if (typeof showPasswordSection === 'undefined' || showPasswordSection !== false) { %>
+                        <h3 class="section-title">Change Password</h3>
+                        <div class="settings-group">
+                            <label for="currentPassword">Current Password</label>
+                            <input type="password" id="currentPassword" name="currentPassword" required>
+                            <span class="field-error" id="currentPasswordError"></span>
+                        </div>
+                        <div class="settings-group">
+                            <label for="newPassword">New Password</label>
+                            <input type="password" id="newPassword" name="newPassword" minlength="8" required>
+                            <span class="field-error" id="newPasswordError"></span>
+                            <small class="password-hint">Password must be at least 8 characters long</small>
+                        </div>
+                        <div class="settings-group">
+                            <label for="confirmPassword">Confirm New Password</label>
+                            <input type="password" id="confirmPassword" name="confirmPassword" required>
+                            <span class="field-error" id="confirmPasswordError"></span>
+                        </div>
+                    <% } %>
+
+                    <% if (typeof additionalSettings !== 'undefined' && additionalSettings.length > 0) { %>
+                        <h3 class="section-title">Additional Settings</h3>
+                        <div class="settings-group">
+                            <% additionalSettings.forEach(function(setting) { %>
+                                <label>
+                                    <input type="<%= setting.type || 'checkbox' %>" 
+                                           id="<%= setting.id %>" 
+                                           name="<%= setting.name %>"
+                                           <%= setting.checked ? 'checked' : '' %>
+                                           <%= setting.required ? 'required' : '' %>>
+                                    <%= setting.label %>
+                                </label>
+                            <% }); %>
+                        </div>
+                    <% } %>
+
+                    <div class="form-actions">
+                        <a href="<%= backUrl || 'user_profile.html' %>" class="btn btn-outline">Cancel</a>
+                        <button type="submit" class="btn btn-primary">
+                            <% if (typeof submitText !== 'undefined') { %>
+                                <%= submitText %>
+                            <% } else { %>
+                                Save Settings
+                            <% } %>
+                        </button>
+                    </div>
+                </form>
+
+                <% if (typeof showDangerZone !== 'undefined' && showDangerZone) { %>
+                    <div class="danger-zone">
+                        <h3 class="section-title danger">Danger Zone</h3>
+                        <div class="settings-group">
+                            <p>Once you delete your account, there is no going back. Please be certain.</p>
+                            <button type="button" class="btn btn-danger" onclick="confirmDeleteAccount()">
+                                Delete Account
+                            </button>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </main>
+
+   <script>
+        // Pass server data to client-side JavaScript
+       /* window.settingsData = {
+            user: <%- JSON.stringify(typeof user !== 'undefined' ? user : null) %>,
+            userSettings: <%- JSON.stringify(typeof userSettings !== 'undefined' ? userSettings : {}) %>
+        };*/
+    </script>
+    
+    <script src="../javascript/settings_profile.js"></script>
+</body>
+</html>
