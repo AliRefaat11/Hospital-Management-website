@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title || 'PrimeCare - Login' %></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="<%= cssPath || '../css/login_page.css' %>">
+</head>
+<body>
+    <nav>
+        <div class="navbar-container">
+            <a href="#" class="site-name"><%= siteName || 'Prime Care' %></a>
+            <div class="navbar-links">
+                <a href="<%= homeUrl || './home_page.html' %>" class="<%= activeNav === 'home' ? 'active' : '' %>">HOME</a>
+                <a href="<%= aboutUrl || './about_us_page.html' %>" class="<%= activeNav === 'about' ? 'active' : '' %>">ABOUT US</a>
+                <a href="<%= departmentUrl || './department_page.html' %>" class="<%= activeNav === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
+                <a href="<%= doctorsUrl || './doctors_page.html' %>" class="<%= activeNav === 'doctors' ? 'active' : '' %>">DOCTORS</a>
+                <a href="<%= bookingUrl || './quick_appointment.html' %>" class="<%= activeNav === 'booking' ? 'active' : '' %>">BOOK NOW</a>
+                <a href="<%= loginUrl || './login_page.html' %>" class="<%= activeNav === 'login' ? 'active' : '' %>">Login</a>
+                <a href="<%= signupUrl || './sign_up_page.html' %>" class="signup-btn">Sign Up</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2><%= loginTitle || 'Login' %></h2>
+        
+        <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+            <div class="error-message show"><%= errorMessage %></div>
+        <% } %>
+        
+        <% if (typeof successMessage !== 'undefined' && successMessage) { %>
+            <div class="success-message"><%= successMessage %></div>
+        <% } %>
+
+        <form action="<%= formAction || '/login' %>" method="POST">
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Enter your username" 
+                       value="<%= typeof formData !== 'undefined' && formData.username ? formData.username : '' %>" required>
+            </div>
+            
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required maxlength="12">
+            </div>
+            
+            <div class="remember-me">
+                <input type="checkbox" id="rememberMe" name="rememberMe" 
+                       <%= typeof formData !== 'undefined' && formData.rememberMe ? 'checked' : '' %>>
+                <label for="rememberMe">Remember me</label>
+            </div>
+            
+            <a href="<%= forgotPasswordUrl || '/forgot-password' %>" class="forgot-password">Forgot Password?</a>
+            
+            <button type="submit" class="login-btnm" id="loginButton">
+                <%= loginButtonText || 'Login' %>
+            </button>
+        </form>
+        
+        <a href="<%= signupUrl || './sign_up_page.html' %>" class="signup-link">
+            <%= signupLinkText || "Don't have an account? Create account" %>
+        </a>
+        
+        <div class="error-message" id="errorMessage"></div>
+    </div>
+    
+    <script src="<%= jsPath || '../javascript/login_page.js' %>"></script>
+    
+</body>
+</html>

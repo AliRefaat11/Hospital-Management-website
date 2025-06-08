@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - PrimeCare</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/admin_settings.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="sidebar" id="sidebarNav">
+        <div class="sidebar-header">
+            <a href="admin_profile.html" class="site-name">Prime Care</a>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        <div class="admin-profile">
+            <div class="admin-avatar">
+                <img id="adminProfileImage" src="../images/admin-avatar.png" alt="Admin">
+            </div>
+            <div class="admin-info">
+                <h3 id="adminName">Sarah Johnson</h3>
+                <span class="admin-role">System Administrator</span>
+            </div>
+        </div>
+        <div class="sidebar-content">
+            <ul class="nav-links">
+                <li><a href="admin_profile.html"><i class="fas fa-home"></i><span>Dashboard</span></a></li>
+                <li><a href="admin_management.html"><i class="fas fa-user-shield"></i><span>Admins</span></a></li>
+                <li><a href="doctor_management.html"><i class="fas fa-users"></i><span>Doctors</span></a></li>
+                <li><a href="patient_management.html"><i class="fas fa-user-injured"></i><span>Patients</span></a></li>
+                <li><a href="appointments_management.html"><i class="fas fa-calendar-check"></i><span>Appointments</span></a></li>
+                <li><a href="reports.html"><i class="fas fa-chart-bar"></i><span>Reports</span></a></li>
+                <li class="active"><a href="admin_settings.html"><i class="fas fa-cog"></i><span>Settings</span></a></li>
+            </ul>
+        </div>
+        <div class="sidebar-footer">
+            <a href="#" class="logout-btn"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="dashboard-background"></div>
+        <div class="dashboard-header">
+            <div class="header-left">
+                <h1>System Settings</h1>
+                <p class="welcome-message">Configure system preferences and security options</p>
+            </div>
+            <div class="header-right">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="settingsSearch" placeholder="Search settings...">
+                </div>
+                <div class="header-actions">
+                    <button class="btn-icon" title="Notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <button class="btn-icon" title="Messages">
+                        <i class="fas fa-envelope"></i>
+                        <span class="message-badge">5</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-shield-alt"></i></div>
+                <div class="stat-info">
+                    <h3>Security Status</h3>
+                    <p class="stat-value" id="securityStatus">Secure</p>
+                    <p class="stat-change positive">All systems protected</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                <div class="stat-info">
+                    <h3>Last Backup</h3>
+                    <p class="stat-value" id="lastBackup">2h ago</p>
+                    <p class="stat-change">Automated</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-database"></i></div>
+                <div class="stat-info">
+                    <h3>Storage Used</h3>
+                    <p class="stat-value" id="storageUsed">68%</p>
+                    <p class="stat-change">85.6 GB / 125 GB</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-users-cog"></i></div>
+                <div class="stat-info">
+                    <h3>Active Sessions</h3>
+                    <p class="stat-value" id="activeSessions">12</p>
+                    <p class="stat-change">Currently online</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-container">
+            <div class="settings-sidebar">
+                <div class="settings-nav">
+                    <ul class="settings-nav-links">
+                        <li class="active">
+                            <a href="#general" data-section="general">
+                                <i class="fas fa-cog"></i>
+                                <span>General</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#security" data-section="security">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>Security</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#notifications" data-section="notifications">
+                                <i class="fas fa-bell"></i>
+                                <span>Notifications</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#appearance" data-section="appearance">
+                                <i class="fas fa-palette"></i>
+                                <span>Appearance</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#backup" data-section="backup">
+                                <i class="fas fa-download"></i>
+                                <span>Backup & Restore</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#integrations" data-section="integrations">
+                                <i class="fas fa-plug"></i>
+                                <span>Integrations</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#advanced" data-section="advanced">
+                                <i class="fas fa-code"></i>
+                                <span>Advanced</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="settings-content">
+                <!-- General Settings -->
+                <div class="settings-section active" id="general-section">
+                    <div class="section-header">
+                        <h2>General Settings</h2>
+                        <p>Configure basic system preferences and organization details</p>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <h3>Organization Information</h3>
+                        <div class="setting-item">
+                            <label for="organizationName">Organization Name</label>
+                            <input type="text" id="organizationName" value="PrimeCare Medical Center">
+                            <small>This name appears in reports and communications</small>
+                        </div>
+                        <div class="setting-item">
+                            <label for="organizationEmail">Contact Email</label>
+                            <input type="email" id="organizationEmail" value="admin@primecare.com">
+                        </div>
+                        <div class="setting-item">
+                            <label for="organizationPhone">Phone Number</label>
+                            <input type="tel" id="organizationPhone" value="+1 (555) 123-4567">
+                        </div>
+                        <div class="setting-item">
+                            <label for="organizationAddress">Address</label>
+                            <textarea id="organizationAddress" rows="3">123 Healthcare Blvd, Medical District, NY 10001</textarea>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <h3>System Preferences</h3>
+                        <div class="setting-item">
+                            <label for="timezone">Timezone</label>
+                            <select id="timezone">
+                                <option value="UTC-5">Eastern Time (UTC-5)</option>
+                                <option value="UTC-6">Central Time (UTC-6)</option>
+                                <option value="UTC-7">Mountain Time (UTC-7)</option>
+                                <option value="UTC-8">Pacific Time (UTC-8)</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <label for="dateFormat">Date Format</label>
+                            <select id="dateFormat">
+                                <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                                <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                                <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <label for="currency">Currency</label>
+                            <select id="currency">
+                                <option value="USD">USD ($)</option>
+                                <option value="EUR">EUR (€)</option>
+                                <option value="GBP">GBP (£)</option>
+                                <option value="CAD">CAD ($)</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <label for="language">System Language</label>
+                            <select id="language">
+                                <option value="en">English</option>
+                                <option value="es">Español</option>
+                                <option value="fr">Français</option>
+                                <option value="de">Deutsch</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <h3>Data Retention</h3>
+                        <div class="setting-item">
+                            <label for="logRetention">Log Retention Period</label>
+                            <select id="logRetention">
+                                <option value="30">30 days</option>
+                                <option value="90" selected>90 days</option>
+                                <option value="180">180 days</option>
+                                <option value="365">1 year</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <label for="reportRetention">Report Retention Period</label>
+                            <select id="reportRetention">
+                                <option value="365">1 year</option>
+                                <option value="730" selected>2 years</option>
+                                <option value="1095">3 years</option>
+                                <option value="unlimited">Unlimited</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Settings -->
+                <div class="settings-section" id="security-section">
+                    <div class="section-header">
+                        <h2>Security Settings</h2>
+                        <p>Manage authentication, access control, and security policies</p>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <h3>Authentication</h3>
+                        <div class="setting-item toggle-item">
+                            <div class="toggle-content">
+                                <label>Two-Factor Authentication</label>
+                                <small>Require 2FA for all admin accounts</small>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="twoFactorAuth" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item toggle-item">
+                            <div class="toggle-content">
+                                <label>Single Sign-On (SSO)</label>
+                                <small>Enable SSO integration</small>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="ssoEnabled">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label for="sessionTimeout">Session Timeout (minutes)</label>
+                            <input type="number" id="sessionTimeout" value="30" min="5" max="480">
+                            <small>Users will be automatically logged out after this period of inactivity</small>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <h3>Password Policy</h3>
+                        <div class="setting-item">
+                            <label for="minPasswordLength">Minimum Password Length</label>
+                            <input type="number" id="minPasswordLength" value="8" min="4" max="20">
+                        </div>
+                        <div class="setting-item toggle-item">
+                            <div class="toggle-content">
+                                <label>Require Special Characters</label>
+                                <small>Passwords must contain at least one special character</small>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="requireSpecialChars" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item toggle-item">
+                            <div class="toggle-content">
+                                <label>Require Numbers</label>
+                                <small>Passwords must contain at least one number</small>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="requireNumbers" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label for="passwordExpiry">Password Expiry (days)</label>
+                            <select id="passwordExpiry">
+                                <option value="never">Never</option>
+                                <option value="30">30 days</option>
+                                <option value="60">60 days</option>
+                                <option value="90" selected>90 days</option>
+                                <option value="180">180 days</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <h3>Access Control</h3>
+                        <div class="setting-item toggle-item">
+                            <div class="toggle-content">
+                                <label>IP Whitelisting</label>
+                                <small>Restrict access to specific IP addresses</small>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="ipWhitelisting">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label for="maxLoginAttempts">Max Failed Login Attempts</label>
+                            <input type="number" id="maxLoginAttempts" value="5" min="3" max="10">
+                            <small>Account will be locked after this many failed attempts</small>
+                        </div>
+                        <div class="setting-item">
+                            <label for="lockoutDuration">Account Lockout Duration (minutes)</label>
+                            <input type="number" id="lockoutDuration" value="15" min="5" max="60">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notifications Settings -->
+                <div class="settings-section" id="notifications-section">
+                    <div class="section-header">
+                        <h2>Notification Settings</h2>
+                        <p>Configure email notifications and system alerts</p>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <h3>Email Notifications</h3>
+                        <div class="setting-item toggle-item">
+                            <div class="toggle-content">
+                                <label>New Patient Registration</label>
+                                <small>Notify admins when new patients register</small>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="notifyNewPatient" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item toggle-item">
+                            <div class="toggle-content">
+                                <label>Appointment Reminders</label>
+                                <small>Send automatic appointment reminders</small>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="appointmentReminders" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item toggle-item">
+                            <div class="toggle-content">
+                                <label>System Maintenance Alerts</label>
+                                <small>Notify about scheduled maintenance</small>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="maintenanceAlerts" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item toggle-item">
+                            <div class="toggle-content">
+                                <label>Security Alerts</label>
+                                <small>Notify about security incidents</small>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="securityAlerts" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <h3>Email Configuration</h3>
+                        <div class="setting-item">
+                            <label for="smtpServer">SMTP Server</label>
+                            <input type="text" id="smtpServer" value="smtp.gmail.com">
+                        </div>
+                        <div class="setting-item">
+                            <label for="smtpPort">SMTP Port</label>
+                            <input type="number" id="smtpPort" value="587">
+                        </div>
+                        <div class="setting-item">
+                            <label for="smtpUsername">SMTP Username</label>
+                            <input type="text" id="smtpUsername" value="noreply@primecare.com">
+                        </div>
+                        <div class="setting-item">
+                            <label for="smtpPassword">SMTP Password</label>
+                            <input type="password" id="smtpPassword" placeholder="••••••••">
+                        </div>
+                        <div class="setting-item">
+                            <button class="btn btn-outline" id="testEmailBtn">
+                                <i class="fas fa-envelope"></i> Send Test Email
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <h3>Notification Recipients</h3>
+                        <div class="setting-item">
+                            <label for="adminEmails">Admin Email Addresses</label>
+                            <textarea id="adminEmails" rows="3" placeholder="admin1@primecare.com&#10;admin2@primecare.com">admin@primecare.com
+sarah.johnson@primecare.com</textarea>
+                            <small>Enter one email address per line</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Appearance Settings -->
+                <div class="settings-section" id="appearance-section">
+                    <div class="section-header">
+                        <h2>Appearance Settings</h2>
+                        <p>Customize the look and feel of the application</p>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <h3>Theme</h3>
+                        <div class="setting-item">
+                            <label>Color Theme</label>
+                            <div class="theme-selector">
+                                <div class="theme-option active" data-theme="default">
+                                    <div class="theme-preview">
+                                        <div class="preview-bar" style="background: #2d5f7c;"></div>
+                                        <div class="preview-content" style="background: #f5f7fa;"></div>
+                                    </div>
+                                    <span>Default</span>
+                                </div>
+                                <div class="theme-option" data-theme="dark">
+                                    <div class="theme-preview">
+                                        <div class="preview-bar" style="background: #1a1a1a;"></div>
+                                        <div class="preview-content" style="background: #2d2d2d;"></div>
+                                    </div>
+                                    <span>Dark</span>
+                                </div>
+                                <div class="theme-option" data-theme="blue">
+                                    <div class="theme-preview">
+                                        <div class="preview-bar" style="background: #1976d2;"></div>
+                                        <div class="preview-content" style="background: #f3f7ff;"></div>
+                                    </div>
+                                    <span>Blue</span>
+                                </div>
+                                <div class="theme-option" data-theme="green">
+                                    <div class="theme-preview">
+                                        <div class="preview-bar" style="background: #388e3c;"></div>
+                                        <div class="preview-content" style="background: #f1f8e9;"></div>
+                                    </div>
+                                    <span>Green</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="setting-item toggle-item">
+                            <div class="toggle-content">
+                                <label>Dark Mode</label>
+                                <small>Enable dark theme for better night viewing</small>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="darkMode">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <h3>Layout</h3>
+                        <div class="setting-item toggle-item">
+                            <div class="toggle-content">
+                                <label>Compact Mode</label>
+                                <small>Reduce spacing for more content density</small>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="compactMode">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item toggle-item">
+                            <div class="toggle-content">
+                                <label>Sidebar Collapsed by Default</label>
+                                <small>Start with collapsed sidebar</small>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="sidebarCollapsed">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label for="defaultView">Default Dashboard View</label>
+                            <select id="defaultView">
+                                <option value="overview">Overview</option>
+                                <option value="patients">Patients</option>
+                                <option value="appointments">Appointments</option>
+                                <option value="reports">Reports</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <h3>Branding</h3>
+                        <div class="setting-item">
+                            <label for="logoUpload">Organization Logo</label>
+                            <div class="file-upload-area" id="logoUploadArea">
+                                <div class="file-upload-placeholder">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Click to upload or drag and drop</p>
+                                    <small>PNG, JPG up to 2MB</small>
+                                </div>
+                                <input type="file" id="logoUpload" accept="image/*" hidden>
+                            </div>
+                        </div>
+                        <div class="setting-item">
+                            <label for="favicon">Favicon</label>
+                            <div class="file-upload-area" id="faviconUploadArea">
+                                <div class="file-upload-placeholder">
+                                    <i class="fas fa-image"></i>
+                                    <p>Upload favicon</p>
+                                    <small>ICO, PNG 16x16 or 32x32</small>
+                                </div>
+                                <input type="file" id="faviconUpload" accept=".ico,.png" hidden>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Backup & Restore Settings -->
+                <div class="settings-section" id="backup-section">
+                    <div class="section-header">
+                        <h2>Backup & Restore</h2>
+                        <p>Manage system backups and data recovery options</p>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <h3>Automatic Backups</h3>
+                        <div class="setting-item toggle-item">
+                            <div class="toggle-content">
+                                <label>Enable Automatic Backups</label>
+                                <small>Automatically backup system data</small>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="autoBackupEnabled" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label for="backupFrequency">Backup Frequency</label>
+                            <select id="backupFrequency">
+                                <option value="daily" selected>Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly">Monthly</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <label for="backupTime">Backup Time</label>
+                            <input type="time" id="backupTime" value="02:00">
+                            <small>Scheduled backup time (server timezone)</small>
+                        </div>
+                        <div class="setting-item">
+                            <label for="backupRetention">Backup Retention</label>
+                            <select id="backupRetention">
+                                <option value="7">7 days</option>
+                                <option value="30" selected>30 days</option>
+                                <option value="90">90 days</option>
+                                <option value="365">1 year</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <h3>Manual Backup</h3>
+                        <div class="setting-item">
+                            <label>Create Backup Now</label>
+                            <button class="btn" id="createBackupBtn">
+                                <i class="fas fa-download"></i> Create Backup
+                            </button>
+                            <small>Generate a manual backup of all system data</small>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <h3>Backup History</h3>
+                        <div class="backup-list" id="backupList">
+                            <div class="backup-item">
+                                <div class="backup-info">
+                                    <h4>Daily Backup</h4>
+                                    <p>May 19, 2024 - 02:00 AM</p>
+                                    <span class="backup-size">156 MB</span>
+                                </div>
+                                <div class="backup-actions">
+                                    <button class="btn-icon" title="Download">
+                                        <i class="fas fa-download"></i>
+                                    </button>
+                                    <button class="btn-icon" title="Restore">
+                                        <i class="fas fa-undo"></i>
+                                    </button>
+                                    <button class="btn-icon" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="backup-item">
+                                <div class="backup-info">
+                                    <h4>Daily Backup</h4>
+                                    <p>May 18, 2024 - 02:00 AM</p>
+                                    <span class="backup-size">154 MB</span>
+                                </div>
+                                <div class="backup-actions">
+                                    <button class="btn-icon" title="Download">
+                                        <i class="fas fa-download"></i>
+                                    </button>
+                                    <button class="btn-icon" title="Restore">
+                                        <i class="fas fa-undo"></i>
+                                    </button>
+                                    <button class="btn-icon" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <h3>Import/Export</h3>
+                        <div class="setting-item">
+                            <label>Import Data</label>
+                            <div class="file-upload-area" id="importUploadArea">
+                                <div class="file-upload-placeholder">
+                                    <i class="fas fa-upload"></i>
+                                    <p>Click to select backup file</p>
+                                    <small>JSON, CSV, or ZIP files</small>
+                                </div>
+                                <input type="file" id="importUpload" accept=".json,.csv,.zip" hidden>
+                            </div>
+                        </div>
+                        <div class="setting-item">
+                            <label>Export Data</label>
+                            <div class="export-options">
+                                <button class="btn btn-outline">
+                                    <i class="fas fa-file-csv"></i> Export as CSV
+                                </button>
+                                <button class="btn btn-outline">
+                                    <i class="fas fa-file-code"></i> Export as JSON
+                                </button>
+                                <button class="btn btn-outline">
+                                    <i class="fas fa-file-excel"></i> Export as Excel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Integrations Settings -->
+                <div class="settings-section" id="integrations-section">
+                    <div class="section-header">
+                        <h2>Integrations</h2>
+                        <p>Connect with third-party services and APIs</p>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <h3>Available Integrations</h3>
+                        <div class="integration-grid">
+                            <div class="integration-card">
+                                <div class="integration-icon">
+                                    <i class="fab fa-google"></i>
+                                </div>
+                                <div class="integration-info">
+                                    <h4>Google Calendar</h4>
+                                    <p>Sync appointments with Google Calendar</p>
+                                    <span class="integration-status connected">Connected</span>
+                                </div>
+                                <div class="integration-actions">
+                                    <button class="btn btn-outline">Configure</button>
+                                    <button class="btn">Disconnect</button>
+                                </div>
+                            </div>
+                            <div class="integration-card">
+                                <div class="integration-icon">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div class="integration-info">
+                                    <h4>Email Service</h4>
+                                    <p>SendGrid email delivery service</p>
+                                    <span class="integration-status connected">Connected</span>
+                                </div>
+                                <div class="integration-actions">
+                                    <button class="btn btn-outline">Configure</button>
+                                    <button class="btn">Disconnect</button>
+                                </div>
+                            </div>
+                            <div class="integration-card">
+                                <div class="integration-icon">
+                                    <i class="fab fa-stripe"></i>
+                                </div>
+                                <div class="integration-info">
+                                    <h4>Stripe Payments</h4>
+                                    <p>Process payments securely</p>
+                                    <span class="integration-status disconnected">Not Connected</span>
+                                </div>
+                                <div class="integration-actions">
+                                    <button class="btn">Connect</button>
+                                </div>
+                            </div>
+                            <div class="integration-card">
+                                <div class="integration-icon">
+                                    <i class="fab fa-slack"></i>
+                                </div>
+                                <div class="integration-info">
+                                    <h4>Slack</h4>
+                                    <p>Team notifications and alerts</p>
+                                    <span class="integration-status disconnected">Not Connected</span>
+                                </div>
+                                <div class="integration-actions">
+                                    <button class="btn">Connect</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <h3>API Settings</h3>
+                        <div class="setting-item">
+                            <label for="apiKey">API Key</label>
+                            <div class="api-key-container">
+                                <input type="password" id="apiKey" value="pk_live_51234567890abcdef" readonly>
+                                <button class="btn-icon" id="toggleApiKey" title="Show/Hide">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn-icon" id="copyApiKey" title="Copy">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                            <small>Used for API authentication</small>
+                        </div>
+                        <div class="setting-item">
+                            <button class="btn btn-outline" id="regenerateApiKeyBtn">
+                                <i class="fas fa-sync-alt"></i> Regenerate API Key
+                            </button>
+                            <small>Generate a new API key (will invalidate the current one)</small>
+                        </div>
+                        <div class="setting-item">
+                            <label for="apiEndpoint">API Endpoint</label>
+                            <input type="url" id="apiEndpoint" value="https://api.primecare.com/v1" readonly>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <h3>Webhook Configuration</h3>
+                        <div class="setting-item">
+                            <label for="webhookUrl">Webhook URL</label>
+                            <input type="url" id="webhookUrl" placeholder="https://your-domain.com/webhook">
+                        </div>
+                        <div class="setting-item">
+                            <label>Webhook Events</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="webhookPatients" checked>
+                                    <span>Patient Events</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="webhookAppointments">
+                                    <span>Appointment Events</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="webhookPayments">
+                                    <span>Payment Events</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="setting-item">
+                            <button class="btn btn-outline" id="testWebhookBtn">
+                                <i class="fas fa-bolt"></i> Test Webhook
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Settings -->
+                <div class="settings-section" id="advanced-section">
+                    <div class="section-header">
+                        <h2>Advanced Settings</h2>
+                        <p>Configure advanced system options and developer settings</p>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <h3>Database Settings</h3>
+                        <div class="setting-item">
+                            <label for="dbHost">Database Host</label>
+                            <input type="text" id="dbHost" value="localhost" readonly>
+                        </div>
+                        <div class="setting-item">
+                            <label for="dbPort">Database Port</label>
+                            <input type="number" id="dbPort" value="5432" readonly>
+                        </div>
+                        <div class="setting-item">
+                            <label for="dbName">Database Name</label>
+                            <input type="text" id="dbName" value="primecare_db" readonly>
+                        </div>
+                        <div class="setting-item">
+                            <label>Database Status</label>
+                            <div class="status-indicator">
+                                <span class="status-dot connected"></span>
+                                <span>Connected</span>
+                                <button class="btn btn-outline btn-sm" id="testConnectionBtn">Test Connection</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <h3>Performance</h3>
+                        <div class="setting-item toggle-item">
+                            <div class="toggle-content">
+                                <label>Enable Caching</label>
+                                <small>Improve performance with Redis caching</small>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="enableCaching" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label for="cacheExpiry">Cache Expiry (seconds)</label>
+                            <input type="number" id="cacheExpiry" value="3600" min="60">
+                        </div>
+                        <div class="setting-item toggle-item">
+                            <div class="toggle-content">
+                                <label>Enable Compression</label>
+                                <small>Compress API responses to reduce bandwidth</small>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="enableCompression" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label for="maxRequestSize">Max Request Size (MB)</label>
+                            <input type="number" id="maxRequestSize" value="10" min="1" max="100">
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <h3>Logging</h3>
+                        <div class="setting-item">
+                            <label for="logLevel">Log Level</label>
+                            <select id="logLevel">
+                                <option value="error">Error</option>
+                                <option value="warn">Warning</option>
+                                <option value="info" selected>Info</option>
+                                <option value="debug">Debug</option>
+                                <option value="trace">Trace</option>
+                            </select>
+                        </div>
+                        <div class="setting-item toggle-item">
+                            <div class="toggle-content">
+                                <label>Enable Request Logging</label>
+                                <small>Log all API requests</small>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="enableRequestLogging" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <button class="btn btn-outline" id="downloadLogsBtn">
+                                <i class="fas fa-download"></i> Download Logs
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <h3>Maintenance</h3>
+                        <div class="setting-item toggle-item">
+                            <div class="toggle-content">
+                                <label>Maintenance Mode</label>
+                                <small>Enable maintenance mode to restrict access</small>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="maintenanceMode">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label for="maintenanceMessage">Maintenance Message</label>
+                            <textarea id="maintenanceMessage" rows="3">System maintenance in progress. Please check back later.</textarea>
+                        </div>
+                        <div class="setting-item">
+                            <button class="btn btn-outline" id="clearCacheBtn">
+                                <i class="fas fa-broom"></i> Clear Cache
+                            </button>
+                            <small>Clear all cached data</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Save Settings Bar -->
+        <div class="save-settings-bar" id="saveSettingsBar">
+            <div class="save-bar-content">
+                <span class="save-message">
+                    <i class="fas fa-exclamation-circle"></i>
+                    You have unsaved changes
+                </span>
+                <div class="save-actions">
+                    <button class="btn btn-outline" id="discardChangesBtn">Discard</button>
+                    <button class="btn" id="saveChangesBtn">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Confirmation Modal -->
+        <div class="modal" id="confirmationModal">
+            <div class="modal-content compact">
+                <div class="modal-header">
+                    <h2 id="confirmationTitle">Confirm Action</h2>
+                </div>
+                <div class="modal-body">
+                    <p id="confirmationMessage">Are you sure you want to perform this action?</p>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" id="cancelConfirmationBtn">Cancel</button>
+                    <button type="button" class="btn" id="confirmActionBtn">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../javascript/admin_settings.js"></script>
+</body>
+</html> 
