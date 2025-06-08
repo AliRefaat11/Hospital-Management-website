@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= hospital.name %> - Meet Our Doctors</title>
+  <link rel="stylesheet" href="../public/css/doctors_page.css">
+  <link rel="icon" href="/images/logo.jpeg" type="image/jpeg">
+</head>
+
+<body>
+  <nav>
+    <div class="navbar-container">
+      <a href="/" class="site-name"><%= hospital.name %></a>
+      <div class="navbar-links">
+        <a href="/" class="<%= currentPage === 'home' ? 'active' : '' %>">HOME</a>
+        <a href="/about" class="<%= currentPage === 'about' ? 'active' : '' %>">ABOUT US</a>
+        <a href="/departments" class="<%= currentPage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
+        <a href="/doctors" class="<%= currentPage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
+        <a href="/appointments" class="<%= currentPage === 'appointments' ? 'active' : '' %>">BOOK NOW</a>
+        <% if (user) { %>
+          <a href="/profile" class="profile-link"><%= user.name %></a>
+          <a href="/auth/logout" class="logout-btn">Logout</a>
+        <% } else { %>
+          <a href="/auth/login" class="<%= currentPage === 'login' ? 'active' : '' %>">Login</a>
+          <a href="/auth/signup" class="signup-btn">Sign Up</a>
+        <% } %>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <h1><%= pageContent.heroTitle %></h1>
+    <p><%= pageContent.heroSubtitle %></p>
+  </section>
+  
+  <form action="/doctors/search" method="GET" class="search-form">
+    <input type="search" id="search" name="query" placeholder="Search doctors..." value="<%= searchQuery || '' %>" />
+    <button type="submit"><i class="fa fa-search"></i></button>
+  </form>
+
+  <section class="doctors" id="doctors">
+    <h2>Our Doctors</h2>
+    <div class="doctor-list" id="doctor-list">
+      <% doctors.forEach(function(doctor) { %>
+        <div class="doctor-card" data-name="<%= doctor.name %>" data-specialization="<%= doctor.specialization %>">
+          <div class="doctor-img-container">
+            <img src="<%= doctor.profileImage || '/images/account-icon-33.png' %>" alt="<%= doctor.name %>" class="doctor-img">
+          </div>
+          <h3>
+            <a href="/doctors/<%= doctor.id %>"><%= doctor.name %></a>
+          </h3>
+          <p><%= doctor.specialization %></p>
+          <div class="card-actions">
+            <a class="btn book-btn" href="/appointments/book?doctor=<%= doctor.id %>">Book Appointment</a>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-container">
+      <div class="footer-column">
+        <h3>Location</h3>
+        <div class="map-container">
+          <img src="/images/location_map_icon.jpg" width="30" height="30" style="border:0;" allowfullscreen="" loading="lazy" alt="Location Map">
+        </div>
+        <p><%= hospital.address %></p>
+      </div>
+      <div class="footer-column">
+        <h3>Quick Links</h3>
+        <ul>
+          <% footerLinks.forEach(function(link) { %>
+            <li><a href="<%= link.url %>"><%= link.text %></a></li>
+          <% }); %>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3>Contact</h3>
+        <p>
+          <%= hospital.address %><br />
+          <%= hospital.phone %><br />
+          <%= hospital.email %>
+        </p>
+      </div>
+      <div class="footer-column">
+        <h3>Follow Us</h3>
+        <div class="social-icons">
+          <% socialLinks.forEach(function(social) { %>
+            <a href="<%= social.url %>" target="_blank" rel="noopener noreferrer"><%= social.icon %></a>
+          <% }); %>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-bar">&copy; <%= new Date().getFullYear() %> <%= hospital.name %>. All rights reserved.</div>
+  </footer>
+
+  <script>
+    /*
+    const serverData = {
+      hospital: <%- JSON.stringify(hospital) %>,
+      user: <%- JSON.stringify(user) %>,
+      currentPage: '<%= currentPage %>',
+      doctors: <%- JSON.stringify(doctors) %>,
+      csrfToken: '<%= csrfToken %>'
+    };*/
+  </script>
+  <script src="../public/javascript/doctors_page.js"></script>
+</body>
+</html>

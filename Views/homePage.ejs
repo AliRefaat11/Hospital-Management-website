@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= hospital.name %> - Meet Our Doctors</title>
+  <link rel="stylesheet" href="../public/css/home_page.css">
+  <link rel="icon" href="/images/logo.jpeg" type="image/jpeg">
+  <meta name="theme-color" content="#3498db">
+</head>
+
+<body>
+  <nav>
+    <div class="navbar-container">
+      <a href="/" class="site-name"><%= hospital.name %></a>
+      <div class="navbar-links">
+        <a href="/" class="<%= currentPage === 'home' ? 'active' : '' %>">HOME</a>
+        <a href="/about" class="<%= currentPage === 'about' ? 'active' : '' %>">ABOUT US</a>
+        <a href="/departments" class="<%= currentPage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
+        <a href="/doctors" class="<%= currentPage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
+        <a href="/appointments" class="<%= currentPage === 'appointments' ? 'active' : '' %>">BOOK NOW</a>
+        <% if (user) { %>
+          <a href="/profile" class="profile-link"><%= user.name %></a>
+          <a href="/auth/logout" class="logout-btn">Logout</a>
+        <% } else { %>
+          <a href="/auth/login" class="<%= currentPage === 'login' ? 'active' : '' %>">Login</a>
+          <a href="/auth/signup" class="signup-btn">Sign Up</a>
+        <% } %>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="container">
+      <h2><%= hospital.tagline %></h2>
+      <p><%= hospital.subTagline %></p>
+      <a href="/appointments" class="btn">Book an Appointment</a>
+    </div>
+  </section>
+
+  <section class="about">
+    <div class="container">
+      <h3>About Us</h3>
+      <p><%= hospital.about %></p>
+    </div>
+  </section>
+
+  <section class="services">
+    <div class="container">
+      <h2>Our Services</h2>
+      <div class="service-grid">
+        <% services.forEach(function(service) { %>
+          <div class="service-item">
+            <img src="<%= service.icon %>" width="100" alt="<%= service.name %>-icon">
+            <h3><%= service.name %></h3>
+          </div>
+        <% }); %>
+      </div>
+    </div>
+  </section>
+
+  <section class="doctors">
+    <div class="container">
+      <h3>Meet Our Doctors</h3>
+      <div class="doctor-grid">
+        <% featuredDoctors.forEach(function(doctor) { %>
+          <div class="doctor-card">
+            <img src="<%= doctor.profileImage || '/images/account-icon-33.png' %>" alt="<%= doctor.name %>">
+            <h4><%= doctor.name %></h4>
+            <p><%= doctor.specialization %></p>
+          </div>
+        <% }); %>
+      </div>
+    </div>
+  </section>
+
+  <section class="why-choose-us">
+    <div class="container">
+      <h3>Why Choose Us</h3>
+      <ul>
+        <% features.forEach(function(feature) { %>
+          <li>✔ <%= feature %></li>
+        <% }); %>
+      </ul>
+    </div>
+  </section>
+
+  <section class="testimonials">
+    <div class="container">
+      <h3>What Our Patients Say</h3>
+      <div class="testimonial-slider">
+        <% testimonials.forEach(function(testimonial) { %>
+          <div class="testimonial">
+            <p>"<%= testimonial.content %>"</p>
+            <cite>- <%= testimonial.author %></cite>
+          </div>
+        <% }); %>
+      </div>
+    </div>
+  </section>
+
+  <section class="appointment-cta">
+    <div class="container">
+      <h3><%= cta.heading %></h3>
+      <a href="/appointments" class="btn"><%= cta.buttonText %></a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-container">
+      <div class="footer-column">
+        <h3>Location</h3>
+        <div class="map-container">
+          <img src="/images/location_map_icon.jpg" width="30" height="30" style="border:0;" allowfullscreen="" loading="lazy" alt="Location Map">
+        </div>
+        <p><%= hospital.address %></p>
+      </div>
+      <div class="footer-column">
+        <h3>Quick Links</h3>
+        <ul>
+          <% footerLinks.forEach(function(link) { %>
+            <li><a href="<%= link.url %>"><%= link.text %></a></li>
+          <% }); %>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3>Contact</h3>
+        <p>
+          <%= hospital.address %><br />
+          <%= hospital.phone %><br />
+          <%= hospital.email %>
+        </p>
+      </div>
+      <div class="footer-column">
+        <h3>Follow Us</h3>
+        <div class="social-icons">
+          <% socialLinks.forEach(function(social) { %>
+            <a href="<%= social.url %>" target="_blank" rel="noopener noreferrer"><%= social.icon %></a>
+          <% }); %>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-bar">&copy; <%= new Date().getFullYear() %> <%= hospital.name %>. All rights reserved.</div>
+  </footer>
+
+  <script>
+    /*
+    const serverData = {
+      hospital: <%- JSON.stringify(hospital) %>,
+      user: <%- JSON.stringify(user) %>,
+      currentPage: '<%= currentPage %>',
+      csrfToken: '<%= csrfToken %>'
+    };*/
+  </script>
+  <script src="../public/javascript/home_page.js"></script>
+</body>
+</html>

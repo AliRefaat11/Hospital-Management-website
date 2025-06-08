@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Management - PrimeCare</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../public/css/doctor_management.css">
+</head>
+<body>
+    <div class="sidebar" id="sidebarNav">
+        <div class="sidebar-header">
+            <a href="./admin/profile" class="site-name">Prime Care</a>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        <div class="admin-profile">
+            <div class="admin-avatar">
+                <img id="adminProfileImage" src="<%= admin.profileImage || '/images/admin-avatar.png' %>" alt="Admin">
+            </div>
+            <div class="admin-info">
+                <h3 id="adminName"><%= admin.name %></h3>
+                <span class="admin-role"><%= admin.role %></span>
+            </div>
+        </div>
+        <div class="sidebar-content">
+            <ul class="nav-links">
+                <li>
+                    <a href="admin_profile.html">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="admin_management.html">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Admins</span>
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="doctor_management.html">
+                        <i class="fas fa-user-md"></i>
+                        <span>Doctors</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="patient_management.html">
+                    <i class="fas fa-user-injured"></i>
+                    <span>Patients</span>
+                </a>
+                </li>
+                <li>
+                    <a href="appointments_management.html">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Appointments</span>
+                    </a>
+                </li>
+                <li><a href="reports.html">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Reports</span></a>
+                </li>
+                <li>
+                    <a href="admin_settings.html">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="sidebar-footer">
+            <a href="#" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="dashboard-background"></div>
+        <div class="dashboard-header">
+            <div class="header-left">
+                <h1>Doctor Management</h1>
+                <p class="welcome-message">Manage doctors and their specializations</p>
+            </div>
+            <div class="header-right">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="doctorSearch" placeholder="Search doctors...">
+                </div>
+                <div class="header-actions">
+                    <button class="btn-icon" title="Notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <button class="btn-icon" title="Messages">
+                        <i class="fas fa-envelope"></i>
+                        <span class="message-badge">5</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-user-md"></i></div>
+                <div class="stat-info">
+                    <h3>Total Doctors</h3>
+                    <p class="stat-value" id="totalDoctors"><%= stats.totalDoctors %></p>
+                    <p class="stat-change" id="totalDoctorsChange"><%= stats.doctorsChange %>% from last month</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-user-check"></i></div>
+                <div class="stat-info">
+                    <h3>On-Duty Doctors</h3>
+                    <p class="stat-value" id="activeDoctors"><%= stats.activeDoctors %></p>
+                    <p class="stat-change">Currently Active</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-stethoscope"></i></div>
+                <div class="stat-info">
+                    <h3>Specialists</h3>
+                    <p class="stat-value" id="specialistDoctors"><%= stats.specialistDoctors %></p>
+                    <p class="stat-change">Specialized Doctors</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-user-md"></i></div>
+                <div class="stat-info">
+                    <h3>General Practitioners</h3>
+                    <p class="stat-value" id="generalDoctors"><%= stats.generalDoctors %></p>
+                    <p class="stat-change">General Medicine</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="doctor-management">
+            <div class="actions">
+                <button class="btn btn-outline" id="addDoctorBtn">
+                    <i class="fas fa-plus"></i> Add New Doctor
+                </button>
+                <div class="filter-actions">
+                    <select id="specializationFilter" class="filter-select">
+                        <option value="">All Specializations</option>
+                        <option value="Cardiologist">Cardiologist</option>
+                        <option value="Neurologist">Neurologist</option>
+                        <option value="Orthopedist">Orthopedist</option>
+                        <option value="General Practitioner">General Practitioner</option>
+                        <option value="Pediatrician">Pediatrician</option>
+                        <option value="Dermatologist">Dermatologist</option>
+                    </select>
+                    <select id="statusFilter" class="filter-select">
+                        <option value="">All Statuses</option>
+                        <option value="active">On-Duty</option>
+                        <option value="inactive">Off-Duty</option>
+                        <option value="on-leave">On Leave</option>
+                    </select>
+                </div>
+            </div>
+            <div class="table-container">
+                <table class="doctor-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Specialization</th>
+                            <th>Department</th>
+                            <th>Last Active</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="doctorTableBody">
+                        <% doctors.forEach(function(doctor) { %>
+                            <tr data-doctor-id="<%= doctor.id %>">
+                                <td><%= doctor.id %></td>
+                                <td><%= doctor.name %></td>
+                                <td><%= doctor.email %></td>
+                                <td><%= doctor.specialization %></td>
+                                <td><%= doctor.department %></td>
+                                <td><%= new Date(doctor.lastActive).toLocaleString() %></td>
+                                <td>
+                                    <span class="status-badge <%= doctor.status.toLowerCase() %>">
+                                        <%= doctor.status %>
+                                    </span>
+                                </td>
+                                <td class="actions-cell">
+                                    <button class="btn-icon view-doctor" title="View Details">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn-icon edit-doctor" title="Edit Doctor">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn-icon delete-doctor" title="Delete Doctor">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="recent-activity">
+            <h2>Recent Doctor Activity</h2>
+            <div id="activityList" class="activity-list">
+                <% activities.forEach(function(activity) { %>
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas <%= activity.icon %>"></i>
+                        </div>
+                        <div class="activity-details">
+                            <p class="activity-text"><%= activity.description %></p>
+                            <span class="activity-time"><%= new Date(activity.timestamp).toLocaleString() %></span>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+
+        <div class="modal" id="doctorModal">
+            <div class="modal-content compact">
+                <div class="modal-header">
+                    <h2 id="modalTitle">Add New Doctor</h2>
+                </div>
+                <form id="doctorForm" data-has-attempted-submit="false">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="doctorId">ID</label>
+                            <input type="text" id="doctorId" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="doctorNameInput">Name *</label>
+                            <input type="text" id="doctorNameInput" required>
+                            <span class="validation-message">Please enter the doctor's name</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="doctorEmail">Email *</label>
+                            <input type="email" id="doctorEmail" required>
+                            <span class="validation-message">Please enter a valid email address</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="doctorPhone">Phone *</label>
+                            <input type="tel" id="doctorPhone" required>
+                            <span class="validation-message">Please enter a valid phone number</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="doctorRole">Specialization *</label>
+                            <select id="doctorRole" required>
+                                <option value="">Select Specialization</option>
+                                <option value="Cardiologist">Cardiologist</option>
+                                <option value="Neurologist">Neurologist</option>
+                                <option value="Orthopedist">Orthopedist</option>
+                                <option value="General Practitioner">General Practitioner</option>
+                                <option value="Pediatrician">Pediatrician</option>
+                                <option value="Dermatologist">Dermatologist</option>
+                            </select>
+                            <span class="validation-message">Please select a specialization</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="doctorDepartment">Department *</label>
+                            <select id="doctorDepartment" required>
+                                <option value="">Select Department</option>
+                                <option value="Cardiology">Cardiology</option>
+                                <option value="Neurology">Neurology</option>
+                                <option value="Orthopedics">Orthopedics</option>
+                                <option value="General Medicine">General Medicine</option>
+                                <option value="Pediatrics">Pediatrics</option>
+                                <option value="Dermatology">Dermatology</option>
+                            </select>
+                            <span class="validation-message">Please select a department</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="employmentType">Employment Type *</label>
+                            <select id="employmentType" required>
+                                <option value="">Select Employment Type</option>
+                                <option value="Full-Time">Full-Time</option>
+                                <option value="Part-Time">Part-Time</option>
+                                <option value="Consultant">Consultant</option>
+                            </select>
+                            <span class="validation-message">Please select an employment type</span>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline" id="cancelBtn">Cancel</button>
+                        <button type="submit" class="btn" id="saveBtn">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="modal" id="doctorDetailsModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Doctor Details</h2>
+                    <button class="btn-icon" id="closeDetailsModal"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="details-content">
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <span class="detail-label">Name</span>
+                            <span class="detail-value" id="detailName">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Email</span>
+                            <span class="detail-value" id="detailEmail">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Specialization</span>
+                            <span class="detail-value" id="detailSpecialization">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Department</span>
+                            <span class="detail-value" id="detailDepartment">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Phone</span>
+                            <span class="detail-value" id="detailPhone">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Employment Type</span>
+                            <span class="detail-value" id="detailEmploymentType">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Last Active</span>
+                            <span class="detail-value" id="detailLastActive">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Status</span>
+                            <span class="detail-value" id="detailStatus">-</span>
+                        </div>
+                    </div>
+                    <div class="details-actions">
+                        <button class="btn btn-outline" id="editFromDetails">Edit Doctor</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="deleteConfirmModal">
+            <div class="modal-content">
+                <h2>Delete Doctor</h2>
+                <p>Are you sure you want to delete this doctor's record?</p>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" id="cancelDeleteBtn">Cancel</button>
+                    <button type="button" class="btn" id="confirmDeleteBtn">Delete</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script>
+        /*
+        const serverData = {
+            doctors: <%- JSON.stringify(doctors) %>,
+            specializations: <%- JSON.stringify(specializations) %>,
+            departments: <%- JSON.stringify(departments) %>,
+            employmentTypes: <%- JSON.stringify(employmentTypes) %>,
+            csrfToken: '<%= csrfToken %>'
+        };
+        */
+    </script>
+    <script src="../public/javascript/doctor_management.js"></script>
+</body>
+</html>

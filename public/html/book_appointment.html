@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Prime Care - Book Appointment</title>
+  <link rel="stylesheet" href="../css/book_appointment.css"/>
+
+</head>
+<body>
+  <nav>
+    <div class="navbar-container">
+      <a href="#" class="site-name">Prime Care</a>
+      <div class="navbar-links">
+        <a href="./home_page.html">HOME</a>
+        <a href="./about_us_page.html">ABOUT US</a>
+        <a href="./department_page.html">DEPARTMENTS</a>
+        <a href="./doctors_page.html">DOCTORS</a>
+        <a href="./quick_appointment.html" class="active">BOOK NOW</a>
+        <a href="./login_page.html">Login</a>
+        <a href="./sign_up_page.html" class="signup-btn">Sign Up</a>
+      </div>
+    </div>
+  </nav>
+  <header>
+  </header>
+  <main>
+    <h1 class="page-title">Book Appointment</h1>
+    <p class="subtitle">Schedule your doctor appointment</p>
+    
+    <div class="language-toggle">
+      <button id="langButton" onclick="toggleLanguage()">Switch to Arabic</button>
+    </div>
+
+    <div class="appointment-container">
+      <h2 id="formTitle">Personal Information</h2>
+      <form id="appointmentForm">
+        <div class="form-row">
+          <div class="form-group half">
+            <label for="patientFirstName" id="labelFirstName">First Name</label>
+            <input type="text" id="patientFirstName" placeholder="Enter your first name" required />
+          </div>
+          
+          <div class="form-group half">
+            <label for="patientLastName" id="labelLastName">Last Name</label>
+            <input type="text" id="patientLastName" placeholder="Enter your last name" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="patientPhone" id="labelPhone">Phone Number</label>
+          <input type="tel" id="patientPhone" placeholder="11-digit phone number" maxlength="11" required />
+        </div>
+
+        <div class="form-group">
+          <label for="patientEmail" id="labelEmail">Email Address</label>
+          <input type="email" id="patientEmail" placeholder="your.email@example.com" required />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group half">
+            <label for="patientGender" id="labelGender">Gender</label>
+            <select id="patientGender" required>
+              <option value="" disabled selected>Select Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+          </div>
+          
+          <div class="form-group half">
+            <label for="patientAge" id="labelAge">Age</label>
+            <input type="number" id="patientAge" min="0" max="120" placeholder="Your age" required />
+          </div>
+        </div>
+
+        <h2 class="section-title">Appointment Details</h2>
+
+        <div class="form-row">
+          <div class="form-group half">
+            <label for="appointmentDate" id="labelDate">Appointment Date</label>
+            <input type="date" id="appointmentDate" required />
+          </div>
+          
+          <div class="form-group half">
+            <label for="appointmentTime" id="labelTime">Preferred Time</label>
+            <input type="time" id="appointmentTime" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="departmentSelect" id="labelDepartment">Department</label>
+          <select id="departmentSelect" required>
+            <option value="" disabled selected>Select Department</option>
+            <option value="general">General Medicine</option>
+            <option value="cardiology">Cardiology</option>
+            <option value="dermatology">Dermatology</option>
+            <option value="orthopedics">Orthopedics</option>
+            <option value="pediatrics">Pediatrics</option>
+            <option value="neurology">Neurology</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="reason" id="labelReason">Reason for Visit</label>
+          <textarea id="reason" rows="4" placeholder="Describe your symptoms or concerns..." required></textarea>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="termsCheck" required />
+            <span id="labelTerms">I agree to the terms and privacy policy</span>
+          </label>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" id="submitBtn">
+            <span>Confirm Appointment</span>
+            <i class="fas fa-calendar-check"></i>
+          </button>
+          <div id="submitLoader" class="loader">
+            <i class="fas fa-circle-notch fa-spin"></i>
+            <span>Processing...</span>
+          </div>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <div id="confirmationModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-icon">
+        <i class="fas fa-check-circle"></i>
+      </div>
+      <h3 id="modalTitle">Appointment Confirmed</h3>
+      <p id="modalMessage">Your appointment has been scheduled successfully. A confirmation has been sent to your email.</p>
+      <button id="closeModalBtn">Close</button>
+    </div>
+  </div>
+
+  <script src="../javascript/book_appointment.js"></script>
+</body>
+</html>
