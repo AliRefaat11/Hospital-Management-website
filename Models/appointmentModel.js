@@ -1,29 +1,18 @@
-
 const mongoose = require('mongoose');
 
 const appointmentSchema = new mongoose.Schema({
-  appointmentID: {
-    type: mongoose.Schema.Types.ObjectId,
-    default: () => new mongoose.Types.ObjectId(),
-    primary: true
-  },
-  
-  // Foreign Keys (Relationships)
   doctorID: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Doctor',
     required: [true, 'Doctor ID is required'],
     index: true
   },
-  
   patientID: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Patient', 
     required: [true, 'Patient ID is required'],
     index: true
   },
-  
-  // Appointment Details
   date: {
     type: Date,
     required: [true, 'Appointment date is required'],
@@ -34,13 +23,11 @@ const appointmentSchema = new mongoose.Schema({
       message: 'Appointment date must be in the future'
     }
   },
-  
   startingHour: {
     type: String,
     required: [true, 'Starting hour is required'],
     match: [/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Invalid time format (HH:MM)']
   },
-  
   status: {
     type: String,
     required: [true, 'Status is required'],
@@ -50,7 +37,6 @@ const appointmentSchema = new mongoose.Schema({
     },
     default: 'scheduled'
   },
-  
   reason: {
     type: String,
     required: [true, 'Reason for appointment is required'],
