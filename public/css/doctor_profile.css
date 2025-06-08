@@ -1,4 +1,5 @@
 :root {
+<<<<<<< HEAD:public/css/doctor_profile.css
   --primary-color: #2d5f7c;
   --secondary-color: #1a4761;
   --accent-color: #5bb0d5;
@@ -482,6 +483,367 @@ header p {
             }
         }
 
+@media (max-width: 600px) {
+  .container {
+    padding: 1.5rem;
+  }
+  
+  .profile-image img {
+    width: 180px;
+    height: 180px;
+  }
+  
+  .quick-appointment h1 {
+    font-size: a2rem;
+  }
+  
+  .auth-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .btn {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+  }
+  
+  .main-header h1 {
+    font-size: 1.8rem;
+  }
+}
+
+/* Add animation for sections */
+section {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+=======
+            --primary-color: #2d5f7c;
+            --secondary-color: #1a4761;
+            --accent-color: #5bb0d5;
+            --text-color: #333;
+            --light-gray: #f5f7fa;
+            --border-color: #e0e0e0;
+            --success-color: #4caf50;
+            --tag-bg: rgba(91, 176, 213, 0.1);
+            --green-button: #48bb78;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+        }
+
+        body {
+            color: var(--text-color);
+            line-height: 1.6;
+            background-color: var(--light-gray);
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        nav {
+            background: linear-gradient(to right, #2d5f7c, #1e4e75);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .site-name {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .navbar-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .navbar-links a:hover,
+        .navbar-links a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .signup-btn {
+            background-color: var(--green-button) !important;
+            color: white !important;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 19000px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: calc(100vh - 80px);
+        }
+
+        .profile-container {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 4rem;
+            background: #fff;
+            border-radius: 12px;
+            padding: 4rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            width: 100%;
+            min-height: calc(100vh - 160px);
+        }
+
+        .profile-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .profile-image {
+            position: relative;
+        }
+
+        .profile-image img {
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--light-gray);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .contact-info, .availability, .insurance-info, .languages-box {
+            background-color: var(--light-gray);
+            padding: 1.75rem;
+            border-radius: 10px;
+            width: 100%;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1.2rem;
+            color: var(--accent-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .contact-info p {
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .contact-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            width: 100%;
+        }
+
+        .btn-appointment {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+        }
+
+        .btn-appointment:hover {
+            background-color: #4999bd;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .availability ul, .insurance-info ul {
+            list-style: none;
+            font-size: 1rem;
+        }
+
+        .availability ul li, .insurance-info ul li {
+            padding: 0.6rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .availability ul li:last-child, .insurance-info ul li:last-child {
+            border-bottom: none;
+        }
+
+        .telehealth-badge {
+            display: inline-block;
+            background-color: var(--tag-bg);
+            color: var(--accent-color);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-top: 1.2rem;
+        }
+
+        .language-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .language-tag {
+            background-color: var(--tag-bg);
+            color: var(--accent-color);
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .language-tag.fluent {
+            background-color: rgba(76, 175, 80, 0.1);
+            color: var(--success-color);
+        }
+
+        .language-level {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .profile-main {
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+        }
+
+        .main-header {
+            margin-bottom: 0.5rem;
+        }
+
+        .main-header h1 {
+            color: var(--primary-color);
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .main-header p {
+            color: #666;
+            font-size: 1.2rem;
+        }
+
+        .patient-info {
+            display: flex;
+            gap: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .patient-info > div {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.3rem;
+        }
+
+        .label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .rating {
+            color: #ffc107;
+            font-size: 1.5rem;
+        }
+
+        .main-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section {
+            margin-bottom: 2.5rem;
+        }
+
+        .about-text {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: #444;
+            margin-top: 1rem;
+        }
+
+        .specialties-list, .certifications-list {
+            list-style: disc;
+            padding-left: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .specialties-list li, .certifications-list li {
+            margin-bottom: 0.75rem;
+            font-size: 1.05rem;
+        }
+
+        @media (max-width: 1200px) {
+            .profile-container {
+                grid-template-columns: 350px 1fr;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .container {
+                padding: 1.5rem;
+            }
+            
+            .profile-container {
+                grid-template-columns: 1fr;
+                padding: 2rem;
+            }
+            
+            .navbar-links {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+        }
+
         @media (max-width: 600px) {
             .container {
                 padding: 1rem;
@@ -501,3 +863,4 @@ header p {
                 gap: 0.5rem;
             }
         }
+>>>>>>> origin/adel:frontend/css/doctor_profile.css

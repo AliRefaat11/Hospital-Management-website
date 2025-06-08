@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Prime Care - Book Appointment</title>
+  <link rel="stylesheet" href="../public/css/book_appointment.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <nav>
+    <div class="navbar-container">
+      <a href="/" class="site-name">Prime Care</a>
+      <div class="navbar-links">
+        <a href="/home">HOME</a>
+        <a href="/about">ABOUT US</a>
+        <a href="/departments">DEPARTMENTS</a>
+        <a href="/doctors">DOCTORS</a>
+        <a href="/book-appointment" class="active">BOOK NOW</a>
+        <% if (user) { %>
+          <a href="/profile"><%= user.name %></a>
+          <a href="/logout" class="signup-btn">Logout</a>
+        <% } else { %>
+          <a href="/login">Login</a>
+          <a href="/signup" class="signup-btn">Sign Up</a>
+        <% } %>
+      </div>
+    </div>
+  </nav>
+  <header>
+  </header>
+  <main>
+    <h1 class="page-title">Book Appointment</h1>
+    <p class="subtitle">Schedule your doctor appointment</p>
+    
+    <div class="language-toggle">
+      <button id="langButton" onclick="toggleLanguage()">Switch to Arabic</button>
+    </div>
+
+    <div class="appointment-container">
+      <h2 id="formTitle">Personal Information</h2>
+      <form id="appointmentForm" action="/appointments/book" method="POST">
+        <div class="form-row">
+          <div class="form-group half">
+            <label for="patientFirstName" id="labelFirstName">First Name</label>
+            <input type="text" id="patientFirstName" name="firstName" value="<%= user ? user.firstName : '' %>" placeholder="Enter your first name" required />
+          </div>
+          
+          <div class="form-group half">
+            <label for="patientLastName" id="labelLastName">Last Name</label>
+            <input type="text" id="patientLastName" name="lastName" value="<%= user ? user.lastName : '' %>" placeholder="Enter your last name" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="patientPhone" id="labelPhone">Phone Number</label>
+          <input type="tel" id="patientPhone" name="phone" value="<%= user ? user.phone : '' %>" placeholder="11-digit phone number" maxlength="11" required />
+        </div>
+
+        <div class="form-group">
+          <label for="patientEmail" id="labelEmail">Email Address</label>
+          <input type="email" id="patientEmail" name="email" value="<%= user ? user.email : '' %>" placeholder="your.email@example.com" required />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group half">
+            <label for="patientGender" id="labelGender">Gender</label>
+            <select id="patientGender" name="gender" required>
+              <option value="" disabled selected>Select Gender</option>
+              <option value="male" <%= user && user.gender === 'male' ? 'selected' : '' %>>Male</option>
+              <option value="female" <%= user && user.gender === 'female' ? 'selected' : '' %>>Female</option>
+            </select>
+          </div>
+          
+          <div class="form-group half">
+            <label for="patientAge" id="labelAge">Age</label>
+            <input type="number" id="patientAge" name="age" value="<%= user ? user.age : '' %>" min="0" max="120" placeholder="Your age" required />
+          </div>
+        </div>
+
+        <h2 class="section-title">Appointment Details</h2>
+
+        <div class="form-row">
+          <div class="form-group half">
+            <label for="appointmentDate" id="labelDate">Appointment Date</label>
+            <input type="date" id="appointmentDate" name="date" min="<%= new Date().toISOString().split('T')[0] %>" required />
+          </div>
+          
+          <div class="form-group half">
+            <label for="appointmentTime" id="labelTime">Preferred Time</label>
+            <select id="appointmentTime" name="time" required>
+              <option value="" disabled selected>Select Time</option>
+              <% const timeSlots = ['09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00']; %>
+              <% timeSlots.forEach(time => { %>
+                <option value="<%= time %>"><%= time %></option>
+              <% }); %>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="departmentSelect" id="labelDepartment">Department</label>
+          <select id="departmentSelect" name="department" required>
+            <option value="" disabled selected>Select Department</option>
+            <% departments.forEach(dept => { %>
+              <option value="<%= dept.id %>"><%= dept.name %></option>
+            <% }); %>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="doctorSelect" id="labelDoctor">Doctor</label>
+          <select id="doctorSelect" name="doctor" required>
+            <option value="" disabled selected>Select Doctor</option>
+            <% doctors.forEach(doctor => { %>
+              <option value="<%= doctor.id %>"><%= doctor.name %> - <%= doctor.specialization %></option>
+            <% }); %>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="reason" id="labelReason">Reason for Visit</label>
+          <textarea id="reason" name="reason" rows="4" placeholder="Describe your symptoms or concerns..." required></textarea>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="termsCheck" name="terms" required />
+            <span id="labelTerms">I agree to the terms and privacy policy</span>
+          </label>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" id="submitBtn">
+            <span>Confirm Appointment</span>
+            <i class="fas fa-calendar-check"></i>
+          </button>
+          <div id="submitLoader" class="loader">
+            <i class="fas fa-circle-notch fa-spin"></i>
+            <span>Processing...</span>
+          </div>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <div id="confirmationModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-icon">
+        <i class="fas fa-check-circle"></i>
+      </div>
+      <h3 id="modalTitle">Appointment Confirmed</h3>
+      <p id="modalMessage">Your appointment has been scheduled successfully. A confirmation has been sent to your email.</p>
+      <button id="closeModalBtn">Close</button>
+    </div>
+  </div>
+
+  <script src="../public/javascript/book_appointment.js"></script>
+</body>
+</html>
