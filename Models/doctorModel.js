@@ -31,21 +31,11 @@ const doctorSchema = new mongoose.Schema(
             required: true
         },
         rating: {
-            type: Int,
+            type: Number,
             required: true
         },
     }
 );
 
-class DoctorModel {
-    constructor() {
-        mongoose.connect();
-        this.DocMod = mongoose.model('Doctor', doctorSchema);
-    }
-    async getAllDoctors() {
-        let data = await this.DocMod.find({});
-        return JSON.stringify(data);
-    }
-}
-
-module.exports = DoctorModel;
+const Doctor = mongoose.model("Doctor",doctorSchema);
+module.exports = Doctor;
