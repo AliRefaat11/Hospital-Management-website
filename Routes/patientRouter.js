@@ -1,3 +1,4 @@
+
 const express = require('express');
 const router = express.Router();
 const patientController = require('../Controllers/patientController');
@@ -7,5 +8,8 @@ router.get('/:id', authMiddleware, patientController.getPatientById); // Get a s
 router.post('/', authMiddleware, patientController.addPatient); // Add a new patient
 router.put('/:id', authMiddleware, patientController.updatePatient); // Update a patient's information
 router.delete('/:id', authMiddleware, patientController.deletePatient); // Delete a patient by ID
+const express = require("express");
+const PatRouter = express.Router();
+const PatController = require("../Controllers/patientController");
 
 module.exports = router;
