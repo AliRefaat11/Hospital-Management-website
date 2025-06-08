@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title || 'PrimeCare Hospital Sign Up' %></title>
+    <link rel="stylesheet" href="../css/sign_up_page.css">
+</head>
+<body>
+    <nav>
+        <div class="navbar-container">
+            <a href="#" class="site-name">Prime Care</a>
+            <div class="navbar-links">
+                <a href="./home_page.html" class="<%= currentPage === 'home' ? 'active' : '' %>">HOME</a>
+                <a href="./about_us_page.html" class="<%= currentPage === 'about' ? 'active' : '' %>">ABOUT US</a>
+                <a href="./department_page.html" class="<%= currentPage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
+                <a href="./doctors_page.html" class="<%= currentPage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
+                <a href="./quick-appointment.html" class="<%= currentPage === 'book' ? 'active' : '' %>">BOOK NOW</a>
+                <a href="./login_page.html" class="<%= currentPage === 'login' ? 'active' : '' %>">Login</a>
+                <a href="./sign_up_page.html" class="signup-btn <%= currentPage === 'signup' ? 'active' : '' %>">Sign Up</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sign Up Form -->
+    <div class="container">
+        <h2><%= formTitle || 'Sign Up' %></h2>
+        
+        <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+            <div class="error-message server-error"><%= errorMessage %></div>
+        <% } %>
+        
+        <% if (typeof successMessage !== 'undefined' && successMessage) { %>
+            <div class="success-message"><%= successMessage %></div>
+        <% } %>
+
+        <form action="/signup" method="POST" id="signupForm">
+            <div class="input-group">
+                <input type="text" id="firstName" name="firstName" placeholder=" " required 
+                       value="<%= typeof formData !== 'undefined' && formData.firstName ? formData.firstName : '' %>">
+                <label for="firstName">First Name</label>
+            </div>
+            
+            <div class="input-group">
+                <input type="text" id="lastName" name="lastName" placeholder=" " required
+                       value="<%= typeof formData !== 'undefined' && formData.lastName ? formData.lastName : '' %>">
+                <label for="lastName">Last Name</label>
+            </div>
+            
+            <div class="input-group">
+                <input type="tel" id="phoneNumber" name="phoneNumber" placeholder=" " required
+                       value="<%= typeof formData !== 'undefined' && formData.phoneNumber ? formData.phoneNumber : '' %>">
+                <label for="phoneNumber">Phone Number</label>
+            </div>
+            
+            <div class="input-group">
+                <input type="text" id="username" name="username" placeholder=" " required
+                       value="<%= typeof formData !== 'undefined' && formData.username ? formData.username : '' %>">
+                <label for="username">Username</label>
+            </div>
+            
+            <div class="input-group">
+                <input type="email" id="email" name="email" placeholder=" " required maxlength="50"
+                       value="<%= typeof formData !== 'undefined' && formData.email ? formData.email : '' %>">
+                <label for="email">Email</label>
+            </div>
+            
+            <div class="input-group">
+                <input type="password" id="password" name="password" placeholder=" " required maxlength="50">
+                <label for="password">Password</label>
+            </div>
+            
+            <div class="input-group">
+                <input type="password" id="confirm-password" name="confirmPassword" placeholder=" " required maxlength="50">
+                <label for="confirm-password">Confirm Password</label>
+            </div>
+            
+            <button type="submit" class="signup-btnm">
+                Sign Up
+                <i class="fas fa-user-plus"></i>
+            </button>
+        </form>
+        
+        <a href="./login_page.html" class="login-link">Already have an account? Log In</a>
+        <div class="error-message" id="errorMessage"></div>
+    </div>
+    
+    <script src="../javascript/sign_up_page.js"></script>
+</body>
+</html>
