@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Management - PrimeCare</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/admin_profile.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar" id="sidebarNav">
+        <div class="sidebar-header">
+            <a href="#" class="site-name">Prime Care</a>
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        <div class="sidebar-content">
+            <div class="admin-profile">
+                <div class="admin-avatar">
+                    <img src="../images/admin-avatar.png" alt="Admin Profile" id="adminProfileImage">
+                </div>
+                <div class="admin-info">
+                    <h3 id="adminName">Sarah Johnson</h3>
+                    <span class="admin-role">System Administrator</span>
+                </div>
+            </div>
+            <ul class="nav-links">
+                <li class="active">
+                    <a href="./admin_dashboard.html">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="./admin_management.html">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Admins</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="./doctor_management.html">
+                        <i class="fas fa-user-md"></i>
+                        <span>Doctors</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="./patient_management.html">
+                        <i class="fas fa-users"></i>
+                        <span>Patients</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="./appointments_management.html">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Appointments</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="./reports.html">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Reports</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="./admin_settings.html">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="sidebar-footer">
+            <a href="./login_page.html" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="dashboard-background"></div>
+        <div class="container">
+            <!-- Dashboard Header -->
+            <header class="dashboard-header">
+                <div class="header-left">
+                    <h1>Doctor Management</h1>
+                    <p class="welcome-message">Welcome to Doctor Management Portal, <span id="adminNameHeader">Sarah</span>!</p>
+                </div>
+                <div class="header-right">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search...">
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn btn-icon" title="Notifications">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge">3</span>
+                        </button>
+                        <button class="btn btn-icon" title="Messages">
+                            <i class="fas fa-envelope"></i>
+                            <span class="message-badge">5</span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Statistics Grid -->
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Active Doctors</h3>
+                        <p class="stat-value">60</p>
+                        <p class="stat-change positive">+2 this month</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Today's Appointments</h3>
+                        <p class="stat-value">45</p>
+                        <p class="stat-change positive">+8 from yesterday</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-user-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>On-Duty Doctors</h3>
+                        <p class="stat-value">25</p>
+                        <p class="stat-change">Current Shift</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Average Rating</h3>
+                        <p class="stat-value">4.8</p>
+                        <p class="stat-change positive">+0.2 this month</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Specialists</h3>
+                        <p class="stat-value">35</p>
+                        <p class="stat-change">Across 8 Departments</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-briefcase-medical"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Available Slots</h3>
+                        <p class="stat-value">120</p>
+                        <p class="stat-change">Next 7 Days</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Healthcare Stats -->
+            <section class="healthcare-stats">
+                <div class="stats-row">
+                    <div class="stat-card large">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Doctor Availability</h3>
+                            <p class="stat-value">45/60</p>
+                            <div class="progress-bar">
+                                <div class="progress" style="width: 75%"></div>
+                            </div>
+                            <p class="stat-change">75% Coverage Rate</p>
+                        </div>
+                    </div>
+                    <div class="stat-card large">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Appointment Status</h3>
+                            <p class="stat-value">85%</p>
+                            <div class="progress-bar">
+                                <div class="progress emergency" style="width: 85%"></div>
+                            </div>
+                            <p class="stat-change">On-Time Rate</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Department Overview -->
+            <section class="department-overview">
+                <div class="section-header">
+                    <h2>Doctor Departments</h2>
+                    <button class="btn btn-outline">View All Doctors</button>
+                </div>
+                <div class="department-grid">
+                    <div class="department-card">
+                        <div class="department-icon">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <div class="department-info">
+                            <h3>Cardiology</h3>
+                            <p class="department-stats">
+                                <span>Doctors: 8</span>
+                                <span>Available: 6</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="department-card">
+                        <div class="department-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div class="department-info">
+                            <h3>Neurology</h3>
+                            <p class="department-stats">
+                                <span>Doctors: 6</span>
+                                <span>Available: 4</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="department-card">
+                        <div class="department-icon">
+                            <i class="fas fa-bone"></i>
+                        </div>
+                        <div class="department-info">
+                            <h3>Orthopedics</h3>
+                            <p class="department-stats">
+                                <span>Doctors: 5</span>
+                                <span>Available: 3</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="department-card">
+                        <div class="department-icon">
+                            <i class="fas fa-stethoscope"></i>
+                        </div>
+                        <div class="department-info">
+                            <h3>General Medicine</h3>
+                            <p class="department-stats">
+                                <span>Doctors: 12</span>
+                                <span>Available: 8</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Actions -->
+            <section class="quick-actions">
+                <h2>Doctor Management Actions</h2>
+                <div class="actions-grid">
+                    <button class="action-card">
+                        <i class="fas fa-user-md"></i>
+                        <span>Add New Doctor</span>
+                    </button>
+                    <button class="action-card">
+                        <i class="fas fa-calendar-plus"></i>
+                        <span>Schedule Doctor</span>
+                    </button>
+                    <button class="action-card">
+                        <i class="fas fa-user-edit"></i>
+                        <span>Update Profile</span>
+                    </button>
+                    <button class="action-card">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Performance Report</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- System Status -->
+            <section class="system-status">
+                <div class="section-header">
+                    <h2>Doctor Management Status</h2>
+                    <button class="btn btn-outline">View Details</button>
+                </div>
+                <div class="status-grid">
+                    <div class="status-card">
+                        <div class="status-icon">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <div class="status-info">
+                            <h3>Doctor Portal</h3>
+                            <p class="status-value online">Active</p>
+                        </div>
+                    </div>
+                    <div class="status-card">
+                        <div class="status-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="status-info">
+                            <h3>Scheduling System</h3>
+                            <p class="status-value online">Operational</p>
+                        </div>
+                    </div>
+                    <div class="status-card">
+                        <div class="status-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="status-info">
+                            <h3>Access Control</h3>
+                            <p class="status-value online">Secured</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="../javascript/admin_profile.js"></script>
+</body>
+</html> 

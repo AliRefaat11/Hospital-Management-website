@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Management - PrimeCare</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/admin_profile.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar" id="sidebarNav">
+        <div class="sidebar-header">
+            <a href="/admin/dashboard" class="site-name">Prime Care</a>
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        <div class="sidebar-content">
+            <div class="admin-profile">
+                <div class="admin-avatar">
+                    <img src="<%= admin.profileImage || '/images/admin-avatar.png' %>" alt="Admin Profile" id="adminProfileImage">
+                </div>
+                <div class="admin-info">
+                    <h3 id="adminName"><%= admin.name %></h3>
+                    <span class="admin-role"><%= admin.role %></span>
+                </div>
+            </div>
+            <ul class="nav-links">
+                <li class="active">
+                    <a href="/admin/dashboard">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin/management">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Admins</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin/doctors">
+                        <i class="fas fa-user-md"></i>
+                        <span>Doctors</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin/patients">
+                        <i class="fas fa-users"></i>
+                        <span>Patients</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin/appointments">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Appointments</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin/reports">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Reports</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin/settings">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="sidebar-footer">
+            <a href="/auth/logout" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="dashboard-background"></div>
+        <div class="container">
+            <!-- Dashboard Header -->
+            <header class="dashboard-header">
+                <div class="header-left">
+                    <h1>Doctor Management</h1>
+                    <p class="welcome-message">Welcome to Doctor Management Portal, <span id="adminNameHeader"><%= admin.name.split(' ')[0] %></span>!</p>
+                </div>
+                <div class="header-right">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search..." id="globalSearch">
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn btn-icon" title="Notifications" id="notificationsBtn">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge"><%= notifications.unreadCount %></span>
+                        </button>
+                        <button class="btn btn-icon" title="Messages" id="messagesBtn">
+                            <i class="fas fa-envelope"></i>
+                            <span class="message-badge"><%= messages.unreadCount %></span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Statistics Grid -->
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Active Doctors</h3>
+                        <p class="stat-value"><%= stats.activeDoctors %></p>
+                        <p class="stat-change <%= stats.doctorsChange >= 0 ? 'positive' : 'negative' %>">
+                            <%= stats.doctorsChange >= 0 ? '+' : '' %><%= stats.doctorsChange %> this month
+                        </p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Today's Appointments</h3>
+                        <p class="stat-value"><%= stats.todayAppointments %></p>
+                        <p class="stat-change <%= stats.appointmentsChange >= 0 ? 'positive' : 'negative' %>">
+                            <%= stats.appointmentsChange >= 0 ? '+' : '' %><%= stats.appointmentsChange %> from yesterday
+                        </p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-user-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>On-Duty Doctors</h3>
+                        <p class="stat-value"><%= stats.onDutyDoctors %></p>
+                        <p class="stat-change">Current Shift</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Average Rating</h3>
+                        <p class="stat-value"><%= stats.averageRating.toFixed(1) %></p>
+                        <p class="stat-change <%= stats.ratingChange >= 0 ? 'positive' : 'negative' %>">
+                            <%= stats.ratingChange >= 0 ? '+' : '' %><%= stats.ratingChange.toFixed(1) %> this month
+                        </p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Specialists</h3>
+                        <p class="stat-value"><%= stats.specialists %></p>
+                        <p class="stat-change">Across <%= stats.departmentCount %> Departments</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-briefcase-medical"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Available Slots</h3>
+                        <p class="stat-value"><%= stats.availableSlots %></p>
+                        <p class="stat-change">Next 7 Days</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Healthcare Stats -->
+            <section class="healthcare-stats">
+                <div class="stats-row">
+                    <div class="stat-card large">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Doctor Availability</h3>
+                            <p class="stat-value"><%= stats.availableDoctors %>/<%= stats.totalDoctors %></p>
+                            <div class="progress-bar">
+                                <div class="progress" style="width: 75%"></div>
+                            </div>
+                            <p class="stat-change"><%= stats.coverageRate %>% Coverage Rate</p>
+                        </div>
+                    </div>
+                    <div class="stat-card large">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Appointment Status</h3>
+                            <p class="stat-value"><%= stats.onTimeRate %>%</p>
+                            <div class="progress-bar">
+                                <div class="progress emergency" style="width: 85%"></div>
+                            </div>
+                            <p class="stat-change">On-Time Rate</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Department Overview -->
+            <section class="department-overview">
+                <div class="section-header">
+                    <h2>Doctor Departments</h2>
+                    <a href="/admin/doctors" class="btn btn-outline">View All Doctors</a>
+                </div>
+                <div class="department-grid">
+                    <div class="department-card">
+                        <div class="department-icon">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <div class="department-info">
+                            <h3>Cardiology</h3>
+                            <p class="department-stats">
+                                <span>Doctors: <%= departments.find(d => d.name === 'Cardiology')?.totalDoctors || 0 %></span>
+                                <span>Available: <%= departments.find(d => d.name === 'Cardiology')?.availableDoctors || 0 %></span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="department-card">
+                        <div class="department-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div class="department-info">
+                            <h3>Neurology</h3>
+                            <p class="department-stats">
+                                <span>Doctors: <%= departments.find(d => d.name === 'Neurology')?.totalDoctors || 0 %></span>
+                                <span>Available: <%= departments.find(d => d.name === 'Neurology')?.availableDoctors || 0 %></span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="department-card">
+                        <div class="department-icon">
+                            <i class="fas fa-bone"></i>
+                        </div>
+                        <div class="department-info">
+                            <h3>Orthopedics</h3>
+                            <p class="department-stats">
+                                <span>Doctors: <%= departments.find(d => d.name === 'Orthopedics')?.totalDoctors || 0 %></span>
+                                <span>Available: <%= departments.find(d => d.name === 'Orthopedics')?.availableDoctors || 0 %></span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="department-card">
+                        <div class="department-icon">
+                            <i class="fas fa-stethoscope"></i>
+                        </div>
+                        <div class="department-info">
+                            <h3>General Medicine</h3>
+                            <p class="department-stats">
+                                <span>Doctors: <%= departments.find(d => d.name === 'General Medicine')?.totalDoctors || 0 %></span>
+                                <span>Available: <%= departments.find(d => d.name === 'General Medicine')?.availableDoctors || 0 %></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Actions -->
+            <section class="quick-actions">
+                <h2>Doctor Management Actions</h2>
+                <div class="actions-grid">
+                    <button class="action-card" onclick="window.location.href='/admin/doctors/add'">
+                        <i class="fas fa-user-md"></i>
+                        <span>Add New Doctor</span>
+                    </button>
+                    <button class="action-card" onclick="window.location.href='/admin/schedule'">
+                        <i class="fas fa-calendar-plus"></i>
+                        <span>Schedule Doctor</span>
+                    </button>
+                    <button class="action-card" onclick="window.location.href='/admin/doctors/profile'">
+                        <i class="fas fa-user-edit"></i>
+                        <span>Update Profile</span>
+                    </button>
+                    <button class="action-card" onclick="window.location.href='/admin/reports/performance'">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Performance Report</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- System Status -->
+            <section class="system-status">
+                <div class="section-header">
+                    <h2>Doctor Management Status</h2>
+                    <button class="btn btn-outline" id="viewSystemStatus">View Details</button>
+                </div>
+                <div class="status-grid">
+                    <div class="status-card">
+                        <div class="status-icon">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <div class="status-info">
+                            <h3>Doctor Portal</h3>
+                            <p class="status-value <%= systemStatus.find(s => s.name === 'Doctor Portal')?.status.toLowerCase() || 'online' %>">
+                                <%= systemStatus.find(s => s.name === 'Doctor Portal')?.status || 'Active' %>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="status-card">
+                        <div class="status-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="status-info">
+                            <h3>Scheduling System</h3>
+                            <p class="status-value <%= systemStatus.find(s => s.name === 'Scheduling System')?.status.toLowerCase() || 'online' %>">
+                                <%= systemStatus.find(s => s.name === 'Scheduling System')?.status || 'Operational' %>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="status-card">
+                        <div class="status-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="status-info">
+                            <h3>Access Control</h3>
+                            <p class="status-value <%= systemStatus.find(s => s.name === 'Access Control')?.status.toLowerCase() || 'online' %>">
+                                <%= systemStatus.find(s => s.name === 'Access Control')?.status || 'Secured' %>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        /*
+        const serverData = {
+            admin: <%- JSON.stringify(admin) %>,
+            stats: <%- JSON.stringify(stats) %>,
+            departments: <%- JSON.stringify(departments) %>,
+            systemStatus: <%- JSON.stringify(systemStatus) %>,
+            notifications: <%- JSON.stringify(notifications) %>,
+            messages: <%- JSON.stringify(messages) %>,
+            csrfToken: '<%= csrfToken %>'
+        };*/
+    </script>
+    <script src="/javascript/admin_profile.js"></script>
+</body>
+</html> 
