@@ -1,8 +1,19 @@
-body {
-  background-color: #f5f7fa;
-  color: #333;
-  line-height: 1.6;
-  direction: ltr;
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@700&display=swap");
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Quicksand', sans-serif;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
 }
 
 /* Navigation Bar */
@@ -11,6 +22,7 @@ nav {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   position: sticky;
   top: 0;
+  z-index: 100;
   z-index: 100;
 }
 
@@ -111,8 +123,6 @@ header p {
   color: #4ecdc4;
 }
 
-
-
 .nav-links a {
   color: #e6e6e6;
   text-decoration: none;
@@ -123,41 +133,6 @@ header p {
   border-radius: 20px;
 }
 
-
-
-.auth-buttons {
-  display: flex;
-  gap: 10px;
-}
-
-.auth-buttons .btn {
-  padding: 8px 16px;
-  font-size: 14px;
-  font-weight: 600;
-  border: none;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.auth-buttons .login-btn {
-  background-color: transparent;
-  color: #ffffff;
-  border: 1px solid #ffffff;
-}
-
-.auth-buttons .login-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.auth-buttons .signup-btn {
-  background-color: #4ecdc4;
-  color: #ffffff;
-}
-
-.auth-buttons .signup-btn:hover {
-  background-color: #3db9b1;
-}
 
 /* Main Content */
 main {

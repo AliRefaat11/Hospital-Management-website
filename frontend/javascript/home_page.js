@@ -1,8 +1,6 @@
-<<<<<<< HEAD
 window.addEventListener('DOMContentLoaded', () => {
     console.log("Welcome to HealthyCare's profile page!");
   });
-=======
 const navToggle = document.getElementById('nav-toggle');
 const navLinks = document.querySelector('.nav-links');
 
@@ -74,4 +72,3 @@ searchBar.addEventListener('click', (event) => {
   event.stopPropagation(); // Prevent the click from propagating to the document
 });
 
->>>>>>> origin

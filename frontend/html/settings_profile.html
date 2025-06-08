@@ -4,54 +4,60 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Settings - PrimeCare</title>
+<link rel="stylesheet" href="../css/book-appointment.css" />
 <link rel="stylesheet" href="../css/user_profile.css">
 <link rel="stylesheet" href="../css/settings_profile.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
-<header class="header">
+  <nav>
+    <div class="navbar-container">
+      <a href="#" class="site-name">Prime Care</a>
+      <div class="navbar-links">
+        <a href="./home_page.html">HOME</a>
+        <a href="./about_us_page.html">ABOUT US</a>
+        <a href="./department_page.html">DEPARTMENTS</a>
+        <a href="./doctors_page.html">DOCTORS</a>
+        <a href="./quick-appointment.html" class="active">BOOK NOW</a>
+        <a href="./login_page.html">Login</a>
+        <a href="./sign_up_page.html" class="signup-btn">Sign Up</a>
+      </div>
+    </div>
+  </nav>
+  <main>
     <div class="container">
-        <div class="logo">PrimeCare</div>
-        <nav class="main-nav">
-            <ul>
-                <li><a href="user_profile.html">Profile</a></li>
-                <li><a href="edit_profile.html">Edit Profile</a></li>
-            </ul>
-        </nav>
-    </div>
-</header>
-<main class="main-content">
-    <div class="settings-form">
-        <h2>Settings</h2>
-        <form id="settingsForm">
-            <div class="settings-group">
-                <label><input type="checkbox" id="emailNotif" checked> Email Notifications</label>
-                <label><input type="checkbox" id="smsNotif"> SMS Notifications</label>
-                <label><input type="checkbox" id="privacySetting"> Only show profile to doctors</label>
-            </div>
+      <div class="settings-form">
+          <h2>Settings</h2>
+          <form id="settingsForm">
+              <div class="settings-group">
+                  <label><input type="checkbox" id="emailNotif" checked> Email Notifications</label>
+                  <label><input type="checkbox" id="smsNotif"> SMS Notifications</label>
+                  <label><input type="checkbox" id="privacySetting"> Only show profile to doctors</label>
+              </div>
 
-            <h3 class="section-title">Change Password</h3>
-            <div class="settings-group">
-                <label for="currentPassword">Current Password</label>
-                <input type="password" id="currentPassword">
-            </div>
-            <div class="settings-group">
-                <label for="newPassword">New Password</label>
-                <input type="password" id="newPassword">
-            </div>
-            <div class="settings-group">
-                <label for="confirmPassword">Confirm New Password</label>
-                <input type="password" id="confirmPassword">
-            </div>
+              <h3 class="section-title">Change Password</h3>
+              <div class="settings-group">
+                  <label for="currentPassword">Current Password</label>
+                  <input type="password" id="currentPassword">
+              </div>
+              <div class="settings-group">
+                  <label for="newPassword">New Password</label>
+                  <input type="password" id="newPassword">
+              </div>
+              <div class="settings-group">
+                  <label for="confirmPassword">Confirm New Password</label>
+                  <input type="password" id="confirmPassword">
+              </div>
 
-            <div class="form-actions">
-                <a href="user_profile.html" class="btn btn-outline">Cancel</a>
-                <button type="submit" class="btn btn-primary">Save Settings</button>
-            </div>
-        </form>
+              <div class="form-actions">
+                  <a href="user_profile.html" class="btn btn-outline">Cancel</a>
+                  <button type="submit" class="btn btn-primary">Save Settings</button>
+              </div>
+          </form>
+      </div>
     </div>
-</main>
-<script src="../javascript/settings_profile.js"></script>
+  </main>
+  <script src="../javascript/settings_profile.js"></script>
 </body>
 </html>
