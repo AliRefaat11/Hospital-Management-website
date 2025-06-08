@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit Profile - PrimeCare</title>
+<link rel="stylesheet" href="../css/book-appointment.css" />
+<link rel="stylesheet" href="../css/user_profile.css">
+<link rel="stylesheet" href="../css/edit_profile.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="../javascript/edit_profile.js"></script>
+</head>
+<body>
+  <nav>
+    <div class="navbar-container">
+      <a href="#" class="site-name">Prime Care</a>
+      <div class="navbar-links">
+        <a href="./home_page.html">HOME</a>
+        <a href="./about_us_page.html">ABOUT US</a>
+        <a href="./department_page.html">DEPARTMENTS</a>
+        <a href="./doctors_page.html">DOCTORS</a>
+        <a href="./quick-appointment.html" class="active">BOOK NOW</a>
+        <% if (user) { %>
+          <a href="./user_profile.html">My Profile</a>
+          <a href="./logout.html">Logout</a>
+        <% } else { %>
+          <a href="./login_page.html">Login</a>
+          <a href="./sign_up_page.html" class="signup-btn">Sign Up</a>
+        <% } %>
+      </div>
+    </div>
+  </nav>
+  <main>
+    <div class="container">
+      <div class="edit-profile-form">
+          <h2>Edit Profile</h2>
+          <form id="editProfileForm">
+              <div class="form-group">
+                  <label for="name">Full Name</label>
+                  <% /* Example: Populate with user.fullName from server */ %>
+                  <input type="text" id="name" value="<%= user ? user.fullName : 'John Smith' %>">
+              </div>
+              <div class="form-group">
+                  <label for="email">Email</label>
+                  <% /* Example: Populate with user.email from server */ %>
+                  <input type="email" id="email" value="<%= user ? user.email : 'john.smith@example.com' %>">
+              </div>
+              <div class="form-group">
+                  <label for="dob">Date of Birth</label>
+                  <% /* Example: Populate with user.dob from server */ %>
+                  <input type="date" id="dob" value="<%= user ? user.dob : '1990-02-10' %>">
+              </div>
+              <div class="form-group">
+                  <label for="gender">Gender</label>
+                  <select id="gender">
+                      <% /* Example: Select option based on user.gender from server */ %>
+                      <option value="Male" <%= user && user.gender === 'Male' ? 'selected' : '' %>>Male</option>
+                      <option value="Female" <%= user && user.gender === 'Female' ? 'selected' : '' %>>Female</option>
+                      <option value="Other" <%= user && user.gender === 'Other' ? 'selected' : '' %>>Other</option>
+                  </select>
+              </div>
+              <div class="form-group">
+                  <label for="phone">Phone</label>
+                  <% /* Example: Populate with user.phone from server */ %>
+                  <input type="tel" id="phone" value="<%= user ? user.phone : '1284567890' %>">
+              </div>
+              <div class="form-group">
+                  <label for="address">Address</label>
+                  <% /* Example: Populate with user.address from server */ %>
+                  <input type="text" id="address" value="<%= user ? user.address : '123 Elm St, Springfield, IL 62701' %>">
+              </div>
+              <div class="form-group">
+                  <label for="doctor">Primary Doctor</label>
+                  <% /* Example: Populate with user.primaryDoctor from server */ %>
+                  <input type="text" id="doctor" value="<%= user ? user.primaryDoctor : 'Dr. Emily Johnson' %>">
+              </div>
+              <div class="form-group">
+                  <label for="insurance">Insurance</label>
+                  <% /* Example: Populate with user.insurance from server */ %>
+                  <input type="text" id="insurance" value="<%= user ? user.insurance : 'BlueCross HealthPlus' %>">
+              </div>
+              <div class="form-group">
+                  <label for="profileImage">Profile Image</label>
+                  <input type="file" id="profileImage">
+                  <% /* You might want to display a current profile image if available */ %>
+                  <% if (user && user.profileImagePath) { %>
+                    <img src="<%= user.profileImagePath %>" alt="Current Profile Image" style="max-width: 100px; margin-top: 10px;">
+                  <% } %>
+              </div>
+              <div class="form-actions">
+                  <a href="user_profile.html" class="btn btn-outline">Cancel</a>
+                  <button type="submit" class="btn btn-primary">Save Changes</button>
+              </div>
+          </form>
+      </div>
+    </div>
+  </main>
+  <script src="../public/javascript/edit_profile.js"></script>
+  </body>
+</html>

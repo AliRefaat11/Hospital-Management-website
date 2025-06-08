@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us - <%= siteName %></title>
+  <link rel="stylesheet" href="/css/about_us_page.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <nav>
+    <div class="navbar-container">
+      <a href="/" class="site-name"><%= siteName %></a>
+      <div class="navbar-links">
+        <a href="/home" class="<%= currentPage === 'home' ? 'active' : '' %>">HOME</a>
+        <a href="/about" class="<%= currentPage === 'about' ? 'active' : '' %>">ABOUT US</a>
+        <a href="/departments" class="<%= currentPage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
+        <a href="/doctors" class="<%= currentPage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
+        <a href="/appointments" class="<%= currentPage === 'appointments' ? 'active' : '' %>">BOOK NOW</a>
+        <a href="/login" class="<%= currentPage === 'login' ? 'active' : '' %>">Login</a>
+        <a href="/signup" class="signup-btn <%= currentPage === 'signup' ? 'active' : '' %>">Sign Up</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <section class="page-header">
+    <h1>About Us</h1>
+    <p>Learn more about <%= siteName %> and our commitment to healthcare excellence.</p>
+  </section>
+
+  <!-- About Us Section -->
+  <section class="about-us-container">
+    <% aboutUsSections.forEach(section => { %>
+      <div class="about-card">
+        <h2><%= section.title %></h2>
+        <% if (section.content) { %>
+          <p><%= section.content %></p>
+        <% } else if (section.list) { %>
+          <ul>
+            <% section.list.forEach(item => { %>
+              <li><%= item %></li>
+            <% }) %>
+          </ul>
+        <% } %>
+      </div>
+    <% }) %>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-left">
+        <h3><%= siteName %></h3>
+        <p>Committed to providing quality healthcare for all.</p>
+      </div>
+      <div class="footer-links">
+        <a href="/privacy">Privacy Policy</a>
+        <a href="/terms">Terms of Service</a>
+        <a href="/contact">Contact Us</a>
+      </div>
+      <div class="footer-socials">
+        <a href="#"><i class="fab fa-facebook"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-linkedin"></i></a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; <%= new Date().getFullYear() %> <%= siteName %>. All Rights Reserved.</p>
+    </div>
+  </footer>
+  <script src="../public/javascript/about_us_page.js"></script>
+</body>
+</html>
