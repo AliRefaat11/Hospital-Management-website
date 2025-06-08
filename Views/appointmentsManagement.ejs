@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Management - PrimeCare</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../public/css/appointments_management.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+<div class="sidebar" id="sidebarNav">
+    <div class="sidebar-header">
+        <a href="admin_profile.html" class="site-name">Prime Care</a>
+        <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+    <div class="admin-profile">
+        <div class="admin-avatar">
+            <img id="adminProfileImage" src="<%= admin.profileImage || '../images/admin-avatar.png' %>" alt="<%= admin.name %>">
+        </div>
+        <div class="admin-info">
+            <h3 id="adminName"><%= admin.name %></h3>
+            <span class="admin-role"><%= admin.role %></span>
+        </div>
+    </div>
+    <div class="sidebar-content">
+        <ul class="nav-links">
+            <li><a href="../html/admin_profile.html" class="<%= currentPage === 'dashboard' ? 'active' : '' %>"><i class="fas fa-home"></i><span>Dashboard</span></a></li>
+            <li><a href="../html/admin_management.html" class="<%= currentPage === 'admins' ? 'active' : '' %>"><i class="fas fa-user-shield"></i><span>Admins</span></a></li>
+            <li><a href="../html/doctor_management.html" class="<%= currentPage === 'doctors' ? 'active' : '' %>"><i class="fas fa-users"></i><span>Doctors</span></a></li>
+            <li><a href="../html/patient_management.html" class="<%= currentPage === 'patients' ? 'active' : '' %>"><i class="fas fa-user-injured"></i><span>Patients</span></a></li>
+            <li class="<%= currentPage === 'appointments' ? 'active' : '' %>"><a href="appointment_management.html"><i class="fas fa-calendar-check"></i><span>Appointments</span></a></li>
+            <li><a href="reports.html" class="<%= currentPage === 'reports' ? 'active' : '' %>"><i class="fas fa-chart-bar"></i><span>Reports</span></a></li>
+            <li><a href="admin_settings.html" class="<%= currentPage === 'settings' ? 'active' : '' %>"><i class="fas fa-cog"></i><span>Settings</span></a></li>
+        </ul>
+    </div>
+    <div class="sidebar-footer">
+        <a href="#" class="logout-btn"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="dashboard-background"></div>
+    <div class="dashboard-header">
+        <div class="header-left">
+            <h1>Appointment Management</h1>
+            <p class="welcome-message">Manage appointments and schedules</p>
+        </div>
+        <div class="header-right">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="appointmentSearch" placeholder="Search appointments...">
+            </div>
+            <div class="header-actions">
+                <button class="btn-icon" title="Notifications">
+                    <i class="fas fa-bell"></i>
+                    <% if (notifications && notifications.count > 0) { %>
+                    <span class="notification-badge"><%= notifications.count %></span>
+                    <% } %>
+                </button>
+                <button class="btn-icon" title="Messages">
+                    <i class="fas fa-envelope"></i>
+                    <% if (messages && messages.count > 0) { %>
+                    <span class="message-badge"><%= messages.count %></span>
+                    <% } %>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-calendar-alt"></i></div>
+            <div class="stat-info">
+                <h3>Total Appointments</h3>
+                <p class="stat-value" id="totalAppointments"><%= stats.total.count %></p>
+                <p class="stat-change <%= stats.total.changeType %>" id="totalAppointmentsChange">
+                    <% if (stats.total.changeType === 'positive') { %>
+                        <i class="fas fa-arrow-up"></i> +<%= stats.total.changePercent %>% from last month
+                    <% } else if (stats.total.changeType === 'negative') { %>
+                        <i class="fas fa-arrow-down"></i> -<%= stats.total.changePercent %>% from last month
+                    <% } else { %>
+                        No change from last month
+                    <% } %>
+                </p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-calendar-day"></i></div>
+            <div class="stat-info">
+                <h3>Today's Appointments</h3>
+                <p class="stat-value" id="todayAppointments"><%= stats.today.count %></p>
+                <p class="stat-change">Scheduled Today</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+            <div class="stat-info">
+                <h3>Completed</h3>
+                <p class="stat-value" id="completedAppointments"><%= stats.completed.count %></p>
+                <p class="stat-change">This Month</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-clock"></i></div>
+            <div class="stat-info">
+                <h3>Pending</h3>
+                <p class="stat-value" id="pendingAppointments"><%= stats.pending.count %></p>
+                <p class="stat-change">Awaiting Confirmation</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="appointment-management">
+        <div class="actions">
+            <button class="btn btn-outline" id="addAppointmentBtn">
+                <i class="fas fa-plus"></i> Schedule Appointment
+            </button>
+            <div class="filter-actions">
+                <select id="departmentFilter" class="filter-select">
+                    <option value="">All Departments</option>
+                    <% departments.forEach(department => { %>
+                    <option value="<%= department.name %>"><%= department.name %></option>
+                    <% }); %>
+                </select>
+                <select id="statusFilter" class="filter-select">
+                    <option value="">All Statuses</option>
+                    <option value="scheduled">Scheduled</option>
+                    <option value="completed">Completed</option>
+                    <option value="cancelled">Cancelled</option>
+                    <option value="no-show">No Show</option>
+                </select>
+                <input type="date" id="dateFilter" class="filter-select" value="<%= new Date().toISOString().split('T')[0] %>">
+            </div>
+        </div>
+        <div class="table-container">
+            <table class="appointment-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Patient</th>
+                        <th>Doctor</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Department</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="appointmentTableBody">
+                    <% appointments.forEach(appointment => { %>
+                    <tr data-appointment-id="<%= appointment.id %>">
+                        <td><%= appointment.id %></td>
+                        <td><%= appointment.patient.name %></td>
+                        <td><%= appointment.doctor.name %></td>
+                        <td><%= new Date(appointment.date).toLocaleDateString('en-US', { 
+                            year: 'numeric', 
+                            month: 'short', 
+                            day: 'numeric' 
+                        }) %></td>
+                        <td><%= appointment.time %></td>
+                        <td><%= appointment.department %></td>
+                        <td><%= appointment.type %></td>
+                        <td>
+                            <span class="status-badge <%= appointment.status.toLowerCase().replace(' ', '-') %>">
+                                <%= appointment.status %>
+                            </span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-action view" title="View Details" onclick="viewAppointment('<%= appointment.id %>')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn-action edit" title="Edit" onclick="editAppointment('<%= appointment.id %>')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn-action delete" title="Cancel" onclick="cancelAppointment('<%= appointment.id %>')">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="schedule-overview">
+        <h2>Today's Schedule Overview</h2>
+        <div class="schedule-grid">
+            <div class="schedule-card urgent">
+                <div class="schedule-icon">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <div class="schedule-content">
+                    <h3>Urgent Appointments</h3>
+                    <p class="schedule-value" id="urgentAppointments"><%= todaySchedule.urgent %></p>
+                    <p class="schedule-detail">Require immediate attention</p>
+                </div>
+            </div>
+            <div class="schedule-card warning">
+                <div class="schedule-icon">
+                    <i class="fas fa-user-clock"></i>
+                </div>
+                <div class="schedule-content">
+                    <h3>Running Late</h3>
+                    <p class="schedule-value" id="lateAppointments"><%= todaySchedule.late %></p>
+                    <p class="schedule-detail">Behind schedule</p>
+                </div>
+            </div>
+            <div class="schedule-card info">
+                <div class="schedule-icon">
+                    <i class="fas fa-user-times"></i>
+                </div>
+                <div class="schedule-content">
+                    <h3>No Shows</h3>
+                    <p class="schedule-value" id="noShowAppointments"><%= todaySchedule.noShows %></p>
+                    <p class="schedule-detail">Patients who didn't appear</p>
+                </div>
+            </div>
+            <div class="schedule-card success">
+                <div class="schedule-icon">
+                    <i class="fas fa-hourglass-half"></i>
+                </div>
+                <div class="schedule-content">
+                    <h3>Avg Wait Time</h3>
+                    <p class="schedule-value" id="avgWaitTime"><%= todaySchedule.avgWaitTime %></p>
+                    <p class="schedule-detail">Minutes average wait</p>
+                </div>
+            </div>
+        </div>
+        <div class="next-appointments">
+            <h3>Next 3 Appointments</h3>
+            <div class="next-list" id="nextAppointmentsList">
+                <% if (nextAppointments && nextAppointments.length > 0) { %>
+                    <% nextAppointments.slice(0, 3).forEach(appointment => { %>
+                    <div class="next-item">
+                        <div class="next-time">
+                            <span class="time"><%= appointment.time %></span>
+                            <span class="department"><%= appointment.department %></span>
+                        </div>
+                        <div class="next-info">
+                            <span class="patient-name"><%= appointment.patient.name %></span>
+                            <span class="doctor-name"><%= appointment.doctor.name %></span>
+                        </div>
+                        <div class="next-status">
+                            <span class="status-badge <%= appointment.status.toLowerCase().replace(' ', '-') %>">
+                                <%= appointment.status %>
+                            </span>
+                        </div>
+                    </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="no-appointments">
+                        <p>No upcoming appointments scheduled.</p>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="appointmentModal">
+        <div class="modal-content compact">
+            <div class="modal-header">
+                <h2 id="modalTitle">Schedule New Appointment</h2>
+            </div>
+            <form id="appointmentForm" data-has-attempted-submit="false">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="appointmentId">ID</label>
+                        <input type="text" id="appointmentId" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="patientName">Patient Name *</label>
+                        <input type="text" id="patientName" required>
+                        <span class="validation-message">Please enter the patient's name</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="doctorName">Doctor *</label>
+                        <select id="doctorName" required>
+                            <option value="">Select Doctor</option>
+                            <% doctors.forEach(doctor => { %>
+                            <option value="<%= doctor.name %>"><%= doctor.name %> - <%= doctor.specialty %></option>
+                            <% }); %>
+                        </select>
+                        <span class="validation-message">Please select a doctor</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="appointmentDate">Date *</label>
+                        <input type="date" id="appointmentDate" required min="<%= new Date().toISOString().split('T')[0] %>">
+                        <span class="validation-message">Please select a date</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="appointmentTime">Time *</label>
+                        <input type="time" id="appointmentTime" required>
+                        <span class="validation-message">Please select a time</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="appointmentDepartment">Department *</label>
+                        <select id="appointmentDepartment" required>
+                            <option value="">Select Department</option>
+                            <% departments.forEach(department => { %>
+                            <option value="<%= department.name %>"><%= department.name %></option>
+                            <% }); %>
+                        </select>
+                        <span class="validation-message">Please select a department</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="appointmentType">Type *</label>
+                        <select id="appointmentType" required>
+                            <option value="">Select Type</option>
+                            <% appointmentTypes.forEach(type => { %>
+                            <option value="<%= type %>"><%= type %></option>
+                            <% }); %>
+                        </select>
+                        <span class="validation-message">Please select appointment type</span>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="appointmentNotes">Notes</label>
+                        <textarea id="appointmentNotes" rows="3" placeholder="Additional notes..."></textarea>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" id="cancelBtn">Cancel</button>
+                    <button type="submit" class="btn" id="saveBtn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="appointmentDetailsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Appointment Details</h2>
+                <button class="btn-icon" id="closeDetailsModal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="details-content">
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Patient Name</span>
+                        <span class="detail-value" id="detailPatientName">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Doctor</span>
+                        <span class="detail-value" id="detailDoctorName">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Date</span>
+                        <span class="detail-value" id="detailDate">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Time</span>
+                        <span class="detail-value" id="detailTime">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Department</span>
+                        <span class="detail-value" id="detailDepartment">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Type</span>
+                        <span class="detail-value" id="detailType">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Status</span>
+                        <span class="detail-value" id="detailStatus">-</span>
+                    </div>
+                    <div class="detail-item full-width">
+                        <span class="detail-label">Notes</span>
+                        <span class="detail-value" id="detailNotes">-</span>
+                    </div>
+                </div>
+                <div class="details-actions">
+                    <button class="btn btn-outline" id="editFromDetails">Edit Appointment</button>
+                    <button class="btn" id="markCompleted">Mark as Completed</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="deleteConfirmModal">
+        <div class="modal-content">
+            <h2>Cancel Appointment</h2>
+            <p>Are you sure you want to cancel this appointment?</p>
+            <div class="form-actions">
+                <button type="button" class="btn btn-outline" id="cancelDeleteBtn">Keep Appointment</button>
+                <button type="button" class="btn" id="confirmDeleteBtn">Cancel Appointment</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="../public/javascript/appointments_managment.js"></script>
+</body>
+</html>

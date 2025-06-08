@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= user.name %> - Patient Profile - PrimeCare</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../public/css/user_profile.css">
+    <link rel="stylesheet" href="../public/css/book_appointment.css" />
+</head>
+<body>
+    <nav>
+        <div class="navbar-container">
+          <a href="#" class="site-name">Prime Care</a>
+          <div class="navbar-links">
+            <a href="./home_page.html" class="<%= currentPage === 'home' ? 'active' : '' %>">HOME</a>
+            <a href="./about_us_page.html" class="<%= currentPage === 'about' ? 'active' : '' %>">ABOUT US</a>
+            <a href="./department_page.html" class="<%= currentPage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
+            <a href="./doctors_page.html" class="<%= currentPage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
+            <a href="./quick_appointment.html" class="<%= currentPage === 'book' ? 'active' : '' %>">BOOK NOW</a>
+            <a href="./login_page.html" class="<%= currentPage === 'login' ? 'active' : '' %>">Login</a>
+            <a href="./sign_up_page.html" class="signup-btn <%= currentPage === 'signup' ? 'active' : '' %>">Sign Up</a>
+          </div>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="container">
+            <!-- Profile Header -->
+            <section class="profile-card">
+                <div class="profile-header">
+                    <div class="profile-image">
+                        <img src="<%= user.profileImage || '../images/account-icon-33.png' %>" alt="<%= user.name %> Profile" id="profileImage">
+                    </div>
+                    <div class="profile-info">
+                        <h1 class="profile-name" id="userName"><%= user.name %></h1>
+                        <div class="profile-email">
+                            <i class="fas fa-envelope"></i>
+                            <span id="userEmail"><%= user.email %></span>
+                        </div>
+                        <div class="profile-status">
+                            <span class="status-badge <%= user.status.toLowerCase().replace(' ', '-') %>"><%= user.status %></span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Action Buttons -->
+            <section class="action-buttons">
+                <button class="btn btn-primary btn-action" onclick="window.location.href='./appointments.html'">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Appointments</span>
+                </button>
+                <button class="btn btn-outline btn-action" onclick="editProfile()">
+                    <i class="fas fa-edit"></i>
+                    <span>Edit Profile</span>
+                </button>
+                <button class="btn btn-outline btn-action" onclick="openSettings()">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </button>
+            </section>
+
+            <!-- Upcoming Appointments -->
+            <section class="content-card">
+                <div class="card-header">
+                    <h2>Upcoming Appointments</h2>
+                    <button class="btn btn-sm btn-primary" onclick="window.location.href='./book-appointment.html'">
+                        <i class="fas fa-plus"></i> New Appointment
+                    </button>
+                </div>
+                <div class="card-body" id="appointmentsList">
+                    <% if (user.upcomingAppointments && user.upcomingAppointments.length > 0) { %>
+                        <% user.upcomingAppointments.forEach(appointment => { %>
+                        <div class="appointment-item">
+                            <div class="appointment-info">
+                                <div class="appointment-doctor">
+                                    <strong><%= appointment.doctor %></strong>
+                                    <span class="appointment-specialty"><%= appointment.specialty %></span>
+                                </div>
+                                <div class="appointment-details">
+                                    <div class="appointment-date">
+                                        <i class="fas fa-calendar"></i>
+                                        <%= new Date(appointment.date).toLocaleDateString('en-US', { 
+                                            weekday: 'long', 
+                                            year: 'numeric', 
+                                            month: 'long', 
+                                            day: 'numeric' 
+                                        }) %>
+                                    </div>
+                                    <div class="appointment-time">
+                                        <i class="fas fa-clock"></i>
+                                        <%= appointment.time %>
+                                    </div>
+                                    <% if (appointment.type === 'virtual') { %>
+                                    <div class="appointment-type">
+                                        <i class="fas fa-video"></i>
+                                        Virtual Visit
+                                    </div>
+                                    <% } %>
+                                </div>
+                            </div>
+                            <div class="appointment-actions">
+                                <button class="btn btn-sm btn-outline">Reschedule</button>
+                                <button class="btn btn-sm btn-danger">Cancel</button>
+                            </div>
+                        </div>
+                        <% }); %>
+                    <% } else { %>
+                        <div class="no-appointments">
+                            <p>No upcoming appointments scheduled.</p>
+                            <button class="btn btn-primary" onclick="window.location.href='./book-appointment.html'">
+                                Schedule an Appointment
+                            </button>
+                        </div>
+                    <% } %>
+                </div>
+            </section>
+
+            <!-- Profile Information -->
+            <section class="content-card">
+                <div class="card-header">
+                    <h2>Profile Information</h2>
+                    <button class="btn btn-sm btn-outline" onclick="editProfile()">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">Date of Birth</div>
+                            <div class="info-value" id="userDob">
+                                <%= new Date(user.dateOfBirth).toLocaleDateString('en-US', { 
+                                    year: 'numeric', 
+                                    month: 'long', 
+                                    day: 'numeric' 
+                                }) %>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Gender</div>
+                            <div class="info-value" id="userGender"><%= user.gender %></div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Phone</div>
+                            <div class="info-value">
+                                <i class="fas fa-phone"></i>
+                                <span id="userPhone"><%= user.phone %></span>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Address</div>
+                            <div class="info-value">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span id="userAddress"><%= user.address %></span>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Primary Doctor</div>
+                            <div class="info-value" id="userDoctor">
+                                <% if (user.primaryDoctor) { %>
+                                    <%= user.primaryDoctor %>
+                                <% } else { %>
+                                    <span class="text-muted">Not assigned</span>
+                                <% } %>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Insurance</div>
+                            <div class="info-value" id="userInsurance">
+                                <% if (user.insurance) { %>
+                                    <%= user.insurance %>
+                                <% } else { %>
+                                    <span class="text-muted">No insurance on file</span>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Medical Records -->
+            <section class="content-card">
+                <div class="card-header">
+                    <h2>Medical Records</h2>
+                    <button class="btn btn-sm btn-outline" onclick="downloadAllRecords()">
+                        <i class="fas fa-download"></i> Download All
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="records-list" id="medicalRecordsList">
+                        <% if (user.medicalRecords && user.medicalRecords.length > 0) { %>
+                            <% user.medicalRecords.forEach(record => { %>
+                            <div class="record-item">
+                                <div class="record-info">
+                                    <div class="record-title"><%= record.title %></div>
+                                    <div class="record-date">
+                                        <%= new Date(record.date).toLocaleDateString('en-US', { 
+                                            year: 'numeric', 
+                                            month: 'short', 
+                                            day: 'numeric' 
+                                        }) %>
+                                    </div>
+                                    <div class="record-doctor">By: <%= record.doctor %></div>
+                                </div>
+                                <div class="record-actions">
+                                    <button class="btn btn-sm btn-outline" onclick="viewRecord('<%= record.id %>')">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                    <button class="btn btn-sm btn-outline" onclick="downloadRecord('<%= record.id %>')">
+                                        <i class="fas fa-download"></i> Download
+                                    </button>
+                                </div>
+                            </div>
+                            <% }); %>
+                        <% } else { %>
+                            <div class="no-records">
+                                <p>No medical records available.</p>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">PrimeCare</div>
+                <div class="footer-copyright">
+                    &copy; <%= new Date().getFullYear() %> PrimeCare Health Services. All rights reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../public/javascript/user_profile.js"></script>
+</body>
+</html>
