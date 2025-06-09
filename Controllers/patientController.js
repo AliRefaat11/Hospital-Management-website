@@ -1,80 +1,84 @@
-const Patient = require('../models/Patient');
-exports.createPatient = async (req, res) => {
-  try {
-    const { patientId, name, email, phone, gender, dob, medicalCondition, lastVisit, status } = req.body;
+const Patient = require('../patientRoutes'); // Adjust path as needed, assuming Patient model is exported from patientRoutes for now
+const mongoose = require('mongoose');
 
-    const existingPatient = await Patient.findOne({ email });
-    if (existingPatient) {
-      return res.status(400).json({ message: 'Patient with this email already exists' });
-    }
+// Placeholder for Patient Model (if not exported from routes)
+// If you define your Mongoose models in a separate 'models' directory, you would import it like:
+// const Patient = require('../models/Patient');
 
-    const newPatient = new Patient({
-      patientId,
-      name,
-      email,
-      phone,
-      gender,
-      dob,
-      medicalCondition,
-      lastVisit,
-      status,
-    });
+// In a real application, you'd likely have a separate 'models' directory.
+// For now, let's assume the Patient model is available via the routes file for simplicity
+// until we refactor further.
 
-    await newPatient.save();
-    res.status(201).json({ message: 'Patient created successfully', patient: newPatient });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error', error });
-  }
-};
+// Define Patient Schema (based on ER diagram) - moved here from patientRoutes.js
+const patientSchema = new mongoose.Schema({
+    userID: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // Assuming User model exists
+    bloodType: { type: String, required: true },
+    medicalHistory: { type: String },
+    medicalNo: { type: String, unique: true, required: true },
+    insuranceID: { type: mongoose.Schema.Types.ObjectId, ref: 'Insurance' } // Assuming Insurance model exists
+});
+
+const PatientModel = mongoose.model('Patient', patientSchema);
+
+// Get all patients
 exports.getAllPatients = async (req, res) => {
-  try {
-    const patients = await Patient.find();
-    res.status(200).json({ patients });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error', error });
-  }
+    try {
+        const patients = await PatientModel.find();
+        res.status(200).json(patients);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
 };
+
+// Get a single patient by ID
 exports.getPatientById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const patient = await Patient.findById(id);
-
-    if (!patient) {
-      return res.status(404).json({ message: 'Patient not found' });
+    try {
+        const patient = await PatientModel.findById(req.params.id);
+        if (patient) {
+            res.status(200).json(patient);
+        } else {
+            res.status(404).send('Patient not found');
+        }
+    } catch (error) {
+        res.status(500).send(error.message);
     }
-
-    res.status(200).json({ patient });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error', error });
-  }
 };
+
+// Create a new patient
+exports.createPatient = async (req, res) => {
+    try {
+        const newPatient = new PatientModel(req.body);
+        await newPatient.save();
+        res.status(201).json(newPatient);
+    } catch (error) {
+        res.status(400).send(error.message);
+    }
+};
+
+// Update an existing patient
 exports.updatePatient = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const updatedData = req.body;
-
-    const updatedPatient = await Patient.findByIdAndUpdate(id, updatedData, { new: true });
-
-    if (!updatedPatient) {
-      return res.status(404).json({ message: 'Patient not found' });
+    try {
+        const patient = await PatientModel.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+        if (patient) {
+            res.status(200).json(patient);
+        } else {
+            res.status(404).send('Patient not found');
+        }
+    } catch (error) {
+        res.status(400).send(error.message);
     }
-
-    res.status(200).json({ message: 'Patient updated successfully', patient: updatedPatient });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error', error });
-  }
 };
+
+// Delete a patient
 exports.deletePatient = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const deletedPatient = await Patient.findByIdAndDelete(id);
-
-    if (!deletedPatient) {
-      return res.status(404).json({ message: 'Patient not found' });
+    try {
+        const patient = await PatientModel.findByIdAndDelete(req.params.id);
+        if (patient) {
+            res.status(204).send(); // No content to send back, successful deletion
+        } else {
+            res.status(404).send('Patient not found');
+        }
+    } catch (error) {
+        res.status(500).send(error.message);
     }
-
-    res.status(200).json({ message: 'Patient deleted successfully' });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error', error });
-  }
-};
+}; 

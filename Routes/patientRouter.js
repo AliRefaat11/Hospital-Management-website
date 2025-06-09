@@ -1,15 +1,20 @@
-
 const express = require('express');
 const router = express.Router();
-const patientController = require('../Controllers/patientController');
-const authMiddleware = require('../middleware/auth');
-router.get('/', authMiddleware, patientController.getAllPatients); 
-router.get('/:id', authMiddleware, patientController.getPatientById); 
-router.post('/', authMiddleware, patientController.addPatient); 
-router.put('/:id', authMiddleware, patientController.updatePatient); 
-router.delete('/:id', authMiddleware, patientController.deletePatient); 
-const express = require("express");
-const PatRouter = express.Router();
-const PatController = require("../Controllers/patientController");
+const patientController = require('./controllers/patientController');
 
-module.exports = router;
+// GET all patients
+router.get('/', patientController.getAllPatients);
+
+// GET a single patient by ID
+router.get('/:id', patientController.getPatientById);
+
+// CREATE a new patient
+router.post('/', patientController.createPatient);
+
+// UPDATE an existing patient
+router.put('/:id', patientController.updatePatient);
+
+// DELETE a patient
+router.delete('/:id', patientController.deletePatient);
+
+module.exports = router; 
