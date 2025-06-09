@@ -1,4 +1,5 @@
-const TreatmentPlan = require('../models/TreatmentPlan');
+const TreatmentPlan = require('../models/treatmentplanModel');
+
 exports.getAllTreatmentPlans = async (req, res) => {
     try {
         const treatmentPlans = await TreatmentPlan.find()
@@ -9,6 +10,7 @@ exports.getAllTreatmentPlans = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
 exports.getTreatmentPlanById = async (req, res) => {
     try {
         const treatmentPlan = await TreatmentPlan.findById(req.params.id)
@@ -22,6 +24,7 @@ exports.getTreatmentPlanById = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
 exports.getTreatmentPlansByPatient = async (req, res) => {
     try {
         const treatmentPlans = await TreatmentPlan.find({ patientId: req.params.patientId });
@@ -30,6 +33,7 @@ exports.getTreatmentPlansByPatient = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
 exports.getTreatmentPlansByAppointment = async (req, res) => {
     try {
         const treatmentPlans = await TreatmentPlan.find({ appointmentId: req.params.appointmentId });
@@ -38,6 +42,7 @@ exports.getTreatmentPlansByAppointment = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
 exports.createTreatmentPlan = async (req, res) => {
     try {
         const { appointmentId, patientId, startDate, endDate, description } = req.body;
@@ -53,6 +58,7 @@ exports.createTreatmentPlan = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
 exports.updateTreatmentPlan = async (req, res) => {
     try {
         const updatedTreatmentPlan = await TreatmentPlan.findByIdAndUpdate(
@@ -68,6 +74,7 @@ exports.updateTreatmentPlan = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
 exports.deleteTreatmentPlan = async (req, res) => {
     try {
         const deletedTreatmentPlan = await TreatmentPlan.findByIdAndDelete(req.params.id);

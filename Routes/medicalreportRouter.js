@@ -54,9 +54,6 @@ router.put('/:id', medicalRecordController.updateRecord);
 // Delete medical record via DELETE method
 router.delete('/:id', medicalRecordController.deleteRecord);
 
-// ERROR HANDLING
-
-// Error handling middleware specific to medical records routes
 router.use((err, req, res, next) => {
   console.error('Medical Records Route Error:', err);
   
@@ -88,4 +85,4 @@ router.use((req, res) => {
   res.status(404).redirect('/medical-records');
 });
 
-module.exports = router;
+module.exports = MedRouter;

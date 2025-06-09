@@ -17,4 +17,4 @@ router.put('/:id', insuranceController.updateInsurance);
 // DELETE an insurance
 router.delete('/:id', insuranceController.deleteInsurance);
 
-module.exports = router; 
+module.exports = InsurRouter; 

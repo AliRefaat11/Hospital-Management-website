@@ -1,26 +1,5 @@
-const Patient = require('../patientRoutes'); // Adjust path as needed, assuming Patient model is exported from patientRoutes for now
-const mongoose = require('mongoose');
+const Patient = require('../models/patientModel');
 
-// Placeholder for Patient Model (if not exported from routes)
-// If you define your Mongoose models in a separate 'models' directory, you would import it like:
-// const Patient = require('../models/Patient');
-
-// In a real application, you'd likely have a separate 'models' directory.
-// For now, let's assume the Patient model is available via the routes file for simplicity
-// until we refactor further.
-
-// Define Patient Schema (based on ER diagram) - moved here from patientRoutes.js
-const patientSchema = new mongoose.Schema({
-    userID: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // Assuming User model exists
-    bloodType: { type: String, required: true },
-    medicalHistory: { type: String },
-    medicalNo: { type: String, unique: true, required: true },
-    insuranceID: { type: mongoose.Schema.Types.ObjectId, ref: 'Insurance' } // Assuming Insurance model exists
-});
-
-const PatientModel = mongoose.model('Patient', patientSchema);
-
-// Get all patients
 exports.getAllPatients = async (req, res) => {
     try {
         const patients = await PatientModel.find();

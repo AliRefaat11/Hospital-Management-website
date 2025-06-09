@@ -1,16 +1,5 @@
-const mongoose = require('mongoose');
+const Insurance = require('../models/insuranceModel');
 
-// Define Insurance Schema (based on ER diagram)
-const insuranceSchema = new mongoose.Schema({
-    company: { type: String, required: true },
-    policyNumber: { type: String, unique: true, required: true },
-    startDate: { type: Date, required: true },
-    endDate: { type: Date, required: true }
-});
-
-const Insurance = mongoose.model('Insurance', insuranceSchema);
-
-// Get all insurances
 exports.getAllInsurances = async (req, res) => {
     try {
         const insurances = await Insurance.find();
@@ -20,7 +9,6 @@ exports.getAllInsurances = async (req, res) => {
     }
 };
 
-// Get a single insurance by ID
 exports.getInsuranceById = async (req, res) => {
     try {
         const insurance = await Insurance.findById(req.params.id);
@@ -34,7 +22,6 @@ exports.getInsuranceById = async (req, res) => {
     }
 };
 
-// Create a new insurance
 exports.createInsurance = async (req, res) => {
     try {
         const newInsurance = new Insurance(req.body);
@@ -45,7 +32,6 @@ exports.createInsurance = async (req, res) => {
     }
 };
 
-// Update an existing insurance
 exports.updateInsurance = async (req, res) => {
     try {
         const insurance = await Insurance.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
@@ -59,7 +45,6 @@ exports.updateInsurance = async (req, res) => {
     }
 };
 
-// Delete an insurance
 exports.deleteInsurance = async (req, res) => {
     try {
         const insurance = await Insurance.findByIdAndDelete(req.params.id);

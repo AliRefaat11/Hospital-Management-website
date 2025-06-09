@@ -1,11 +1,10 @@
-const MedicalRecord = require('../models/MedicalRecord');
-const Patient = require('../models/Patient'); // Assuming you have a Patient model
+const MedicalRecord = require('../Models/medicalreportModel');
+const Patient = require('../models/patientModel');
 
-// Display all medical records
 exports.getAllRecords = async (req, res) => {
   try {
     const records = await MedicalRecord.find()
-      .populate('patientId', 'name email') // Populate patient details
+      .populate('patientId', 'name email')
       .sort({ date: -1 });
     
     res.render('medical-records/index', {
@@ -21,7 +20,6 @@ exports.getAllRecords = async (req, res) => {
   }
 };
 
-// Display form to create new medical record
 exports.getCreateForm = async (req, res) => {
   try {
     const patients = await Patient.find().sort({ name: 1 });
@@ -38,7 +36,6 @@ exports.getCreateForm = async (req, res) => {
   }
 };
 
-// Create new medical record
 exports.createRecord = async (req, res) => {
   try {
     const { patientId, diagnosis, treatment, date, notes } = req.body;
@@ -68,7 +65,6 @@ exports.createRecord = async (req, res) => {
   }
 };
 
-// Display single medical record
 exports.getRecord = async (req, res) => {
   try {
     const record = await MedicalRecord.findById(req.params.id)
@@ -92,7 +88,6 @@ exports.getRecord = async (req, res) => {
   }
 };
 
-// Display form to edit medical record
 exports.getEditForm = async (req, res) => {
   try {
     const [record, patients] = await Promise.all([
@@ -118,7 +113,6 @@ exports.getEditForm = async (req, res) => {
   }
 };
 
-// Update medical record
 exports.updateRecord = async (req, res) => {
   try {
     const { patientId, diagnosis, treatment, date, notes } = req.body;
@@ -156,7 +150,6 @@ exports.updateRecord = async (req, res) => {
   }
 };
 
-// Delete medical record
 exports.deleteRecord = async (req, res) => {
   try {
     const record = await MedicalRecord.findByIdAndDelete(req.params.id);
@@ -175,7 +168,6 @@ exports.deleteRecord = async (req, res) => {
   }
 };
 
-// Get records by patient ID
 exports.getRecordsByPatient = async (req, res) => {
   try {
     const records = await MedicalRecord.find({ patientId: req.params.patientId })
@@ -201,7 +193,6 @@ exports.getRecordsByPatient = async (req, res) => {
   }
 };
 
-// Search medical records
 exports.searchRecords = async (req, res) => {
   try {
     const { query, dateFrom, dateTo } = req.query;
@@ -241,21 +232,17 @@ exports.searchRecords = async (req, res) => {
   }
 };
 
-// Export records to CSV (optional)
 exports.exportRecords = async (req, res) => {
   try {
     const records = await MedicalRecord.find()
       .populate('patientId', 'name email')
       .sort({ date: -1 });
     
-    // Set CSV headers
     res.setHeader('Content-Type', 'text/csv');
     res.setHeader('Content-Disposition', 'attachment; filename=medical-records.csv');
     
-    // CSV header row
     let csv = 'Date,Patient Name,Patient Email,Diagnosis,Treatment,Notes\n';
     
-    // Add data rows
     records.forEach(record => {
       const date = record.date.toISOString().split('T')[0];
       const patientName = record.patientId ? record.patientId.name : 'Unknown';

@@ -9,7 +9,6 @@ const createToken = (id) => {
     });
 };
 
-// Get all users
 const getAll = async (req, res) => {
     try {
         const users = await User.find().select('-Password'); // Exclude password from response
@@ -26,7 +25,6 @@ const getAll = async (req, res) => {
     }
 };
 
-// Get user by ID
 const getById = async (req, res) => {
     try {
         const user = await User.findById(req.params.id).select('-Password');
@@ -50,7 +48,6 @@ const getById = async (req, res) => {
     }
 };
 
-// Create new user (Sign up)
 const create = async (req, res) => {
     try {
         // Check if user already exists
@@ -68,11 +65,9 @@ const create = async (req, res) => {
             });
         }
 
-        // Hash password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(req.body.Password, salt);
-
-        // Create new user with hashed password
+        
         const newUser = await User.create({
             ...req.body,
             Password: hashedPassword

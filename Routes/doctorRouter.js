@@ -11,4 +11,4 @@ DocRouter.delete("/:id", DocController.deleteById);
 DocRouter.get("/department/:departmentId", DocController.getByDepartment);
 DocRouter.get("/specialization/:specialization", DocController.getBySpecialization);
 
-module.exports = DocRouter;
+module.exports = DrRouter;
