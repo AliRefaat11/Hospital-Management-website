@@ -1,4 +1,5 @@
 const Patient = require('../Models/patientModel');
+const User = require('../Models/userModel')
 
 exports.getAllPatients = async (req, res) => {
     try {
@@ -20,7 +21,6 @@ exports.getAllPatients = async (req, res) => {
     }
 };
 
-// Get a single patient by ID
 exports.getPatientById = async (req, res) => {
     try {
         const patient = await Patient.findById(req.params.id)
@@ -47,9 +47,32 @@ exports.getPatientById = async (req, res) => {
     }
 };
 
-// Create a new patient
+exports.signup = async (req,res) => {
+    const {FName,LName,Email,Password,Age,PhoneNumber,Gender,bloodType,medicalNo}= req.body;
+    try{
+        const newUser = new User({FName,LName,Email,Password,Age,PhoneNumber,Gender,role:"Patient"});
+        const savedUser = await newUser.save();
+
+        const newPatient = new Patient({userId:savedUser._id,
+            bloodType,medicalNo
+        })
+        const savedPatient = await newPatient.save();
+
+        return res.status(200).json({
+            user:newUser,
+            patient:newPatient
+        })
+    }
+    catch(error){
+        return res.status(500).json({
+            message:error.message,
+        })
+    }
+}
+
 exports.createPatient = async (req, res) => {
     try {
+
         // Check if patient with same medical number already exists
         const existingPatient = await Patient.findOne({ medicalNo: req.body.medicalNo });
         if (existingPatient) {

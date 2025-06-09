@@ -23,6 +23,11 @@ const userSchema = new mongoose.Schema(
             unique:[true,"Email already exists"],
             required:[true,"Email is required"]
         },
+        role:{
+            type:String,
+            enum:["Patient","Doctor","Admin"],
+            default:"Patient"
+        },
         Password:{
             type: String,
             trim:true,

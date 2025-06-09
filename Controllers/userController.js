@@ -1,12 +1,26 @@
 const User = require("../Models/userModel");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const validator = require('validator');
 
-// Helper function to create JWT token
 const createToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
         expiresIn: process.env.JWT_EXPIRES_IN
     });
+};
+
+const validateLoginInput = (email, password) => {
+    const errors = [];
+    
+    if (!email || !validator.isEmail(email.trim())) {
+        errors.push('Please provide a valid email address');
+    }
+
+    if (!password || password.length < 6) {
+        errors.push('Password must be at least 6 characters long');
+    }
+    
+    return errors;
 };
 
 const getAll = async (req, res) => {
@@ -73,7 +87,6 @@ const create = async (req, res) => {
             Password: hashedPassword
         });
 
-        // Create token
         const token = createToken(newUser._id);
 
         // Remove password from response
@@ -93,61 +106,76 @@ const create = async (req, res) => {
     }
 };
 
-// Login user
 const login = async (req, res) => {
     try {
         const { Email, Password } = req.body;
 
-        // Check if email and password exist
-        if (!Email || !Password) {
+        const validationErrors = validateLoginInput(Email, Password);
+        if (validationErrors.length > 0) {
             return res.status(400).json({
                 status: 'fail',
-                message: 'Please provide email and password'
+                message: validationErrors.join(', ')
             });
         }
+        const normalizedEmail = Email.trim().toLowerCase();
 
-        // Check if user exists
-        const user = await User.findOne({ Email });
+        const user = await User.findOne({ 
+            Email: { $regex: new RegExp(`^${normalizedEmail}$`, 'i') }
+        });
+
         if (!user) {
+
+            console.log(`Failed login attempt for email: ${normalizedEmail}`);
             return res.status(401).json({
                 status: 'fail',
-                message: 'Incorrect email or password'
+                message: 'Invalid email or password'
             });
         }
 
-        // Check if password is correct
-        const isPasswordCorrect = await bcrypt.compare(Password, user.Password);
+        // Verify password
+        const isPasswordCorrect = await bcrypt.compare(Password.trim(), user.Password);
         if (!isPasswordCorrect) {
+            // Log failed login attempt
+            console.log(`Failed login attempt for user: ${user._id}`);
+            
             return res.status(401).json({
                 status: 'fail',
-                message: 'Incorrect email or password'
+                message: 'Invalid email or password'
             });
         }
 
-        // Create token
+        // Create token with expiration
         const token = createToken(user._id);
 
-        // Remove password from response
+        // Prepare user response without sensitive data
         const userResponse = user.toObject();
         delete userResponse.Password;
+        delete userResponse.__v;
+
+        // Log successful login
+        console.log(`Successful login for user: ${user._id}`);
 
         res.status(200).json({
             status: 'success',
             token,
-            data: userResponse
+            data: {
+                user: userResponse,
+                tokenExpiresIn: process.env.JWT_EXPIRES_IN
+            }
         });
     } catch (error) {
-        res.status(400).json({
-            status: 'fail',
-            message: error.message
+        // Log error
+        console.error('Login error:', error);
+        
+        res.status(500).json({
+            status: 'error',
+            message: 'An error occurred during login. Please try again later.'
         });
     }
 };
 
-// Update user
 const update = async (req, res) => {
     try {
-        // Don't allow password updates through this route
         if (req.body.Password) {
             delete req.body.Password;
         }
