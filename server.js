@@ -9,7 +9,7 @@ const express = require('express');
 const app = express();
 
 // app.use(express.static("./frontend"));
-// app.use('/Doctor', DocRouter);
+app.use('/Doctor', DocRouter);
 // app.use('/Patient', PatRouter);
 // app.use('/Appointment', AppRouter);
 
