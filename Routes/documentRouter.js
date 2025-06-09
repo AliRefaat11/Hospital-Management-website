@@ -1,12 +1,12 @@
 const express = require('express');
-const router = express.Router();
+const DocRouter = express.Router();
 const documentController = require('../Controllers/documentController');
 
-router.get('/', documentController.getAllDocuments); 
+DocRouter.get('/', documentController.getAllDocuments); 
 
-router.get('/:id', documentController.getDocumentById);
-router.put('/:id', documentController.updateDocument); 
-router.delete('/:id', documentController.deleteDocument);
-router.get('/patient/:patientId', documentController.getDocumentsByPatient);
+DocRouter.get('/:id', documentController.getDocumentById);
+DocRouter.put('/:id', documentController.updateDocument); 
+DocRouter.delete('/:id', documentController.deleteDocument);
+DocRouter.get('/patient/:patientId', documentController.getDocumentsByPatient);
 
 module.exports = DocRouter;

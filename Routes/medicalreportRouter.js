@@ -1,60 +1,60 @@
 const express = require('express');
-const router = express.Router();
-const medicalRecordController = require('../controllers/medicalRecordController');
+const MedRouter = express.Router();
+const medicalRecordController = require('../controllers/medicalreportController');
 
 // Middleware for parsing form data
-router.use(express.urlencoded({ extended: true }));
-router.use(express.json());
+MedRouter.use(express.urlencoded({ extended: true }));
+MedRouter.use(express.json());
 
 // Method override for PUT and DELETE requests from HTML forms
-const methodOverride = require('method-override');
-router.use(methodOverride('_method'));
+//const methodOverride = require('method-override');
+//MedRouter.use(methodOverride('_method'));
 
 // GET ROUTES
 
 // Display all medical records - Main index page
-router.get('/', medicalRecordController.getAllRecords);
+MedRouter.get('/', medicalRecordController.getAllRecords);
 
 // Show search page and handle search queries
-router.get('/search', medicalRecordController.searchRecords);
+MedRouter.get('/search', medicalRecordController.searchRecords);
 
 // Export records to CSV
-router.get('/export/csv', medicalRecordController.exportRecords);
+MedRouter.get('/export/csv', medicalRecordController.exportRecords);
 
 // Show form to create new medical record
-router.get('/create', medicalRecordController.getCreateForm);
+MedRouter.get('/create', medicalRecordController.getCreateForm);
 
 // Show all records for a specific patient
-router.get('/patient/:patientId', medicalRecordController.getRecordsByPatient);
+MedRouter.get('/patient/:patientId', medicalRecordController.getRecordsByPatient);
 
 // Show single medical record details (must be after other GET routes)
-router.get('/:id', medicalRecordController.getRecord);
+MedRouter.get('/:id', medicalRecordController.getRecord);
 
 // Show form to edit existing medical record
-router.get('/:id/edit', medicalRecordController.getEditForm);
+MedRouter.get('/:id/edit', medicalRecordController.getEditForm);
 
 // POST ROUTES
 
 // Create new medical record
-router.post('/', medicalRecordController.createRecord);
+MedRouter.post('/', medicalRecordController.createRecord);
 
 // Alternative POST route for updates (for forms that can't use PUT)
-router.post('/:id/update', medicalRecordController.updateRecord);
+MedRouter.post('/:id/update', medicalRecordController.updateRecord);
 
 // Alternative POST route for deletes (for forms that can't use DELETE)
-router.post('/:id/delete', medicalRecordController.deleteRecord);
+MedRouter.post('/:id/delete', medicalRecordController.deleteRecord);
 
 // PUT ROUTES
 
 // Update medical record via PUT method
-router.put('/:id', medicalRecordController.updateRecord);
+MedRouter.put('/:id', medicalRecordController.updateRecord);
 
 // DELETE ROUTES
 
 // Delete medical record via DELETE method
-router.delete('/:id', medicalRecordController.deleteRecord);
+MedRouter.delete('/:id', medicalRecordController.deleteRecord);
 
-router.use((err, req, res, next) => {
+MedRouter.use((err, req, res, next) => {
   console.error('Medical Records Route Error:', err);
   
   // Handle different types of errors
@@ -80,7 +80,7 @@ router.use((err, req, res, next) => {
 });
 
 // 404 handler for medical records routes
-router.use((req, res) => {
+MedRouter.use((req, res) => {
   req.flash('error', 'The requested medical record page was not found');
   res.status(404).redirect('/medical-records');
 });

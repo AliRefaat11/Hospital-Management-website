@@ -1,5 +1,5 @@
 const MedicalRecord = require('../Models/medicalreportModel');
-const Patient = require('../models/patientModel');
+const Patient = require('../Models/patientModel');
 
 exports.getAllRecords = async (req, res) => {
   try {

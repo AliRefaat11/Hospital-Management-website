@@ -1,15 +1,15 @@
 const express = require('express');
-const router = express.Router();
+const TreatRouter = express.Router();
 const treatmentPlanController = require('../Controllers/treatmentplanController');
 
-router.get('/', treatmentPlanController.getAllTreatmentPlans); 
-router.post('/', treatmentPlanController.createTreatmentPlan); 
+TreatRouter.get('/', treatmentPlanController.getAllTreatmentPlans); 
+TreatRouter.post('/', treatmentPlanController.createTreatmentPlan); 
 
-router.get('/:id', treatmentPlanController.getTreatmentPlanById); 
-router.put('/:id', treatmentPlanController.updateTreatmentPlan);
-router.delete('/:id', treatmentPlanController.deleteTreatmentPlan);
+TreatRouter.get('/:id', treatmentPlanController.getTreatmentPlanById); 
+TreatRouter.put('/:id', treatmentPlanController.updateTreatmentPlan);
+TreatRouter.delete('/:id', treatmentPlanController.deleteTreatmentPlan);
 
-router.get('/patient/:patientId', treatmentPlanController.getTreatmentPlansByPatient); 
-router.get('/appointment/:appointmentId', treatmentPlanController.getTreatmentPlansByAppointment);
+TreatRouter.get('/patient/:patientId', treatmentPlanController.getTreatmentPlansByPatient); 
+TreatRouter.get('/appointment/:appointmentId', treatmentPlanController.getTreatmentPlansByAppointment);
 
-module.exports = router;
+module.exports = TreatRouter;

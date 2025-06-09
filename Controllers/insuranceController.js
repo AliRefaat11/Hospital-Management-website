@@ -1,4 +1,4 @@
-const Insurance = require('../models/insuranceModel');
+const Insurance = require('../Models/insuranceModel');
 
 exports.getAllInsurances = async (req, res) => {
     try {

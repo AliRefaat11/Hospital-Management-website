@@ -263,7 +263,6 @@ const getProfile = async (req, res) => {
         });
     }
 };
-
 module.exports = {
     getAll,
     getById,
@@ -274,3 +273,4 @@ module.exports = {
     deleteById,
     getProfile
 };
+

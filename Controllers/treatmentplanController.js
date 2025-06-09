@@ -1,4 +1,4 @@
-const TreatmentPlan = require('../models/treatmentplanModel');
+const TreatmentPlan = require('../Models/treatmentplanModel');
 
 exports.getAllTreatmentPlans = async (req, res) => {
     try {

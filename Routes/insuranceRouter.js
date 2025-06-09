@@ -1,20 +1,20 @@
 const express = require('express');
-const router = express.Router();
+const InsurRouter = express.Router();
 const insuranceController = require('../Controllers/insuranceController');
 
 // GET all insurances
-router.get('/', insuranceController.getAllInsurances);
+InsurRouter.get('/', insuranceController.getAllInsurances);
 
 // GET a single insurance by ID
-router.get('/:id', insuranceController.getInsuranceById);
+InsurRouter.get('/:id', insuranceController.getInsuranceById);
 
 // CREATE a new insurance
-router.post('/', insuranceController.createInsurance);
+InsurRouter.post('/', insuranceController.createInsurance);
 
 // UPDATE an existing insurance
-router.put('/:id', insuranceController.updateInsurance);
+InsurRouter.put('/:id', insuranceController.updateInsurance);
 
 // DELETE an insurance
-router.delete('/:id', insuranceController.deleteInsurance);
+InsurRouter.delete('/:id', insuranceController.deleteInsurance);
 
 module.exports = InsurRouter; 
