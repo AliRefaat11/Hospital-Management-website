@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= hospital.name %> - Meet Our Doctors</title>
-  <link rel="stylesheet" href="../public/css/doctors_page.css">
+  <link rel="stylesheet" href="/css/navbar.css">
+  <link rel="stylesheet" href="/css/doctors_page.css">
   <link rel="icon" href="/images/logo.jpeg" type="image/jpeg">
 </head>
 
@@ -16,7 +17,7 @@
         <a href="/" class="<%= currentPage === 'home' ? 'active' : '' %>">HOME</a>
         <a href="/about" class="<%= currentPage === 'about' ? 'active' : '' %>">ABOUT US</a>
         <a href="/departments" class="<%= currentPage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
-        <a href="/doctors" class="<%= currentPage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
+        <a href="/doctors-page" class="<%= currentPage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
         <a href="/appointments" class="<%= currentPage === 'appointments' ? 'active' : '' %>">BOOK NOW</a>
         <% if (user) { %>
           <a href="/profile" class="profile-link"><%= user.name %></a>
@@ -103,8 +104,8 @@
       user: <%- JSON.stringify(user) %>,
       currentPage: '<%= currentPage %>',
       doctors: <%- JSON.stringify(doctors) %>,
-      csrfToken: '<%= csrfToken %>'
-    };*/
+    };
+    */
   </script>
   <script src="../public/javascript/doctors_page.js"></script>
 </body>
