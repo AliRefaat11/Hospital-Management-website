@@ -5,7 +5,7 @@ const validator = require('validator');
 
 const getAll = async (req, res) => {
     try {
-        const users = await User.find().select('-Password'); // Exclude password from response
+        const users = await User.find().select('-Password');
         res.status(200).json({
             status: 'success',
             results: users.length,
@@ -43,33 +43,27 @@ const getById = async (req, res) => {
 };
 
 const create = async (req, res) => {
+    const {FName,LName,Email,Password,PhoneNumber,Gender,Age,role}= req.body;
     try {
-        // Check if user already exists
         const existingUser = await User.findOne({ 
             $or: [
                 { Email: req.body.Email },
                 { PhoneNumber: req.body.PhoneNumber }
             ]
         });
-
         if (existingUser) {
             return res.status(400).json({
                 status: 'fail',
                 message: 'User with this email or phone number already exists'
             });
         }
-
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(req.body.Password, salt);
-        
         const newUser = await User.create({
             ...req.body,
             Password: hashedPassword
         });
-
         const token = createToken(newUser._id);
-
-        // Remove password from response
         const userResponse = newUser.toObject();
         delete userResponse.Password;
 
@@ -94,63 +88,60 @@ const createToken = (id) => {
 
 const validateLoginInput = (email, password) => {
     const errors = [];
-    
     if (!email || !validator.isEmail(email.trim())) {
         errors.push('Please provide a valid email address');
     }
-
     if (!password || password.length < 6) {
         errors.push('Password must be at least 6 characters long');
     }
-    
     return errors;
 };
 
 const login = async (req, res) => {
     try {
+        console.log('Login attempt with body:', req.body);
         const { Email, Password } = req.body;
-
+        if (!Email || !Password) {
+            console.log('Missing email or password');
+            return res.status(400).json({
+                status: 'fail',
+                message: 'Please provide both email and password'
+            });
+        }
         const validationErrors = validateLoginInput(Email, Password);
         if (validationErrors.length > 0) {
+            console.log('Validation errors:', validationErrors);
             return res.status(400).json({
                 status: 'fail',
                 message: validationErrors.join(', ')
             });
         }
         const normalizedEmail = Email.trim().toLowerCase();
-
+        console.log('Looking for user with email:', normalizedEmail);
         const user = await User.findOne({ 
             Email: { $regex: new RegExp(`^${normalizedEmail}$`, 'i') }
         });
-
         if (!user) {
-
-            console.log(`Failed login attempt for email: ${normalizedEmail}`);
+            console.log(`No user found with email: ${normalizedEmail}`);
             return res.status(401).json({
                 status: 'fail',
                 message: 'Invalid email or password'
             });
         }
-
+        console.log('User found, comparing passwords');
         const isPasswordCorrect = await bcrypt.compare(Password.trim(), user.Password);
         if (!isPasswordCorrect) {
-            // Log failed login attempt
-            console.log(`Failed login attempt for user: ${user._id}`);
-            
+            console.log(`Password incorrect for user: ${user._id}`);
             return res.status(401).json({
                 status: 'fail',
                 message: 'Invalid email or password'
             });
         }
-
         const token = createToken(user._id);
-
+        console.log(`Login successful for user: ${user._id}`);
         const userResponse = user.toObject();
         delete userResponse.Password;
         delete userResponse.__v;
-
-        console.log(`Successful login for user: ${user._id}`);
-
         res.status(200).json({
             status: 'success',
             token,
@@ -160,9 +151,7 @@ const login = async (req, res) => {
             }
         });
     } catch (error) {
-        
         console.error('Login error:', error);
-        
         res.status(500).json({
             status: 'error',
             message: 'An error occurred during login. Please try again later.'

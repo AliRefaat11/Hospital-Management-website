@@ -53,9 +53,7 @@ exports.signup = async (req,res) => {
         const newUser = new User({FName,LName,Email,Password,Age,PhoneNumber,Gender,role:"Patient"});
         const savedUser = await newUser.save();
 
-        const newPatient = new Patient({userId:savedUser._id,
-            bloodType,medicalNo
-        })
+        const newPatient = new Patient({userId:savedUser._id,bloodType,medicalNo});
         const savedPatient = await newPatient.save();
 
         return res.status(200).json({

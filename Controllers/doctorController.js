@@ -1,4 +1,5 @@
 const Doctor = require("../Models/doctorModel");
+const User = require("../Models/userModel");
 
 const getAll = async (req, res) => {
     try {
@@ -44,17 +45,23 @@ const getById = async (req, res) => {
 };
 
 const create = async (req, res) => {
-    try {
-        const newDoctor = await Doctor.create(req.body);
-        res.status(201).json({
-            status: 'success',
-            data: newDoctor
-        });
-    } catch (error) {
-        res.status(400).json({
-            status: 'fail',
-            message: error.message
-        });
+    const {FName,LName,Email,Password,Age,PhoneNumber,Gender,specialization,rating,schedule}= req.body;
+    try{
+        const newUser = new User({FName,LName,Email,Password,Age,PhoneNumber,Gender,role:"Patient"});
+        const savedUser = await newUser.save();
+
+        const newDoctor = await Doctor.create({userId:savedUser._id,specialization,rating,schedule});
+        const savedDoctor = await newDoctor.save();
+
+        return res.status(200).json({
+            user:newUser,
+            doctor:newDoctor
+        })
+    }
+    catch(error){
+        return res.status(500).json({
+            message:error.message,
+        })
     }
 };
 
@@ -68,14 +75,12 @@ const update = async (req, res) => {
                 runValidators: true
             }
         );
-
         if (!doctor) {
             return res.status(404).json({
                 status: 'fail',
                 message: 'No doctor found with that ID'
             });
         }
-
         res.status(200).json({
             status: 'success',
             data: doctor

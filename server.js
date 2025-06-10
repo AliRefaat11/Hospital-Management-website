@@ -2,6 +2,8 @@ const dotenv = require('dotenv');
 dotenv.config({path:"config.env"});
 const dbconnection = require('./config/database');
 const path = require('path');
+const express = require('express');
+const app = express();
 
 const DrRouter = require('./Routes/doctorRouter');
 const UserRouter = require('./Routes/userRouter');
@@ -13,23 +15,35 @@ const InsurRouter = require('./Routes/insuranceRouter');
 const MedRouter = require('./Routes/medicalreportRouter');
 const TreatRouter = require('./Routes/treatmentplanRouter');
 
-const express = require('express');
-const app = express();
-
-// Set up EJS as the view engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'Views'));
 
-// Serve static files
-app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.url}`);
+    if (req.method === 'POST') {
+        console.log('Request body:', req.body);
+    }
+    next();
+});
 
 app.get('/signup', (req, res) => {
     res.render('signupPage', { 
         title: 'Patient Sign Up',
-        formTitle: 'Create Your Patient Account',
+        formTitle: 'Create Patient Account',
         currentPage: 'signup'
+    });
+});
+
+app.get('/login', (req, res) => {
+    res.render('loginPage', { 
+        title: 'Patient Login',
+        formTitle: 'Login to PrimeCare',
+        currentPage: 'login',
+        siteName: 'Prime Care'
     });
 });
 
