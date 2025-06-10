@@ -1,6 +1,7 @@
 const dotenv = require('dotenv');
 dotenv.config({path:"config.env"});
 const dbconnection = require('./config/database');
+const path = require('path');
 
 const DrRouter = require('./Routes/doctorRouter');
 const UserRouter = require('./Routes/userRouter');
@@ -15,10 +16,23 @@ const TreatRouter = require('./Routes/treatmentplanRouter');
 const express = require('express');
 const app = express();
 
+// Set up EJS as the view engine
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'Views'));
+
+// Serve static files
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-//app.use(express.static("./frontend"));
+app.get('/signup', (req, res) => {
+    res.render('signupPage', { 
+        title: 'Patient Sign Up',
+        formTitle: 'Create Your Patient Account',
+        currentPage: 'signup'
+    });
+});
+
 app.use('/User', UserRouter);
 app.use('/Doctor', DrRouter);
 app.use('/Patient', PatRouter);

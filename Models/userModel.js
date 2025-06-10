@@ -43,7 +43,7 @@ const userSchema = new mongoose.Schema(
             type: String,
             trim:true,
             required: [true, "gender number is required"],
-            enum: ["male","female"]
+            enum: ["Male","Female"]
         },
         Age: {
             type: Number,

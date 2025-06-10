@@ -149,10 +149,10 @@ exports.updatePatient = async (req, res) => {
     }
 };
 
-// Delete a patient
 exports.deletePatient = async (req, res) => {
     try {
-        const patient = await Patient.findByIdAndDelete(req.params.id);
+        // First find the patient to get their userId
+        const patient = await Patient.findById(req.params.id);
         
         if (!patient) {
             return res.status(404).json({
@@ -161,6 +161,15 @@ exports.deletePatient = async (req, res) => {
             });
         }
 
+        // Store the userId before deleting the patient
+        const userId = patient.userId;
+
+        // Delete the patient
+        await Patient.findByIdAndDelete(req.params.id);
+        
+        // Delete the associated user
+        await User.findByIdAndDelete(userId);
+
         res.status(204).json({
             status: 'success',
             data: null
@@ -168,7 +177,7 @@ exports.deletePatient = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             status: 'error',
-            message: 'Failed to delete patient',
+            message: 'Failed to delete patient and associated user',
             error: error.message
         });
     }

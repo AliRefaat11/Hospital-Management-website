@@ -3,26 +3,6 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const validator = require('validator');
 
-const createToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_EXPIRES_IN
-    });
-};
-
-const validateLoginInput = (email, password) => {
-    const errors = [];
-    
-    if (!email || !validator.isEmail(email.trim())) {
-        errors.push('Please provide a valid email address');
-    }
-
-    if (!password || password.length < 6) {
-        errors.push('Password must be at least 6 characters long');
-    }
-    
-    return errors;
-};
-
 const getAll = async (req, res) => {
     try {
         const users = await User.find().select('-Password'); // Exclude password from response
@@ -106,6 +86,26 @@ const create = async (req, res) => {
     }
 };
 
+const createToken = (id) => {
+    return jwt.sign({ id }, process.env.JWT_SECRET, {
+        expiresIn: process.env.JWT_EXPIRES_IN
+    });
+};
+
+const validateLoginInput = (email, password) => {
+    const errors = [];
+    
+    if (!email || !validator.isEmail(email.trim())) {
+        errors.push('Please provide a valid email address');
+    }
+
+    if (!password || password.length < 6) {
+        errors.push('Password must be at least 6 characters long');
+    }
+    
+    return errors;
+};
+
 const login = async (req, res) => {
     try {
         const { Email, Password } = req.body;
@@ -132,7 +132,6 @@ const login = async (req, res) => {
             });
         }
 
-        // Verify password
         const isPasswordCorrect = await bcrypt.compare(Password.trim(), user.Password);
         if (!isPasswordCorrect) {
             // Log failed login attempt
@@ -144,15 +143,12 @@ const login = async (req, res) => {
             });
         }
 
-        // Create token with expiration
         const token = createToken(user._id);
 
-        // Prepare user response without sensitive data
         const userResponse = user.toObject();
         delete userResponse.Password;
         delete userResponse.__v;
 
-        // Log successful login
         console.log(`Successful login for user: ${user._id}`);
 
         res.status(200).json({
@@ -164,7 +160,7 @@ const login = async (req, res) => {
             }
         });
     } catch (error) {
-        // Log error
+        
         console.error('Login error:', error);
         
         res.status(500).json({

@@ -5,7 +5,6 @@ const authMiddleware = require("../middleware/authMiddleware");
 
 UserRouter.post("/signup", UserController.create);
 UserRouter.post("/login", UserController.login);
-
 // Protect all routes after this middleware
 UserRouter.use(authMiddleware);
 

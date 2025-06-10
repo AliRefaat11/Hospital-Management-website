@@ -190,11 +190,15 @@ header p {
   border-bottom: 2px solid #f0f0f0;
 }
 
+/* BEGIN REVISED INPUT-GROUP, INPUT, SELECT, AND LABEL STYLES */
+
+/* General input group styling */
 .input-group {
   position: relative;
   margin-bottom: 25px;
 }
 
+/* Styles for all input fields (text, number, etc.) */
 .input-group input {
   width: 100%;
   padding: 12px 15px;
@@ -212,7 +216,8 @@ header p {
   background-color: white;
 }
 
-.input-group label {
+/* Floating labels for general inputs (when label is AFTER input) */
+.input-group input + label {
   position: absolute;
   left: 15px;
   top: 12px;
@@ -231,6 +236,80 @@ header p {
   padding: 0 5px;
 }
 
+/* Specific styles for SELECT elements (Gender and Blood Type) */
+.input-group select#Gender,
+.input-group select#bloodType {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    background-color: #f9f9f9;
+    appearance: none; /* Hide default dropdown arrow */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    color: #333;
+}
+
+.input-group select#Gender:focus,
+.input-group select#bloodType:focus {
+    border-color: #4ecdc4;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.1); 
+    background-color: white; 
+}
+
+/* Specific labels for Gender and Blood Type - Always above (when label is BEFORE select) */
+.input-group label[for="Gender"], 
+.input-group label[for="bloodType"] { 
+    position: absolute; 
+    top: -25px; /* Fixed position above */ 
+    left: 10px; 
+    font-size: 12px; 
+    color: #1e4a76; 
+    background: white; 
+    padding: 0 5px; 
+    z-index: 10; /* Ensure label is on top */ 
+    pointer-events: none; 
+    transition: none; /* No floating animation */ 
+}
+
+/* Custom dropdown arrow for input-groups containing a select */
+.input-group:has(select#Gender)::after, 
+.input-group:has(select#bloodType)::after { 
+    content: '\f107'; /* Font Awesome chevron-down icon */ 
+    font-family: 'Font Awesome 5 Free'; 
+    font-weight: 900; /* For Font Awesome solid icons */ 
+    position: absolute; 
+    right: 15px; 
+    top: 50%; 
+    transform: translateY(-50%); 
+    color: #666; 
+    pointer-events: none; 
+    transition: all 0.3s ease; 
+    z-index: 5; /* Ensure arrow is below label but above select */ 
+}
+
+/* Hide ::after for all other input-groups that do not contain a select */
+.input-group:not(:has(select))::after { 
+    display: none; 
+}
+
+/* Placeholder style for select */
+.input-group select#Gender:invalid, 
+.input-group select#bloodType:invalid { 
+    color: #666; 
+}
+
+.input-group select#Gender option[value=""], 
+.input-group select#bloodType option[value=""] { 
+    color: #666; 
+}
+
+/* END REVISED INPUT-GROUP, INPUT, SELECT, AND LABEL STYLES */
+
 .signup-btnm {
   width: 100%;
   padding: 12px;
@@ -248,79 +327,89 @@ header p {
   gap: 10px;
 }
 
+.signup-btnm i {
+  margin-left: 5px;
+}
+
 .signup-btnm:hover {
-  background-color: #15385d;
+  background-color: #1a3a5a;
   transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(30, 74, 118, 0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .signup-btnm:active {
   transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .login-link {
-  margin-top: 20px;
   display: block;
-  color: #1e4a76;
   text-align: center;
+  margin-top: 20px;
+  color: #3498db;
+  text-decoration: none;
   font-size: 14px;
-  transition: color 0.3s ease;
 }
 
 .login-link:hover {
-  color: #3498db;
+  text-decoration: underline;
 }
 
 .error-message {
-  color: #ff3860;
+  color: #e74c3c;
   font-size: 14px;
   margin-top: 10px;
   text-align: center;
-  transition: all 0.3s ease;
+  font-weight: 600;
 }
 
-/* Responsive Styles */
+.error-message.server-error {
+  background-color: #fdeded;
+  border: 1px solid #fbc2c2;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+.success-message {
+    color: #27ae60;
+    font-size: 14px;
+    margin-top: 10px;
+    text-align: center;
+    font-weight: 600;
+    background-color: #e6f7ee;
+    border: 1px solid #b2dfdb;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
 @media (max-width: 768px) {
   .navbar-container {
-    padding: 0.8rem 1rem;
-  }
-  
-  .navbar-links {
-    display: none;
     flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-    position: absolute;
-    top: 100%;
-    right: 0;
-    background: linear-gradient(135deg, #2c3e50, #3498db);
-    width: 200px;
     padding: 1rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-    z-index: 100;
   }
-  
-  .navbar-links.active {
-    display: flex;
+  .navbar-links {
+    margin-top: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
   }
-  
-  .nav-toggle {
-    display: block;
+  .navbar-links a {
+    padding: 6px 12px;
+    font-size: 0.9rem;
   }
-  
   .container {
     width: 90%;
-    padding: 30px 20px;
+    padding: 30px;
   }
 }
 
 @media (max-width: 480px) {
   .container {
-    padding: 20px 15px;
+    padding: 20px;
   }
-  
   .navbar-links a {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
+    padding: 5px 10px;
   }
 }
