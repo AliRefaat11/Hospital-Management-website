@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= hospital.name %> - Meet Our Doctors</title>
+  <link rel="stylesheet" href="/css/navbar.css">
   <link rel="stylesheet" href="/css/doctors_page.css">
   <link rel="icon" href="/images/logo.jpeg" type="image/jpeg">
 </head>
@@ -103,8 +104,8 @@
       user: <%- JSON.stringify(user) %>,
       currentPage: '<%= currentPage %>',
       doctors: <%- JSON.stringify(doctors) %>,
-      csrfToken: '<%= csrfToken %>'
-    };*/
+    };
+    */
   </script>
   <script src="/javascript/doctors_page.js"></script>
 </body>
