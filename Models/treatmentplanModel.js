@@ -10,7 +10,7 @@ const treatmentPlanSchema = new mongoose.Schema(
         patientId: {
             type: mongoose.Schema.ObjectId,
             ref: "Patient",
-            required: [true, "Patient ID is required"]
+            //required: [true, "Patient ID is required"]
         },
         startDate: {
             type: Date,

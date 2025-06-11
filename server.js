@@ -47,6 +47,10 @@ app.get('/login', (req, res) => {
     });
 });
 
+
+
+
+//app.use(express.static("./frontend"));
 app.use('/User', UserRouter);
 app.use('/Doctor', DrRouter);
 app.use('/Patient', PatRouter);

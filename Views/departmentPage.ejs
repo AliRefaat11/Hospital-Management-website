@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Departments - Prime Care</title>
-  <link rel="stylesheet" href="../css/department_page.css" />
+  <link rel="stylesheet" href="/css/department_page.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 <body>
@@ -15,8 +15,8 @@
       <div class="navbar-links">
         <a href="/home" class="<%= activePage === 'home' ? 'active' : '' %>">HOME</a>
         <a href="/about" class="<%= activePage === 'about' ? 'active' : '' %>">ABOUT US</a>
-        <a href="/departments" class="<%= activePage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
-        <a href="/doctors" class="<%= activePage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
+        <a href="/department" class="<%= activePage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
+        <a href="/doctor" class="<%= activePage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
         <a href="/book" class="<%= activePage === 'book' ? 'active' : '' %>">BOOK NOW</a>
         <a href="/login" class="<%= activePage === 'login' ? 'active' : '' %>">Login</a>
         <a href="/signup" class="signup-btn <%= activePage === 'signup' ? 'active' : '' %>">Sign Up</a>
@@ -28,72 +28,17 @@
     <p>Explore the medical departments available at Prime Care</p>
   </section>
   <section class="departments-container">
-    <% const departments = [
-      {
-        name: "General Medicine",
-        description: "Comprehensive care for everyday health and wellness.",
-        doctors: [
-          { name: "Dr. John Smith", specialty: "Specializes in general diagnosis and treatments." },
-          { name: "Dr. Emily Johnson", specialty: "Expert in preventative medicine and wellness." },
-          { name: "Dr. Adam Scott", specialty: "Focused on patient-centered general care." }
-        ]
-      },
-      {
-        name: "Cardiology",
-        description: "Specialized heart care by experienced cardiologists.",
-        doctors: [
-          { name: "Dr. Sarah Lee", specialty: "Expert in heart surgeries and cardiology treatments." },
-          { name: "Dr. Michael Brown", specialty: "Specializes in non-invasive cardiology care." },
-          { name: "Dr. Kate Miller", specialty: "Specialist in advanced cardiac imaging." }
-        ]
-      },
-      {
-        name: "Dermatology",
-        description: "Treatment for skin, hair, and nail conditions.",
-        doctors: [
-          { name: "Dr. Linda Nguyen", specialty: "Specialist in skin treatments and cosmetic care." },
-          { name: "Dr. James Davis", specialty: "Expert in chronic skin conditions and hair care." },
-          { name: "Dr. Rachel Green", specialty: "Focused on acne and pigmentation disorders." }
-        ]
-      },
-      {
-        name: "Orthopedics",
-        description: "Care for bones, joints, and musculoskeletal issues.",
-        doctors: [
-          { name: "Dr. Robert Taylor", specialty: "Specialist in joint replacement and orthopedic surgeries." },
-          { name: "Dr. Angela Wilson", specialty: "Expert in sports injuries and bone health." },
-          { name: "Dr. Oliver Davis", specialty: "Focused on pediatric orthopedic care." }
-        ]
-      },
-      {
-        name: "Pediatrics",
-        description: "Healthcare for infants, children, and adolescents.",
-        doctors: [
-          { name: "Dr. Olivia Martinez", specialty: "Specializes in pediatric wellness and development." },
-          { name: "Dr. Ethan Walker", specialty: "Expert in neonatal and childhood disorders." },
-          { name: "Dr. Emma Wilson", specialty: "Focused on adolescent medicine and care." }
-        ]
-      },
-      {
-        name: "Neurology",
-        description: "Diagnosis and treatment of brain and nerve disorders.",
-        doctors: [
-          { name: "Dr. Sophia Hernandez", specialty: "Expert in neurodegenerative disorders." },
-          { name: "Dr. David Anderson", specialty: "Specializes in epilepsy and neurological conditions." },
-          { name: "Dr. Mark Lewis", specialty: "Focused on stroke rehabilitation and therapy." }
-        ]
-      }
-    ]; %>
-    <% departments.forEach(department => { %>
+    <% departments.forEach(function(department) { %>
       <div class="department-section">
-        <h2><%= department.name %></h2>
+        <h2><%= department.departmentName %></h2>
         <p><%= department.description %></p>
+        <p>Doctors: <%= department.numberOfDoctors %></p>
         <div class="doctor-grid">
-          <% department.doctors.forEach(doctor => { %>
+          <% department.doctors.forEach(function(doctor) { %>
             <div class="doctor-card">
               <i class="fas fa-user-md doctor-icon"></i>
               <h3><%= doctor.name %></h3>
-              <p><%= doctor.specialty %></p>
+              <p><%= doctor.specialization %></p>
             </div>
           <% }); %>
         </div>
@@ -122,6 +67,6 @@
       <p>&copy; <%= new Date().getFullYear() %> Prime Care. All Rights Reserved.</p>
     </div>
   </footer>
-  <script src="../public/javascript/department_page.js"></script>
+  <script src="/javascript/department_page.js"></script>
 </body>
 </html>

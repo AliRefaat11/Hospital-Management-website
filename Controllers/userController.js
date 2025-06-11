@@ -1,7 +1,8 @@
 const User = require("../Models/userModel");
+const { auth, createToken, allowedTo, ApiError } = require("../middleware/authMiddleware");
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 const validator = require('validator');
+const asyncHandler = require('express-async-handler');
 
 const getAll = async (req, res) => {
     try {
@@ -48,7 +49,7 @@ const create = async (req, res) => {
         const existingUser = await User.findOne({ 
             $or: [
                 { Email: req.body.Email },
-                { PhoneNumber: req.body.PhoneNumber }
+                { PhoneNumber: req.body.PhoneNumber}
             ]
         });
         if (existingUser) {
@@ -72,7 +73,8 @@ const create = async (req, res) => {
             token,
             data: userResponse
         });
-    } catch (error) {
+    }
+    catch (error) {
         res.status(400).json({
             status: 'fail',
             message: error.message
@@ -80,84 +82,41 @@ const create = async (req, res) => {
     }
 };
 
-const createToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_EXPIRES_IN
-    });
-};
+const login = asyncHandler(async (req, res, next) => {
+    const {Email, Password} = req.body;
+    console.log(`Login attempt for Email: ${Email}, Password: ${Password}`);
 
-const validateLoginInput = (email, password) => {
-    const errors = [];
-    if (!email || !validator.isEmail(email.trim())) {
-        errors.push('Please provide a valid email address');
-    }
-    if (!password || password.length < 6) {
-        errors.push('Password must be at least 6 characters long');
-    }
-    return errors;
-};
+    const user = await User.findOne({ Email: Email });
+    console.log('User found:', user ? user.Email : 'None');
 
-const login = async (req, res) => {
-    try {
-        console.log('Login attempt with body:', req.body);
-        const { Email, Password } = req.body;
-        if (!Email || !Password) {
-            console.log('Missing email or password');
-            return res.status(400).json({
-                status: 'fail',
-                message: 'Please provide both email and password'
-            });
-        }
-        const validationErrors = validateLoginInput(Email, Password);
-        if (validationErrors.length > 0) {
-            console.log('Validation errors:', validationErrors);
-            return res.status(400).json({
-                status: 'fail',
-                message: validationErrors.join(', ')
-            });
-        }
-        const normalizedEmail = Email.trim().toLowerCase();
-        console.log('Looking for user with email:', normalizedEmail);
-        const user = await User.findOne({ 
-            Email: { $regex: new RegExp(`^${normalizedEmail}$`, 'i') }
-        });
-        if (!user) {
-            console.log(`No user found with email: ${normalizedEmail}`);
-            return res.status(401).json({
-                status: 'fail',
-                message: 'Invalid email or password'
-            });
-        }
-        console.log('User found, comparing passwords');
-        const isPasswordCorrect = await bcrypt.compare(Password.trim(), user.Password);
-        if (!isPasswordCorrect) {
-            console.log(`Password incorrect for user: ${user._id}`);
-            return res.status(401).json({
-                status: 'fail',
-                message: 'Invalid email or password'
-            });
-        }
-        const token = createToken(user._id);
-        console.log(`Login successful for user: ${user._id}`);
-        const userResponse = user.toObject();
-        delete userResponse.Password;
-        delete userResponse.__v;
-        res.status(200).json({
-            status: 'success',
-            token,
-            data: {
-                user: userResponse,
-                tokenExpiresIn: process.env.JWT_EXPIRES_IN
+    if (!user) {
+        console.log('No user found for the provided email.');
+        return next(new ApiError("Invalid email or password", 401));
+    }
+
+    const isPasswordCorrect = await bcrypt.compare(Password, user.Password);
+    console.log(`Password comparison result: ${isPasswordCorrect}`);
+
+    if (!isPasswordCorrect) {
+        console.log('Password does not match.');
+        return next(new ApiError("Invalid email or password", 401));
+    }
+
+    const token = createToken(user._id);
+    console.log('Login successful, token created.');
+    res.status(200).json({
+        status: "success",
+        token,
+        data: {
+            user: {
+                id: user._id,
+                role: user.role,
+                email: user.Email,
+                name: `${user.FName} ${user.LName}`
             }
-        });
-    } catch (error) {
-        console.error('Login error:', error);
-        res.status(500).json({
-            status: 'error',
-            message: 'An error occurred during login. Please try again later.'
-        });
-    }
-};
+        }
+    });
+});
 
 const update = async (req, res) => {
     try {
@@ -236,7 +195,6 @@ const updatePassword = async (req, res) => {
     }
 };
 
-// Delete user
 const deleteById = async (req, res) => {
     try {
         const user = await User.findByIdAndDelete(req.params.id);
@@ -286,4 +244,3 @@ module.exports = {
     deleteById,
     getProfile
 };
-
