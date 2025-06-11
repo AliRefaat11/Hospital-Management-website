@@ -13,6 +13,7 @@ const MedRouter = require('./Routes/medicalreportRouter');
 const TreatRouter = require('./Routes/treatmentplanRouter');
 
 const express = require('express');
+const path = require('path');
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -84,6 +85,13 @@ app.get('/test', (req, res) => {
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Set EJS as the view engine
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'Views'));
+
+// Serve static files from the public directory
+app.use(express.static(path.join(__dirname, 'public')));
 
 //app.use(express.static("./frontend"));
 app.use('/User', UserRouter);

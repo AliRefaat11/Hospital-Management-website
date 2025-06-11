@@ -48,6 +48,9 @@ DepRouter.get('/:id', departmentController.getDepartmentById);
 // READ - Get department by name
 DepRouter.get('/name/:name', departmentController.getDepartmentByName);
 
+// READ - Render all departments
+DepRouter.get('/view/all', departmentController.renderDepartmentsPage);
+
 // UPDATE - Update department
 DepRouter.put('/:id', departmentController.updateDepartment);
 

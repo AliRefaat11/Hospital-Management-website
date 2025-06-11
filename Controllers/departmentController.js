@@ -1,4 +1,5 @@
 const Department = require('../Models/departmentModel');
+const Doctor = require("../Models/doctorModel");
 
 const departmentController = {
 
@@ -278,6 +279,23 @@ const departmentController = {
         message: 'Failed to search departments',
         error: error.message
       });
+    }
+  },
+
+  // Render all departments in a view
+  renderDepartmentsPage: async (req, res) => {
+    try {
+      const departments = await Department.find();
+      // For each department, fetch its doctors
+      const departmentsWithDoctors = await Promise.all(
+        departments.map(async (dept) => {
+          const doctors = await Doctor.find({ departmentId: dept._id });
+          return { ...dept.toObject(), doctors };
+        })
+      );
+      res.render('departmentPage', { departments: departmentsWithDoctors, activePage: 'departments' });
+    } catch (error) {
+      res.status(500).send('Error loading departments');
     }
   }
 };
