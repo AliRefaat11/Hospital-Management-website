@@ -103,7 +103,13 @@ const login = asyncHandler(async (req, res, next) => {
     }
 
     const token = createToken(user._id);
-    console.log('Login successful, token created.');
+    // Set JWT as HTTP-only cookie (always secure: false for local dev)
+    res.cookie('token', token, {
+        httpOnly: true,
+        secure: false, // Always false for local development
+        maxAge: 24 * 60 * 60 * 1000 // 1 day
+    });
+    console.log('Login successful, token created and cookie set.');
     res.status(200).json({
         status: "success",
         token,

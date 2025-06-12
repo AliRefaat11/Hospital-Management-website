@@ -3,6 +3,7 @@ const User = require('../Models/userModel');
 const { auth, allowedTo, ApiError } = require('../middleware/authMiddleware');
 const asyncHandler = require('express-async-handler');
 const bcrypt = require('bcryptjs');
+const Doctor = require('../Models/doctorModel');
 
 // Public routes (no auth needed)
 exports.signup = asyncHandler(async (req, res, next) => {
@@ -33,7 +34,42 @@ exports.signup = asyncHandler(async (req, res, next) => {
 });
 
 exports.getLoggedPatientData = asyncHandler(async (req, res, next) => {
-    
+  const user = req.user;
+  const patient = await Patient.findOne({ userId: req.user._id });
+  if (!user) {
+    return next(new ApiError("user not found", 404));
+  }
+  if (!patient) {
+    return next(new ApiError("Patient not found", 404));
+  }
+  const patientPlain = patient.toObject();
+  const userPlain = user.toObject();
+
+  // Find all doctors (no currentPatients field, so return all doctors for demo)
+  let doctors = await Doctor.find();
+  let doctorList = await Promise.all(
+    doctors.map(async (doctor) => {
+      const doctorUser = await User.findById(doctor.userId);
+      return {
+        firstname: doctorUser.FName,
+        lastname: doctorUser.LName,
+        specialization: doctor.specialization,
+        rating: doctor.rating,
+        email: doctorUser.Email,
+      };
+    })
+  );
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      Profile: {
+        ...userPlain,
+        ...patientPlain,
+        doctors: doctorList
+      },
+    },
+  });
 });
 
 exports.getAllPatients = asyncHandler(async (req, res, next) => {
