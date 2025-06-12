@@ -5,8 +5,14 @@ const express = require('express');
 const path = require('path');
 const { auth } = require('./middleware/authMiddleware');
 const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
 
 const app = express();
+
+// Core Middleware - MUST be placed before any routes
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser()); // Ensure cookieParser is defined if not already imported
 
 const DrRouter = require('./Routes/doctorRouter');
 const UserRouter = require('./Routes/userRouter');
@@ -26,6 +32,8 @@ app.use(express.static('public'));
 
 const Doctor = require('./Models/doctorModel');
 const User = require('./Models/userModel');
+const Patient = require('./Models/patientModel');
+const Department = require('./Models/departmentModel');
 
 app.get('/', async (req, res) => {
     try {
@@ -189,58 +197,6 @@ app.get('/', async (req, res) => {
     }
 });
 
-app.get('/doctors', async (req, res) => {
-    console.log("Hitting /doctor page route");
-    try {
-        console.log("Attempting to fetch doctors from database...");
-        const doctors = await Doctor.find()
-            .populate('userId', 'name email')
-            .populate('departmentId', 'name');
-        console.log(`Successfully fetched ${doctors.length} doctors.`);
-
-        const hospital = {
-            name: "PrimeCare",
-            address: "123 Health St, Wellness City",
-            phone: "+1234567890",
-            email: "info@primecare.com"
-        };
-        const user = null;
-        const currentPage = 'doctors';
-        const pageContent = {
-            heroTitle: "Meet Our Expert Doctors",
-            heroSubtitle: "Our team of highly skilled and compassionate doctors is here to provide you with the best care possible."
-        };
-        const searchQuery = '';
-        const footerLinks = [
-            { url: "/", text: "Home" },
-            { url: "/about", text: "About Us" },
-            { url: "/departments", text: "Departments" },
-            { url: "/doctors-page", text: "Doctors" },
-            { url: "/appointments", text: "Book Appointment" }
-        ];
-        const socialLinks = [
-            { url: "#", icon: `<i class="fab fa-facebook-f"></i>` },
-            { url: "#", icon: `<i class="fab fa-twitter"></i>` },
-            { url: "#", icon: `<i class="fab fa-instagram"></i>` }
-        ];
-        console.log("Attempting to render doctorPage.ejs...");
-        res.render('doctorPage', {
-            hospital,
-            user,
-            currentPage,
-            pageContent,
-            searchQuery,
-            doctors,
-            footerLinks,
-            socialLinks
-        });
-    } catch (error) {
-        console.error("Error rendering doctors page:", error);
-        res.status(500).send("Error loading doctors page.");
-    }
-});
-
-// Demo data for doctors page
 app.get('/doctors', (req, res) => {
     const doctors = [
         { name: "Dr. Sarah Johnson", specialization: "Cardiology", profileImage: "/images/doctor-1.jpg" },
@@ -269,9 +225,9 @@ app.get('/doctors', (req, res) => {
         { url: "/appointments", text: "Book Appointment" }
     ];
     const socialLinks = [
-        { url: "#", icon: `<i class=\"fab fa-facebook-f\"></i>` },
-        { url: "#", icon: `<i class=\"fab fa-twitter\"></i>` },
-        { url: "#", icon: `<i class=\"fab fa-instagram\"></i>` }
+        { url: "#", icon: `<i class="fab fa-facebook-f"></i>` },
+        { url: "#", icon: `<i class="fab fa-twitter"></i>` },
+        { url: "#", icon: `<i class="fab fa-instagram"></i>` }
     ];
     res.render('doctorPage', {
         hospital,
@@ -285,7 +241,7 @@ app.get('/doctors', (req, res) => {
     });
 });
 
-// Demo data for departments page
+// Demo data for departments page (re-added as per request to revert)
 app.get('/department/view/all', (req, res) => {
     const departments = [
         {
@@ -322,14 +278,54 @@ app.get('/department/view/all', (req, res) => {
     });
 });
 
+// Route for Appointments Management Page
+app.get('/appointments', async (req, res) => {
+    try {
+        // Fetch necessary data from backend for dropdowns and table display
+        const doctors = await Doctor.find({});
+        const patients = await Patient.find({});
+        const departments = await Department.find({});
+
+        // Placeholder data for EJS rendering. You'll need to populate these from your DB/logic.
+        const admin = { name: "Admin User", role: "Administrator", profileImage: "/images/admin-avatar.png" };
+        const notifications = { count: 0 };
+        const messages = { count: 0 };
+        const stats = {
+            total: { count: 0, changeType: 'none', changePercent: 0 },
+            today: { count: 0 },
+            completed: { count: 0 },
+            pending: { count: 0 }
+        };
+        const todaySchedule = { urgent: 0, late: 0, noShows: 0, avgWaitTime: '0m' };
+        const nextAppointments = []; // This will be dynamically fetched by client-side JS
+        const appointments = []; // Initialize an empty array for initial render
+
+        res.render('appointmentsManagement', {
+            admin,
+            notifications,
+            messages,
+            stats,
+            todaySchedule,
+            nextAppointments,
+            appointments, // Pass the appointments array to the EJS
+            doctors, // Pass fetched doctors
+            patients, // Pass fetched patients
+            departments, // Pass fetched departments
+            currentPage: 'appointments',
+            appointmentTypes: ['Consultation', 'Follow-up', 'Checkup', 'Emergency', 'Therapy'] // Example types
+        });
+    } catch (error) {
+        console.error("Error rendering appointments management page:", error);
+        res.status(500).send("Error loading appointments management page.");
+    }
+});
+
 // Temporary test route to diagnose routing issues
 app.get('/test', (req, res) => {
     console.log("Hitting /test route");
     res.send('Test route hit successfully!');
 });
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
@@ -340,11 +336,7 @@ app.use((req, res, next) => {
     next();
 });
 
-// Remove the duplicate signup and login routes since they're handled in the routers
-// app.get('/signup', ...) - Remove this
-// app.get('/login', ...) - Remove this
-
-//app.use(express.static("./frontend"));
+// API Routes (mounted after page rendering routes)
 app.use('/User', UserRouter);
 app.use('/Doctor', DrRouter);
 app.use('/Patient', PatRouter);
@@ -374,6 +366,180 @@ app.get('/patient/signup', (req, res) => {
         siteName: 'PrimeCare',
         role: 'Patient'
     });
+});
+
+// Route for book appointment page
+app.get('/book_appointment', async (req, res) => {
+    try {
+        let user = null;
+        // Check for logged-in user (replicate logic from '/' route)
+        try {
+            const token = req.cookies?.token;
+            if (token) {
+                const decoded = jwt.verify(token, process.env.JWT_SECRET);
+                user = await User.findById(decoded.id).select('-Password');
+            }
+        } catch (error) {
+            console.log('Token verification failed for book_appointment page:', error.message);
+        }
+
+        const doctors = await Doctor.find({});
+        const departments = await Department.find({});
+
+        res.render('bookAppointment', {
+            user: user,
+            doctors: doctors,
+            departments: departments,
+            currentPage: 'book_appointment' // Optional: for highlighting nav links
+        });
+    } catch (error) {
+        console.error("Error rendering bookAppointment page:", error);
+        res.status(500).send("Error loading book appointment page.");
+    }
+});
+
+// Route for quick appointment page
+app.get('/quick-appointment', async (req, res) => {
+    try {
+        const doctors = await Doctor.find({});
+        const departments = await Department.find({});
+        res.render('quickAppointment', {
+            user: req.user,
+            doctors: doctors,
+            departments: departments
+        });
+    } catch (error) {
+        console.error("Error rendering quickAppointment page:", error);
+        res.status(500).send("Error loading quick appointment page.");
+    }
+});
+
+// Handle form submission from bookAppointment.ejs
+app.post('/appointments/book', async (req, res) => {
+    try {
+        const { 
+            firstName, lastName, phone, email, gender, age,
+            department, doctor, date, time, reason, terms
+        } = req.body;
+
+        // --- Patient Creation/Lookup Logic ---
+        let userRecord = await User.findOne({ email });
+        let patientRecord;
+
+        if (!userRecord) {
+            // If user doesn't exist, create a new user (with dummy password for now, improve security later)
+            userRecord = new User({
+                name: `${firstName} ${lastName}`,
+                email,
+                Password: 'temp_password_123', // !!! IMPORTANT: Hash passwords in a real application !!!
+                role: 'patient' // Assuming this is for patient users
+            });
+            await userRecord.save();
+        }
+
+        patientRecord = await Patient.findOne({ userId: userRecord._id });
+
+        if (!patientRecord) {
+            // If patient doesn't exist, create a new patient linked to the user
+            patientRecord = new Patient({
+                userId: userRecord._id,
+                DateOfBirth: new Date(new Date().getFullYear() - parseInt(age), 0, 1), // Approximate DoB from age
+                Gender: gender,
+                PhoneNumber: phone,
+                Address: 'N/A', // Assuming address is not collected here
+                MedicalHistory: '' // Assuming medical history is not collected here
+            });
+            await patientRecord.save();
+        }
+        // --- End Patient Creation/Lookup Logic ---
+
+        // Prepare request body for appointmentController.createAppointment
+        req.body = {
+            doctorID: doctor, // 'doctor' field from form is already the ID
+            patientID: patientRecord._id.toString(),
+            date: date,
+            startingHour: time,
+            reason: reason,
+            status: 'scheduled' // Default status
+        };
+
+        // Call the appointment controller to create the appointment
+        // The controller will send the JSON response itself.
+        await appointmentController.createAppointment(req, res);
+
+    } catch (error) {
+        console.error("Error processing book appointment:", error);
+        // Send an error response back to the frontend
+        res.status(500).json({
+            success: false,
+            message: 'Failed to process book appointment',
+            error: error.message
+        });
+    }
+});
+
+// Handle form submission from quickAppointment.ejs
+app.post('/appointments/quick-book', async (req, res) => {
+    try {
+        const {
+            firstName, lastName, phone, email,
+            department, doctor, date, time, notes
+        } = req.body;
+
+        // --- Patient Creation/Lookup Logic ---
+        let userRecord = await User.findOne({ email });
+        let patientRecord;
+
+        if (!userRecord) {
+            // If user doesn't exist, create a new user (with dummy password for now)
+            userRecord = new User({
+                name: `${firstName} ${lastName}`,
+                email,
+                Password: 'temp_password_123', // !!! IMPORTANT: Hash passwords in a real application !!!
+                role: 'patient'
+            });
+            await userRecord.save();
+        }
+
+        patientRecord = await Patient.findOne({ userId: userRecord._id });
+
+        if (!patientRecord) {
+            // If patient doesn't exist, create a new patient linked to the user
+            patientRecord = new Patient({
+                userId: userRecord._id,
+                DateOfBirth: new Date('2000-01-01'), // Default/dummy age for quick appt
+                Gender: 'N/A', // Not collected in quick form
+                PhoneNumber: phone,
+                Address: 'N/A', 
+                MedicalHistory: '' 
+            });
+            await patientRecord.save();
+        }
+        // --- End Patient Creation/Lookup Logic ---
+
+        // Prepare request body for appointmentController.createAppointment
+        req.body = {
+            doctorID: doctor, // 'doctor' field from form is already the ID
+            patientID: patientRecord._id.toString(),
+            date: date,
+            startingHour: time,
+            reason: notes || 'Quick appointment request', // Map notes to reason
+            status: 'scheduled' // Default status
+        };
+
+        // Call the appointment controller to create the appointment
+        // The controller will send the JSON response itself.
+        await appointmentController.createAppointment(req, res);
+
+    } catch (error) {
+        console.error("Error processing quick appointment:", error);
+        // Send an error response back to the frontend
+        res.status(500).json({
+            success: false,
+            message: 'Failed to process quick appointment',
+            error: error.message
+        });
+    }
 });
 
 const hostname = "127.0.0.1";

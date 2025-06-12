@@ -83,6 +83,18 @@
         <div class="error-message" id="departmentError">Please select a department</div>
       </div>
 
+      <!-- Add Doctor selection for Quick Appointment -->
+      <div class="form-group">
+        <label id="labelDoctor" for="quickDoctor">Select Doctor</label>
+        <select id="quickDoctor" name="doctor" required>
+          <option value="" disabled selected>Choose a doctor</option>
+          <% doctors.forEach(doctor => { %>
+            <option value="<%= doctor.id %>"><%= doctor.name %> - <%= doctor.specialization %></option>
+          <% }); %>
+        </select>
+        <div class="error-message" id="doctorError">Please select a doctor</div>
+      </div>
+
       <div class="form-group">
         <label id="labelDate" for="quickDate">Appointment Date</label>
         <input type="date" id="quickDate" name="date" min="<%= new Date().toISOString().split('T')[0] %>" required />

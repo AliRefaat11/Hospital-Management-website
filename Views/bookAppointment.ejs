@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+`<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -39,7 +39,7 @@
 
     <div class="appointment-container">
       <h2 id="formTitle">Personal Information</h2>
-      <form id="appointmentForm" action="/appointments/book" method="POST">
+      <form id="appointmentForm" action="/api/appointments" method="POST">
         <div class="form-row">
           <div class="form-group half">
             <label for="patientFirstName" id="labelFirstName">First Name</label>
@@ -61,6 +61,10 @@
           <label for="patientEmail" id="labelEmail">Email Address</label>
           <input type="email" id="patientEmail" name="email" value="<%= user ? user.email : '' %>" placeholder="your.email@example.com" required />
         </div>
+
+        <% if (user) { %>
+          <input type="hidden" id="patientID" name="patientID" value="<%= user._id %>" />
+        <% } %>
 
         <div class="form-row">
           <div class="form-group half">

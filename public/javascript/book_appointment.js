@@ -237,31 +237,60 @@ function showErrorModal() {
   timeInput.value = '';
 }
 
-// Form submission handler
-appointmentForm.addEventListener('submit', function(event) {
-  event.preventDefault();
-  
-  // Validate the form including the date-time check
-  if (!validateForm() || !validateDateAndTime()) {
-    return false;
+// Add form submission handling for AJAX
+appointmentForm.addEventListener('submit', async function(event) {
+  event.preventDefault(); // Prevent default form submission
+
+  // Client-side validation before sending
+  if (!validateForm()) {
+    showErrorModal(translations[currentLanguage].errorTitle, 'Please correct the errors in the form.');
+    return;
   }
+
+  submitBtn.disabled = true; // Disable button to prevent double clicks
+  submitLoader.style.display = 'inline-flex'; // Show loader
   
-  // Show loading state
-  submitBtn.style.display = 'none';
-  submitLoader.style.display = 'flex';
-  
-  // Simulate API call with timeout
-  setTimeout(() => {
-    // Hide loading state
-    submitBtn.style.display = 'flex';
-    submitLoader.style.display = 'none';
-    
-    // Show confirmation modal
-    confirmationModal.style.display = 'flex';
-    
-    // Reset form
-    appointmentForm.reset();
-  }, 1500);
+  const formData = new FormData(appointmentForm);
+  const patientId = document.getElementById('patientID') ? document.getElementById('patientID').value : null; // Get patientID from hidden input
+
+  const appointmentData = {
+    doctorID: formData.get('doctor'),
+    patientID: patientId, // Use the dynamically retrieved patientID
+    date: formData.get('date'),
+    startingHour: formData.get('time'),
+    reason: formData.get('reason'),
+    status: 'scheduled' // Default status
+  };
+
+  try {
+    const response = await fetch('/api/appointments', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(appointmentData)
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      // Success
+      document.getElementById('modalTitle').textContent = translations[currentLanguage].modalTitle;
+      document.getElementById('modalMessage').textContent = translations[currentLanguage].modalMessage;
+      confirmationModal.style.display = 'flex';
+      appointmentForm.reset(); // Clear form after successful submission
+    } else {
+      // Error from backend
+      showErrorModal(translations[currentLanguage].errorTitle || 'Error', result.message || 'An unknown error occurred.');
+    }
+
+  } catch (error) {
+    console.error('Error during form submission:', error);
+    showErrorModal(translations[currentLanguage].errorTitle || 'Error', 'Failed to connect to the server. Please try again later.');
+  } finally {
+    submitBtn.disabled = false; // Re-enable button
+    submitLoader.style.display = 'none'; // Hide loader
+  }
 });
 
 // Close modal handler

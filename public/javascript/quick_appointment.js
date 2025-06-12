@@ -5,7 +5,37 @@ document.getElementById("quickDate").setAttribute("min", today);
 const maxDate = "2025-12-31";
 document.getElementById("quickDate").setAttribute("max", maxDate);
 
-document.getElementById("quickAppointmentForm").addEventListener("submit", function(e) {
+// Error modal elements (added for consistency with book_appointment.js)
+const errorModal = document.createElement('div');
+errorModal.id = 'errorModal';
+errorModal.className = 'modal';
+errorModal.innerHTML = `
+  <div class="modal-content">
+    <div class="modal-icon" style="color: #e74c3c;">
+      <i class="fas fa-exclamation-circle"></i>
+    </div>
+    <h3 id="errorModalTitle"></h3>
+    <p id="errorModalMessage"></p>
+    <button id="closeErrorModalBtn"></button>
+  </div>
+`;
+document.body.appendChild(errorModal);
+
+const closeErrorModalBtn = document.getElementById('closeErrorModalBtn');
+closeErrorModalBtn.addEventListener('click', function() {
+  errorModal.style.display = 'none';
+});
+
+// Function to show custom error modal
+function showErrorModal(title, message) {
+  document.getElementById('errorModalTitle').textContent = title;
+  document.getElementById('errorModalMessage').textContent = message;
+  document.getElementById('closeErrorModalBtn').textContent = currentLanguage === 'en' ? 'Close' : 'إغلاق';
+  errorModal.style.display = 'flex';
+}
+
+// Form submission handling for AJAX
+document.getElementById("quickAppointmentForm").addEventListener("submit", async function(e) {
   e.preventDefault();
   
   // Reset error states
@@ -22,7 +52,8 @@ document.getElementById("quickAppointmentForm").addEventListener("submit", funct
   const lastName = document.getElementById("quickLastName").value.trim();
   const phone = document.getElementById("quickPhone").value.trim();
   const email = document.getElementById("quickEmail").value.trim();
-  const department = document.getElementById("quickDepartment").value;
+  const department = document.getElementById("quickDepartment").value; // This is department ID
+  const doctor = document.getElementById("quickDoctor").value; // This is doctor ID
   const date = document.getElementById("quickDate").value;
   const time = document.getElementById("quickTime").value;
   const notes = document.getElementById("quickNotes").value.trim();
@@ -90,15 +121,25 @@ document.getElementById("quickAppointmentForm").addEventListener("submit", funct
     const currentMinutes = currentDateTime.getMinutes();
     
     if (timeHour < currentHour || (timeHour === currentHour && timeMinutes <= currentMinutes)) {
-      alert(currentLanguage === 'en' ? 
-        "You cannot book an appointment for a past time on the current day." : 
-        "لا يمكنك حجز موعد لوقت سابق في اليوم الحالي.");
+      showErrorModal(translations.en.errorTitle || 'Invalid Time', translations.en.pastTimeAlert);
       document.getElementById("quickTime").classList.add("error");
       document.getElementById("timeError").style.display = "block";
       hasErrors = true;
     }
   }
   
+  // Add validation for department and doctor selection
+  if (department === '') {
+    document.getElementById("quickDepartment").classList.add("error");
+    document.getElementById("departmentError").style.display = "block";
+    hasErrors = true;
+  }
+  if (doctor === '') {
+    document.getElementById("quickDoctor").classList.add("error");
+    document.getElementById("doctorError").style.display = "block";
+    hasErrors = true;
+  }
+
   if (hasErrors) {
     return;
   }
@@ -106,53 +147,78 @@ document.getElementById("quickAppointmentForm").addEventListener("submit", funct
   // Combine first and last name for full name
   const fullName = `${firstName} ${lastName}`;
   
-  // Create appointment object
-  const appointment = {
+  // Data to send to backend
+  const appointmentData = {
     firstName,
     lastName,
-    fullName,
     phone,
     email,
-    department,
+    department, // This is department ID
+    doctor,     // This is doctor ID
     date,
     time,
     notes
   };
   
-  // Save to localStorage
-  const savedAppointments = JSON.parse(localStorage.getItem("quickAppointments")) || [];
-  savedAppointments.push(appointment);
-  localStorage.setItem("quickAppointments", JSON.stringify(savedAppointments));
+  // Show loading state
+  const submitBtn = document.getElementById("submitBtn");
+  submitBtn.disabled = true;
+  submitBtn.textContent = translations[currentLanguage].processing; // Update button text to processing
   
-  // Format date and time for display
-  const formattedDate = new Date(date).toLocaleDateString(currentLanguage === 'en' ? 'en-US' : 'ar-EG', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
-  
-  const formattedTime = new Date(`2000-01-01T${time}`).toLocaleTimeString(currentLanguage === 'en' ? 'en-US' : 'ar-EG', {
-    hour: '2-digit',
-    minute: '2-digit'
-  });
-  
-  // Display appointment details in modal
-  const departmentName = document.querySelector(`#quickDepartment option[value="${department}"]`).textContent;
-  document.getElementById("appointmentDetails").innerHTML = `
-    <div style="background-color: #f5f7fa; padding: 15px; border-radius: 8px; margin: 15px 0; text-align: ${currentLanguage === 'ar' ? 'right' : 'left'};">
-      <p><strong>${currentLanguage === 'en' ? 'Name' : 'الاسم'}:</strong> ${fullName}</p>
-      <p><strong>${currentLanguage === 'en' ? 'Department' : 'القسم'}:</strong> ${departmentName}</p>
-      <p><strong>${currentLanguage === 'en' ? 'Date' : 'التاريخ'}:</strong> ${formattedDate}</p>
-      <p><strong>${currentLanguage === 'en' ? 'Time' : 'الوقت'}:</strong> ${formattedTime}</p>
-    </div>
-  `;
-  
-  // Show confirmation modal
-  document.getElementById("quickModal").style.display = "flex";
-  
-  // Reset form
-  this.reset();
+  try {
+    const response = await fetch(this.action, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(appointmentData)
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      // Success: Show confirmation modal
+      document.getElementById("modalTitle").textContent = translations[currentLanguage].modalTitle;
+      document.getElementById("modalMessage").textContent = translations[currentLanguage].modalMessage;
+      
+      // Display appointment details in modal using backend response or current form data
+      const departmentName = document.querySelector(`#quickDepartment option[value="${department}"]`).textContent;
+      const doctorName = document.querySelector(`#quickDoctor option[value="${doctor}"]`).textContent; // Get doctor name for display
+      const formattedDate = new Date(date).toLocaleDateString(currentLanguage === 'en' ? 'en-US' : 'ar-EG', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+      const formattedTime = new Date(`2000-01-01T${time}`).toLocaleTimeString(currentLanguage === 'en' ? 'en-US' : 'ar-EG', {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+
+      document.getElementById("appointmentDetails").innerHTML = `
+        <div style="background-color: #f5f7fa; padding: 15px; border-radius: 8px; margin: 15px 0; text-align: ${currentLanguage === 'ar' ? 'right' : 'left'};">
+          <p><strong>${currentLanguage === 'en' ? 'Name' : 'الاسم'}:</strong> ${fullName}</p>
+          <p><strong>${currentLanguage === 'en' ? 'Department' : 'القسم'}:</strong> ${departmentName}</p>
+          <p><strong>${currentLanguage === 'en' ? 'Doctor' : 'الطبيب'}:</strong> ${doctorName}</p>
+          <p><strong>${currentLanguage === 'en' ? 'Date' : 'التاريخ'}:</strong> ${formattedDate}</p>
+          <p><strong>${currentLanguage === 'en' ? 'Time' : 'الوقت'}:</strong> ${formattedTime}</p>
+        </div>
+      `;
+      document.getElementById("quickModal").style.display = "flex";
+      this.reset(); // Reset form
+
+    } else {
+      // Error from backend: Show error modal
+      showErrorModal(translations.en.errorTitle || 'Error', result.message || 'An unknown error occurred.');
+    }
+
+  } catch (error) {
+    console.error('Error during form submission:', error);
+    showErrorModal(translations.en.errorTitle || 'Error', 'Failed to connect to the server. Please try again later.');
+  } finally {
+    submitBtn.disabled = false; // Re-enable button
+    submitBtn.textContent = translations[currentLanguage].submitBtn; // Restore button text
+  }
 });
 
 // Modal close button
@@ -207,7 +273,9 @@ function setLanguage(lang) {
       modalTitle: "Appointment Request Received!",
       modalMessage: "Thank you for choosing Prime Care. We will confirm your appointment via phone or email shortly.",
       languageToggle: "Switch to Arabic",
-      modalCloseBtn: "Close"
+      modalCloseBtn: "Close",
+      errorTitle: "Error",
+      pastTimeAlert: "You cannot book an appointment for a past time on the current day."
     },
     ar: {
       formTitle: "حجز موعد سريع",
@@ -226,7 +294,9 @@ function setLanguage(lang) {
       modalTitle: "تم استلام طلب الموعد!",
       modalMessage: "شكرًا لاختيارك برايم كير. سنؤكد موعدك عبر الهاتف أو البريد الإلكتروني قريبًا.",
       languageToggle: "التبديل إلى الإنجليزية",
-      modalCloseBtn: "إغلاق"
+      modalCloseBtn: "إغلاق",
+      errorTitle: "خطأ",
+      pastTimeAlert: "لا يمكنك حجز موعد لوقت سابق في اليوم الحالي."
     }
   };
   
