@@ -18,8 +18,23 @@
         <a href="/department/view/all" class="<%= activePage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
         <a href="/doctors" class="<%= activePage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
         <a href="/book" class="<%= activePage === 'book' ? 'active' : '' %>">BOOK NOW</a>
-        <a href="/login" class="<%= activePage === 'login' ? 'active' : '' %>">Login</a>
-        <a href="/patient/signup" class="signup-btn <%= activePage === 'signup' ? 'active' : '' %>">Sign Up</a>
+        <% if (user) { %>
+        <div class="user-menu">
+          <a href="/profile" class="profile-link">
+            <i class="fas fa-user-circle"></i>
+            <%= user.FName %> <%= user.LName %>
+          </a>
+          <div class="dropdown-menu">
+            <a href="/profile">My Profile</a>
+            <a href="/appointments">My Appointments</a>
+            <a href="/settings">Settings</a>
+            <a href="/auth/logout" class="logout-btn">Logout</a>
+          </div>
+        </div>
+        <% } else { %>
+          <a href="/login" class="<%= activePage === 'login' ? 'active' : '' %>">Login</a>
+          <a href="/patient/signup" class="signup-btn <%= activePage === 'signup' ? 'active' : '' %>">Sign Up</a>
+        <% } %>
       </div>
     </div>
   </nav>

@@ -5,6 +5,7 @@ const express = require('express');
 const path = require('path');
 const { auth } = require('./middleware/authMiddleware');
 const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
@@ -23,9 +24,11 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'Views'));
 
 app.use(express.static('public'));
+app.use(cookieParser());
 
 const Doctor = require('./Models/doctorModel');
 const User = require('./Models/userModel');
+const Patient = require('./Models/patientModel');
 
 app.get('/', async (req, res) => {
     try {
@@ -214,7 +217,6 @@ app.get('/doctors', async (req, res) => {
         const footerLinks = [
             { url: "/", text: "Home" },
             { url: "/about", text: "About Us" },
-            { url: "/departments", text: "Departments" },
             { url: "/doctors-page", text: "Doctors" },
             { url: "/appointments", text: "Book Appointment" }
         ];
@@ -374,6 +376,42 @@ app.get('/patient/signup', (req, res) => {
         siteName: 'PrimeCare',
         role: 'Patient'
     });
+});
+
+app.get('/profile', auth, async (req, res, next) => {
+  try {
+    const user = req.user;
+    const patient = await Patient.findOne({ userId: user._id });
+    if (!patient) {
+      return res.status(404).send('Patient not found');
+    }
+    // Optionally fetch doctors as in your API logic
+    let doctors = await Doctor.find();
+    let doctorList = await Promise.all(
+      doctors.map(async (doctor) => {
+        const doctorUser = await User.findById(doctor.userId);
+        return {
+          firstname: doctorUser.FName,
+          lastname: doctorUser.LName,
+          specialization: doctor.specialization,
+          rating: doctor.rating,
+          email: doctorUser.Email,
+        };
+      })
+    );
+    res.render('profilePage', {
+      user,
+      patient,
+      doctors: doctorList
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get('/auth/logout', (req, res) => {
+  res.clearCookie('token');
+  res.redirect('/login');
 });
 
 const hostname = "127.0.0.1";

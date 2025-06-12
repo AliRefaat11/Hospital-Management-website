@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile - <%= user.FName %> <%= user.LName %></title>
+  <link rel="stylesheet" href="/css/navbar.css">
+  <link rel="stylesheet" href="/css/user_profile.css">
+</head>
+<body>
+  <nav>
+    <div class="navbar-container">
+      <a href="/" class="site-name">PrimeCare</a>
+      <div class="navbar-links">
+        <a href="/" class="">HOME</a>
+        <a href="/about" class="">ABOUT US</a>
+        <a href="/department/view/all" class="">DEPARTMENTS</a>
+        <a href="/doctors" class="">DOCTORS</a>
+        <a href="/appointments" class="">BOOK NOW</a>
+        <% if (user) { %>
+        <div class="user-menu">
+          <a href="/profile" class="profile-link">
+            <i class="fas fa-user-circle"></i>
+            <%= user.FName %> <%= user.LName %>
+          </a>
+          <div class="dropdown-menu">
+            <a href="/profile">My Profile</a>
+            <a href="/appointments">My Appointments</a>
+            <a href="/settings">Settings</a>
+            <a href="/auth/logout" class="logout-btn">Logout</a>
+          </div>
+        </div>
+        <% } else { %>
+          <a href="/login" class="">Login</a>
+          <a href="/patient/signup" class="signup-btn">Sign Up</a>
+        <% } %>
+      </div>
+    </div>
+  </nav>
+  <main style="max-width: 800px; margin: 2rem auto;">
+    <h1>Patient Profile</h1>
+    <section class="profile-section">
+      <h2>Basic Information</h2>
+      <ul>
+        <li><strong>Name:</strong> <%= user.FName %> <%= user.LName %></li>
+        <li><strong>Email:</strong> <%= user.Email %></li>
+        <li><strong>Phone:</strong> <%= user.PhoneNumber %></li>
+        <li><strong>Gender:</strong> <%= user.Gender %></li>
+        <li><strong>Age:</strong> <%= user.Age %></li>
+      </ul>
+    </section>
+    <section class="profile-section">
+      <h2>Patient Details</h2>
+      <ul>
+        <li><strong>Blood Type:</strong> <%= patient.bloodType %></li>
+        <li><strong>Medical Number:</strong> <%= patient.medicalNo %></li>
+        <% if (patient.medicalHistory) { %>
+        <li><strong>Medical History:</strong> <%= patient.medicalHistory %></li>
+        <% } %>
+      </ul>
+    </section>
+    <section class="profile-section">
+      <h2>Doctors</h2>
+      <% if (doctors && doctors.length > 0) { %>
+        <ul>
+          <% doctors.forEach(function(doc) { %>
+            <li>
+              <strong><%= doc.firstname %> <%= doc.lastname %></strong> - <%= doc.specialization %> (Rating: <%= doc.rating %>)<br>
+              Email: <%= doc.email %>
+            </li>
+          <% }); %>
+        </ul>
+      <% } else { %>
+        <p>No doctors found.</p>
+      <% } %>
+    </section>
+  </main>
+</body>
+</html> 
