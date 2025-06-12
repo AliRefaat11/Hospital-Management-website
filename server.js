@@ -5,6 +5,7 @@ const express = require('express');
 const path = require('path');
 const { auth } = require('./middleware/authMiddleware');
 const jwt = require('jsonwebtoken');
+const appointmentController = require('./controllers/appointmentController');
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use(express.static('public'));
 
 const Doctor = require('./Models/doctorModel');
 const User = require('./Models/userModel');
+const Department = require('./Models/departmentModel');
 
 app.get('/', async (req, res) => {
     try {
@@ -49,32 +51,22 @@ app.get('/', async (req, res) => {
         const services = [
             {
                 name: "Emergency Care",
-                icon: "/images/emergency-icon.png",
+                icon: "/images/ambulance_icon.jpg",
                 description: "24/7 emergency medical services"
             },
             {
                 name: "Outpatient Services",
-                icon: "/images/outpatient-icon.png",
+                icon: "/images/istockphoto-1330046035-612x612.jpg",
                 description: "Comprehensive outpatient care"
             },
             {
-                name: "Laboratory",
-                icon: "/images/lab-icon.png",
-                description: "State-of-the-art diagnostic services"
-            },
-            {
                 name: "Radiology",
-                icon: "/images/radiology-icon.png",
+                icon: "/images/Neurology_Icon.jpg",
                 description: "Advanced imaging services"
             },
             {
-                name: "Pharmacy",
-                icon: "/images/pharmacy-icon.png",
-                description: "Full-service hospital pharmacy"
-            },
-            {
                 name: "Specialized Care",
-                icon: "/images/specialized-icon.png",
+                icon: "/images/surgery_icon.jpg",
                 description: "Expert care in various specialties"
             }
         ];
@@ -189,14 +181,247 @@ app.get('/', async (req, res) => {
     }
 });
 
-app.get('/doctors', async (req, res) => {
-    console.log("Hitting /doctor page route");
+app.get('/home', async (req, res) => {
     try {
-        console.log("Attempting to fetch doctors from database...");
+        const hospital = {
+            name: "PrimeCare",
+            address: "123 Health St, Wellness City",
+            phone: "+1234567890",
+            email: "info@primecare.com",
+            tagline: "Your Health is Our Priority",
+            subTagline: "Providing quality healthcare services for you and your family",
+            about: "PrimeCare Hospital is committed to providing exceptional healthcare services with a focus on patient care and medical excellence."
+        };
+
+        const currentPage = 'home';
+        const pageContent = {
+            heroTitle: "Welcome to PrimeCare Hospital",
+            heroSubtitle: "Your Health is Our Priority"
+        };
+
+        const services = [
+            {
+                name: "Emergency Care",
+                icon: "/images/ambulance_icon.jpg",
+                description: "24/7 emergency medical services"
+            },
+            {
+                name: "Outpatient Services",
+                icon: "/images/istockphoto-1330046035-612x612.jpg",
+                description: "Comprehensive outpatient care"
+            },
+            {
+                name: "Radiology",
+                icon: "/images/Neurology_Icon.jpg",
+                description: "Advanced imaging services"
+            },
+            {
+                name: "Specialized Care",
+                icon: "/images/surgery_icon.jpg",
+                description: "Expert care in various specialties"
+            }
+        ];
+
+        const features = [
+            "24/7 Emergency Services",
+            "Experienced Medical Staff",
+            "Modern Medical Equipment",
+            "Comfortable Patient Rooms",
+            "Easy Appointment Booking",
+            "Online Medical Records"
+        ];
+
+        const testimonials = [
+            {
+                content: "The care I received at PrimeCare was exceptional. The staff was professional and caring.",
+                author: "John Smith"
+            },
+            {
+                content: "Modern facilities and excellent doctors. Highly recommended!",
+                author: "Sarah Johnson"
+            },
+            {
+                content: "Quick service and great medical attention. Thank you PrimeCare!",
+                author: "Michael Brown"
+            }
+        ];
+
+        const cta = {
+            heading: "Ready to Book Your Appointment?",
+            buttonText: "Book Now"
+        };
+
+        const footerLinks = [
+            { url: "/", text: "Home" },
+            { url: "/about", text: "About Us" },
+            { url: "/departments", text: "Departments" },
+            { url: "/doctors", text: "Doctors" },
+            { url: "/appointments", text: "Book Appointment" }
+        ];
+
+        const socialLinks = [
+            { url: "#", icon: `<i class="fab fa-facebook-f"></i>` },
+            { url: "#", icon: `<i class="fab fa-twitter"></i>` },
+            { url: "#", icon: `<i class="fab fa-instagram"></i>` }
+        ];
+
+        const featuredDoctors = [
+            {
+                name: "Dr. Sarah Johnson",
+                specialization: "Cardiology",
+                profileImage: "/images/doctor-1.jpg",
+                rating: 4.8,
+                experience: "15 years"
+            },
+            {
+                name: "Dr. Michael Chen",
+                specialization: "Neurology",
+                profileImage: "/images/doctor-2.jpg",
+                rating: 4.9,
+                experience: "12 years"
+            },
+            {
+                name: "Dr. Emily Brown",
+                specialization: "Pediatrics",
+                profileImage: "/images/doctor-3.jpg",
+                rating: 4.7,
+                experience: "10 years"
+            },
+            {
+                name: "Dr. James Wilson",
+                specialization: "Orthopedics",
+                profileImage: "/images/doctor-4.jpg",
+                rating: 4.8,
+                experience: "14 years"
+            }
+        ];
+
+        let user = null;
+        try {
+            const token = req.cookies?.token;
+            if (token) {
+                const decoded = jwt.verify(token, process.env.JWT_SECRET);
+                user = await User.findById(decoded.id).select('-Password');
+            }
+        } catch (error) {
+            console.log('Token verification failed:', error.message);
+        }
+
+        res.render('homePage', {
+            hospital,
+            user,
+            currentPage,
+            pageContent,
+            services,
+            features,
+            testimonials,
+            cta,
+            footerLinks,
+            socialLinks,
+            featuredDoctors,
+            siteName: 'PrimeCare'
+        });
+    } catch (error) {
+        console.error("Error rendering home page:", error);
+        res.status(500).send("Error loading home page.");
+    }
+});
+
+app.get('/about', async (req, res) => {
+    try {
+        let user = null;
+        try {
+            const token = req.cookies?.token;
+            if (token) {
+                const decoded = jwt.verify(token, process.env.JWT_SECRET);
+                user = await User.findById(decoded.id).select('-Password');
+            }
+        } catch (error) {
+            console.log('Token verification failed:', error.message);
+        }
+
+        const aboutUsSections = [
+            {
+                title: "Our Mission",
+                content: "To provide compassionate, high-quality healthcare services to our community, fostering wellness and promoting a healthier future for all."
+            },
+            {
+                title: "Our Vision",
+                content: "To be the leading healthcare provider, recognized for our excellence in patient care, innovative medical practices, and commitment to community health."
+            },
+            {
+                title: "Our Values",
+                list: [
+                    "Patient-Centered Care: Prioritizing the needs and well-being of our patients.",
+                    "Excellence: Striving for the highest standards in medical care and service.",
+                    "Integrity: Upholding honesty, ethics, and transparency in all our actions.",
+                    "Teamwork: Collaborating effectively to deliver comprehensive and coordinated care.",
+                    "Innovation: Embracing new technologies and approaches to improve health outcomes."
+                ]
+            }
+        ];
+
+        res.render('aboutusPage', {
+            currentPage: 'about',
+            siteName: 'Prime Care',
+            user,
+            aboutUsSections
+        });
+    } catch (error) {
+        console.error("Error rendering about page:", error);
+        res.status(500).send("Error loading about page.");
+    }
+});
+
+app.get('/departments', async (req, res) => {
+    try {
+        const departments = await Department.find();
+        const departmentsWithDoctors = await Promise.all(departments.map(async (department) => {
+            const doctors = await Doctor.find({ departmentId: department._id })
+                .populate('userId', 'FName LName Email PhoneNumber Gender Age')
+                .populate('departmentId', 'departmentName');
+            return {
+                ...department.toObject(),
+                doctors
+            };
+        }));
+        let user = null;
+        try {
+            const token = req.cookies?.token;
+            if (token) {
+                const decoded = jwt.verify(token, process.env.JWT_SECRET);
+                user = await User.findById(decoded.id).select('-Password');
+            }
+        } catch (error) {
+            console.log('Token verification failed:', error.message);
+        }
+        res.render('departmentPage', {
+            departments: departmentsWithDoctors,
+            user,
+            activePage: 'departments'
+        });
+    } catch (error) {
+        console.error('Error loading departments:', error);
+        res.status(500).send('Error loading departments page.');
+    }
+});
+
+app.get('/doctors', async (req, res) => {
+    try {
         const doctors = await Doctor.find()
-            .populate('userId', 'name email')
+            .populate('userId', 'FName LName Email PhoneNumber Gender Age')
             .populate('departmentId', 'name');
-        console.log(`Successfully fetched ${doctors.length} doctors.`);
+
+        let user = null;
+        try {
+            const token = req.cookies?.token;
+            if (token) {
+                const decoded = jwt.verify(token, process.env.JWT_SECRET);
+                user = await User.findById(decoded.id).select('-Password');
+            }
+        } catch (error) {
+            console.log('Token verification failed:', error.message);
+        }
 
         const hospital = {
             name: "PrimeCare",
@@ -204,7 +429,6 @@ app.get('/doctors', async (req, res) => {
             phone: "+1234567890",
             email: "info@primecare.com"
         };
-        const user = null;
         const currentPage = 'doctors';
         const pageContent = {
             heroTitle: "Meet Our Expert Doctors",
@@ -215,7 +439,7 @@ app.get('/doctors', async (req, res) => {
             { url: "/", text: "Home" },
             { url: "/about", text: "About Us" },
             { url: "/departments", text: "Departments" },
-            { url: "/doctors-page", text: "Doctors" },
+            { url: "/doctors", text: "Doctors" },
             { url: "/appointments", text: "Book Appointment" }
         ];
         const socialLinks = [
@@ -223,7 +447,7 @@ app.get('/doctors', async (req, res) => {
             { url: "#", icon: `<i class="fab fa-twitter"></i>` },
             { url: "#", icon: `<i class="fab fa-instagram"></i>` }
         ];
-        console.log("Attempting to render doctorPage.ejs...");
+
         res.render('doctorPage', {
             hospital,
             user,
@@ -285,41 +509,30 @@ app.get('/doctors', (req, res) => {
     });
 });
 
-// Demo data for departments page
-app.get('/department/view/all', (req, res) => {
-    const departments = [
-        {
-            departmentName: "Cardiology",
-            description: "Heart care and cardiovascular treatments.",
-            numberOfDoctors: 5,
-            doctors: [
-                { name: "Dr. Sarah Johnson", specialization: "Cardiology" }
-            ]
-        },
-        {
-            departmentName: "Neurology",
-            description: "Brain and nervous system care.",
-            numberOfDoctors: 3,
-            doctors: [
-                { name: "Dr. Michael Chen", specialization: "Neurology" }
-            ]
-        },
-        {
-            departmentName: "Pediatrics",
-            description: "Child health and wellness.",
-            numberOfDoctors: 4,
-            doctors: [
-                { name: "Dr. Emily Brown", specialization: "Pediatrics" }
-            ]
-        }
-    ];
-    const user = null; // Replace with actual user if logged in
-    const activePage = 'departments';
-    res.render('departmentPage', {
-        departments,
-        user,
-        activePage
-    });
+app.get('/department/view/all', async (req, res) => {
+    try {
+        const departments = await Department.find();
+        // For each department, fetch doctors linked to it
+        const departmentsWithDoctors = await Promise.all(departments.map(async (department) => {
+            const doctors = await Doctor.find({ departmentId: department._id })
+                .populate('userId', 'FName LName Email PhoneNumber Gender Age')
+                .populate('departmentId', 'departmentName');
+            return {
+                ...department.toObject(),
+                doctors
+            };
+        }));
+        const user = null; // Replace with actual user if logged in
+        const activePage = 'departments';
+        res.render('departmentPage', {
+            departments: departmentsWithDoctors,
+            user,
+            activePage
+        });
+    } catch (error) {
+        console.error('Error loading departments:', error);
+        res.status(500).send('Error loading departments page.');
+    }
 });
 
 // Temporary test route to diagnose routing issues
@@ -346,11 +559,11 @@ app.use((req, res, next) => {
 
 //app.use(express.static("./frontend"));
 app.use('/User', UserRouter);
-app.use('/Doctor', DrRouter);
+app.use('/doctors', DrRouter);
 app.use('/Patient', PatRouter);
 app.use('/Document', DocRouter);
 app.use('/Department', DepRouter);
-app.use('/Appointment', AppRouter);
+app.use('/appointments', AppRouter);
 app.use('/Insurance', InsurRouter);
 app.use('/Treatment', TreatRouter);
 app.use('/MedicalReport', MedRouter);
@@ -374,6 +587,53 @@ app.get('/patient/signup', (req, res) => {
         siteName: 'PrimeCare',
         role: 'Patient'
     });
+});
+
+app.get('/appointments', async (req, res) => {
+    // This is the existing /appointments route handling.
+    // No changes here.
+});
+
+app.get('/quick-appointment', async (req, res) => {
+    try {
+        const departments = await Department.find();
+        let user = null;
+        try {
+            const token = req.cookies?.token;
+            if (token) {
+                const decoded = jwt.verify(token, process.env.JWT_SECRET);
+                user = await User.findById(decoded.id).select('-Password');
+            }
+        } catch (error) {
+            console.log('Token verification failed:', error.message);
+        }
+        res.render('quickAppointment', { departments, user });
+    } catch (error) {
+        console.error("Error rendering quick appointment page:", error);
+        res.status(500).send("Error loading quick appointment page.");
+    }
+});
+
+app.use('/api/doctors', DrRouter);
+
+app.get('/profile', auth, async (req, res) => {
+    try {
+        const user = req.user; // User object should be available from auth middleware
+
+        if (!user) {
+            return res.redirect('/login'); // Redirect to login if user not found (shouldn't happen with auth middleware)
+        }
+
+        res.render('userProfile', { user, currentPage: 'profile' });
+    } catch (error) {
+        console.error("Error rendering user profile page:", error);
+        res.status(500).send("Error loading user profile page.");
+    }
+});
+
+app.get('/logout', (req, res) => {
+    res.clearCookie('token');
+    res.redirect('/login');
 });
 
 const hostname = "127.0.0.1";

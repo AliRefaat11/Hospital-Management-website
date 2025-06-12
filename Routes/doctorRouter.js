@@ -3,6 +3,7 @@ const DrRouter = express.Router();
 const DocController = require("../Controllers/doctorController");
 
 DrRouter.get("/", DocController.getAll);
+DrRouter.get("/search", DocController.search);
 DrRouter.get("/:id", DocController.getById);
 DrRouter.post("/", DocController.create);
 DrRouter.patch("/:id", DocController.update);

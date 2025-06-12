@@ -1,0 +1,61 @@
+/* Footer Styles */
+.footer {
+  background: linear-gradient(to right, #1f3b58, #2e83c3); /* Same gradient as navigation bar */
+  color: white;
+  padding: 2rem 1rem;
+  text-align: center;
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.footer-left h3 {
+  margin-bottom: 0.5rem;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: white; /* Ensures "Prime Care" remains white */
+}
+
+.footer-left p {
+  font-size: 1rem;
+  color: #f0f0f0; /* Slightly lighter text for better contrast */
+  line-height: 1.6;
+  margin: 0;
+  text-align: center;
+}
+
+.footer-links {
+  margin: 1rem 0;
+}
+
+.footer-links a {
+  color: #f0f0f0; /* Lighter color for readability */
+  margin: 0 1rem;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+}
+
+.footer-socials a {
+  margin: 0 0.5rem;
+  font-size: 1.5rem;
+  color: white;
+}
+
+.footer-socials a:hover {
+  color: #2be085; /* Adds a hover effect for social links */
+}
+
+.footer-bottom {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #dcdcdc; /* Subtle color for copyright text */
+} 

@@ -18,7 +18,7 @@
             <a href="./about_us_page.html" class="<%= currentPage === 'about' ? 'active' : '' %>">ABOUT US</a>
             <a href="./department_page.html" class="<%= currentPage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
             <a href="./doctors_page.html" class="<%= currentPage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
-            <a href="./quick_appointment.html" class="<%= currentPage === 'book' ? 'active' : '' %>">BOOK NOW</a>
+            <a href="/quick-appointment" class="<%= currentPage === 'book' ? 'active' : '' %>">BOOK NOW</a>
             <a href="./login_page.html" class="<%= currentPage === 'login' ? 'active' : '' %>">Login</a>
             <a href="./sign_up_page.html" class="signup-btn <%= currentPage === 'signup' ? 'active' : '' %>">Sign Up</a>
           </div>
@@ -66,7 +66,7 @@
             <section class="content-card">
                 <div class="card-header">
                     <h2>Upcoming Appointments</h2>
-                    <button class="btn btn-sm btn-primary" onclick="window.location.href='./book-appointment.html'">
+                    <button class="btn btn-sm btn-primary" onclick="window.location.href='/appointments/book'">
                         <i class="fas fa-plus"></i> New Appointment
                     </button>
                 </div>
@@ -110,7 +110,7 @@
                     <% } else { %>
                         <div class="no-appointments">
                             <p>No upcoming appointments scheduled.</p>
-                            <button class="btn btn-primary" onclick="window.location.href='./book-appointment.html'">
+                            <button class="btn btn-primary" onclick="window.location.href='/appointments/book'">
                                 Schedule an Appointment
                             </button>
                         </div>
