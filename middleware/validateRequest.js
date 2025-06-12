@@ -1,15 +1,4 @@
-const {
-    validateEmail,
-    validatePhoneNumber,
-    validatePassword,
-    validateDate,
-    validateNumeric,
-    validateAlphanumeric,
-    validateURL,
-    validateObjectId,
-    validateRequired,
-    validateLength
-} = require('./validation');
+import { validateEmail, validatePhoneNumber, validatePassword, validateDate, validateNumeric, validateAlphanumeric, validateURL, validateObjectId, validateRequired, validateLength } from './validation';
 
 const validateRequest = (validationRules) => {
     return (req, res, next) => {
@@ -73,4 +62,4 @@ const validateRequest = (validationRules) => {
     };
 };
 
-module.exports = validateRequest; 
+export default validateRequest; 
