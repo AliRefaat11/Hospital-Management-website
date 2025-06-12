@@ -9,12 +9,10 @@ UserRouter.post("/login", UserController.login);
 
 // Protected routes (require authentication)
 UserRouter.use(auth); // Apply auth middleware to all routes below
-
 // Routes accessible by the user themselves
 UserRouter.get("/profile", UserController.getProfile);
 UserRouter.patch("/profile", UserController.update);
 UserRouter.patch("/profile/password", UserController.updatePassword);
-
 // Admin only routes
 UserRouter.use(allowedTo('Admin')); // Apply admin role check to all routes below
 UserRouter.get("/", UserController.getAll);

@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= hospital.name %> - Meet Our Doctors</title>
-  <link rel="stylesheet" href="/css/navbar.css">
   <link rel="stylesheet" href="/css/doctors_page.css">
   <link rel="icon" href="/images/logo.jpeg" type="image/jpeg">
 </head>
@@ -20,11 +19,21 @@
         <a href="/doctors" class="<%= currentPage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
         <a href="/appointments" class="<%= currentPage === 'appointments' ? 'active' : '' %>">BOOK NOW</a>
         <% if (user) { %>
-          <a href="/profile" class="profile-link"><%= user.name %></a>
-          <a href="/auth/logout" class="logout-btn">Logout</a>
+          <div class="user-menu">
+            <a href="/profile" class="profile-link">
+              <i class="fas fa-user-circle"></i>
+              <%= user.FName %> <%= user.LName %>
+            </a>
+            <div class="dropdown-menu">
+              <a href="/profile">My Profile</a>
+              <a href="/appointments">My Appointments</a>
+              <a href="/settings">Settings</a>
+              <a href="/auth/logout" class="logout-btn">Logout</a>
+            </div>
+          </div>
         <% } else { %>
           <a href="/login" class="<%= currentPage === 'login' ? 'active' : '' %>">Login</a>
-          <a href="/signup" class="signup-btn">Sign Up</a>
+          <a href="/patient/signup" class="signup-btn">Sign Up</a>
         <% } %>
       </div>
     </div>

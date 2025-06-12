@@ -2,16 +2,18 @@ const Patient = require('../Models/patientModel');
 const User = require('../Models/userModel');
 const { auth, allowedTo, ApiError } = require('../middleware/authMiddleware');
 const asyncHandler = require('express-async-handler');
+const bcrypt = require('bcryptjs');
 
 // Public routes (no auth needed)
 exports.signup = asyncHandler(async (req, res, next) => {
     const {FName,LName,Email,Password,Age,PhoneNumber,Gender,bloodType,medicalNo}= req.body;
     try {
+        const hashedPassword = await bcrypt.hash(Password, 10);
         const newUser = new User({
             FName,
             LName,
             Email,
-            Password,
+            Password: hashedPassword,
             Age,
             PhoneNumber,
             Gender,
@@ -44,7 +46,10 @@ exports.signup = asyncHandler(async (req, res, next) => {
     }
 });
 
-// Protected routes (require authentication)
+exports.getLoggedPatientData = asyncHandler(async (req, res, next) => {
+    
+});
+
 exports.getAllPatients = asyncHandler(async (req, res, next) => {
     const patients = await Patient.find()
         .populate('userId', 'FName LName Email PhoneNumber')

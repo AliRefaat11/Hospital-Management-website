@@ -1,5 +1,7 @@
 const Doctor = require("../Models/doctorModel");
 const User = require("../Models/userModel");
+const bcrypt = require('bcryptjs');
+const { createToken } = require("../middleware/authMiddleware");
 
 const getAll = async (req, res) => {
     try {
@@ -45,23 +47,56 @@ const getById = async (req, res) => {
 };
 
 const create = async (req, res) => {
-    const {FName,LName,Email,Password,Age,PhoneNumber,Gender,specialization,rating,schedule}= req.body;
-    try{
-        const newUser = new User({FName,LName,Email,Password,Age,PhoneNumber,Gender,role:"Patient"});
-        const savedUser = await newUser.save();
-
-        const newDoctor = await Doctor.create({userId:savedUser._id,specialization,rating,schedule});
-        const savedDoctor = await newDoctor.save();
-
-        return res.status(200).json({
-            user:newUser,
-            doctor:newDoctor
-        })
-    }
-    catch(error){
-        return res.status(500).json({
-            message:error.message,
-        })
+    const {FName, LName, Email, Password, Age, PhoneNumber, Gender, specialization, rating, schedule} = req.body;
+    try {
+        // Check if user already exists
+        const existingUser = await User.findOne({ 
+            $or: [
+                { Email: Email },
+                { PhoneNumber: PhoneNumber }
+            ]
+        });
+        
+        if (existingUser) {
+            return res.status(400).json({
+                status: 'fail',
+                message: 'User with this email or phone number already exists'
+            });
+        }
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(Password, salt);
+        const newUser = await User.create({
+            FName,
+            LName,
+            Email,
+            Password: hashedPassword,
+            Age,
+            PhoneNumber,
+            Gender,
+            role: "Doctor"
+        });
+        const newDoctor = await Doctor.create({
+            userId: newUser._id,
+            specialization,
+            rating,
+            schedule
+        });
+        const token = createToken(newUser._id);
+        const userResponse = newUser.toObject();
+        delete userResponse.Password;
+        res.status(201).json({
+            status: 'success',
+            token,
+            data: {
+                user: userResponse,
+                doctor: newDoctor
+            }
+        });
+    } catch (error) {
+        res.status(400).json({
+            status: 'fail',
+            message: error.message
+        });
     }
 };
 

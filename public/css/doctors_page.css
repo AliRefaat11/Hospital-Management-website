@@ -5,11 +5,11 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Quicksand', sans-serif; 
+  font-family: 'Quicksand', sans-serif;
 }
 
 a {
-  text-decoration: none; 
+  text-decoration: none;
 }
 
 a:hover {
@@ -23,6 +23,7 @@ nav {
   position: sticky;
   top: 0;
   z-index: 100;
+  z-index: 100;
 }
 
 .navbar-container {
@@ -33,7 +34,6 @@ nav {
   max-width: 1200px;
   margin: 0 auto;
 }
-
 .site-name {
   font-size: 1.8rem;
   font-weight: bold;
@@ -42,19 +42,16 @@ nav {
   display: flex;
   align-items: center;
 }
-
 .site-name::before {
   content: "💉";
   margin-right: 10px;
   font-size: 1.5rem;
 }
-
 .navbar-links {
   display: flex;
   gap: 15px;
   align-items: center;
 }
-
 .navbar-links a {
   color: white;
   text-decoration: none;
@@ -63,12 +60,10 @@ nav {
   transition: all 0.3s ease;
   border-radius: 30px;
 }
-
 .navbar-links a:hover {
   background-color: rgba(255, 255, 255, 0.15);
   transform: translateY(-2px);
 }
-
 .navbar-links a.active {
   background-color: rgba(255, 255, 255, 0.15);
 }
@@ -421,8 +416,4 @@ footer {
   font-size: 12px;
   border-top: 1px solid #00bfff;
   margin-top: 15px;
-}
-
-a {
-  text-decoration: none;
 }
