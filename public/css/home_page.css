@@ -225,39 +225,40 @@ section p {
 
 /* Hero Section */
 .hero {
-  background: #F2F2F0;
-  color: #3498db;
+  background-image: url('/images/doctor_cover.jpg'); /* Path to your desired hero image */
+  background-size: cover;
+  background-position: center;
+  color: #fff;
   text-align: center;
-  padding: 50px 20px;
+  padding: 100px 20px;
+  min-height: 400px; /* Adjust as needed */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .hero h2 {
-  color: #3498db;
-  font-size: 2.2rem;
-  margin-bottom: 20px;
+  font-size: 3em;
+  margin-bottom: 10px;
 }
 
 .hero p {
-  font-size: 1.2rem;
-  margin-bottom: 20px;
+  font-size: 1.2em;
+  margin-bottom: 30px;
 }
 
 .hero .btn {
-  background-color: #5b85af;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  color: #fffefe;
+  background-color: #007bff;
+  color: #fff;
+  padding: 15px 30px;
   text-decoration: none;
-  padding: 10px 20px;
-  border-radius: 15px;
-  font-size: 16px;
-  font-weight: bold;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
 }
 
 .hero .btn:hover {
-  background-color: #406181;
-  color: #80ccff;
-  transform: translateY(-10px);
+  background-color: #0056b3;
 }
 
 /* About Us Section */
@@ -564,16 +565,10 @@ section p {
 
 .map-container img {
   max-width: 100%;
-  border-radius: 10px;
+  height: auto;
+  display: block;
+  border-radius: 8px;
 }
-
-footer {
-  background: linear-gradient(135deg, #2c3e50, #3498db);
-  color: white;
-  padding: 20px 15px;
-  font-size: 14px;
-}
-
 .footer-container {
   max-width: 1200px;
   margin: auto;

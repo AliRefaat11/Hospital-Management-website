@@ -27,21 +27,7 @@ exports.signup = asyncHandler(async (req, res, next) => {
             medicalNo
         });
         const savedPatient = await newPatient.save();
-        return res.status(201).json({
-            status: 'success',
-            data: {
-                user: {
-                    id: savedUser._id,
-                    email: savedUser.Email,
-                    name: `${savedUser.FName} ${savedUser.LName}`
-                },
-                patient: {
-                    id: savedPatient._id,
-                    medicalNo: savedPatient.medicalNo,
-                    bloodType: savedPatient.bloodType
-                }
-            }
-        });
+        return res.redirect('/login');
     } catch(error) {
         return next(new ApiError(error.message, 400));
     }
