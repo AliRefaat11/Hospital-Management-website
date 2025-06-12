@@ -1,6 +1,14 @@
 const express = require("express");
-const DocRouter = express.Router();
+const DrRouter = express.Router();
 const DocController = require("../Controllers/doctorController");
 
+DrRouter.get("/", DocController.getAll);
+DrRouter.get("/:id", DocController.getById);
+DrRouter.post("/", DocController.create);
+DrRouter.patch("/:id", DocController.update);
+DrRouter.delete("/:id", DocController.deleteById);
 
-DocRouter.get("/", DocController.getAll);
+DrRouter.get("/department/:departmentId", DocController.getByDepartment);
+DrRouter.get("/specialization/:specialization", DocController.getBySpecialization);
+
+module.exports = DrRouter;

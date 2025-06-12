@@ -1,4 +1,4 @@
-const Document = require('../models/Document');
+const Document = require('../Models/documentModel');
 
 exports.getAllDocuments = async (req, res) => {
     try {
@@ -8,6 +8,7 @@ exports.getAllDocuments = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
 exports.getDocumentById = async (req, res) => {
     try {
         const document = await Document.findById(req.params.id).populate('patientId');
@@ -19,6 +20,7 @@ exports.getDocumentById = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
 exports.getDocumentsByPatient = async (req, res) => {
     try {
         const documents = await Document.find({ patientId: req.params.patientId });
@@ -27,6 +29,7 @@ exports.getDocumentsByPatient = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
 exports.createDocument = async (req, res) => {
     try {
         const { patientId, documentUrl, notes } = req.body;
@@ -36,6 +39,7 @@ exports.createDocument = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
 exports.updateDocument = async (req, res) => {
     try {
         const updatedDocument = await Document.findByIdAndUpdate(req.params.id, req.body, {
@@ -50,6 +54,7 @@ exports.updateDocument = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
 exports.deleteDocument = async (req, res) => {
     try {
         const deletedDocument = await Document.findByIdAndDelete(req.params.id);
