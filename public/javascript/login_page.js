@@ -87,8 +87,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     window.location.href = '/User/profile'; // Redirect Patient to their profile
                 } else if(userRole === 'Doctor') {
                     window.location.href = '/'; 
+                } else if (userRole === 'Admin') {
+                    window.location.href = '/User/adminProfile'; // Redirect Admin to their profile
                 } else{
-
+                    // Default redirection or show a generic message for other roles
+                    window.location.href = '/';
                 }
             } else {
                 // Show error message from server

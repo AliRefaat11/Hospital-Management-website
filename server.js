@@ -40,10 +40,6 @@ app.use((req, res, next) => {
     next();
 });
 
-// Removed global auth middleware - auth should be applied within specific routers
-// app.use(auth); // THIS LINE WAS POTENTIALLY CAUSING ISSUES, REMOVED
-
-// Home page route
 app.get('/', async (req, res) => {
     try {
         const hospital = {

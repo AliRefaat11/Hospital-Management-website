@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doctor Management - PrimeCare</title>
     <link rel="stylesheet" href="/css/styles.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="../public/css/admin_profile.css">
+    <link rel="stylesheet" href="/css/admin_profile.css">
 </head>
 <body>
     <nav class="sidebar" id="sidebarNav">
@@ -20,10 +20,10 @@
         <div class="sidebar-content">
             <div class="admin-profile">
                 <div class="admin-avatar">
-                    <img src="<%= admin.profileImage || '/images/admin-avatar.png' %>" alt="Admin Profile" id="adminProfileImage">
+                    <img src="/images/admin-avatar.png" alt="Admin Profile" id="adminProfileImage">
                 </div>
                 <div class="admin-info">
-                    <h3 id="adminName"><%= admin.name %></h3>
+                    <h3 id="adminName"><%= admin.FName %> <%= admin.LName %></h3>
                     <span class="admin-role"><%= admin.role %></span>
                 </div>
             </div>
@@ -85,7 +85,7 @@
             <header class="dashboard-header">
                 <div class="header-left">
                     <h1>Doctor Management</h1>
-                    <p class="welcome-message">Welcome to Doctor Management Portal, <span id="adminNameHeader"><%= admin.name.split(' ')[0] %></span>!</p>
+                    <p class="welcome-message">Welcome to Doctor Management Portal, <span id="adminNameHeader"><%= admin.FName %></span>!</p>
                 </div>
                 <div class="header-right">
                     <div class="search-box">
@@ -184,7 +184,7 @@
                             <h3>Doctor Availability</h3>
                             <p class="stat-value"><%= stats.availableDoctors %>/<%= stats.totalDoctors %></p>
                             <div class="progress-bar">
-                                <div class="progress" style="width: 75%"></div>
+                                <div class="progress" style="width: '<%= (stats.availableDoctors / stats.totalDoctors) * 100 %>%'"></div>
                             </div>
                             <p class="stat-change"><%= stats.coverageRate %>% Coverage Rate</p>
                         </div>
@@ -197,7 +197,7 @@
                             <h3>Appointment Status</h3>
                             <p class="stat-value"><%= stats.onTimeRate %>%</p>
                             <div class="progress-bar">
-                                <div class="progress emergency" style="width: 85%"></div>
+                                <div class="progress emergency" style="width: '<%= stats.onTimeRate %>%'"></div>
                             </div>
                             <p class="stat-change">On-Time Rate</p>
                         </div>
@@ -342,6 +342,6 @@
             csrfToken: '<%= csrfToken %>'
         };*/
     </script>
-    <script src="../public/javascript/admin_profile.js"></script>
+    <script src="/javascript/admin_profile.js"></script>
 </body>
 </html> 
