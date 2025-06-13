@@ -6,6 +6,7 @@
   <title>About Us - <%= siteName %></title>
   <link rel="stylesheet" href="../css/about_us_page.css">
   <link rel="stylesheet" href="/css/common_footer.css">
+  <link rel="stylesheet" href="/css/navbar.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
@@ -19,8 +20,18 @@
         <a href="/doctors" class="<%= currentPage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
         <a href="/appointments/book" class="<%= currentPage === 'book' ? 'active' : '' %>">BOOK NOW</a>
         <% if (user) { %>
-          <a href="/User/profile"><%= user.name %></a>
-          <a href="/User/logout" class="signup-btn">Logout</a>
+          <div class="user-menu">
+            <a href="/User/profile" class="profile-link">
+              <i class="fas fa-user-circle"></i>
+              <%= user.FName %> <%= user.LName %>
+            </a>
+            <div class="dropdown-menu">
+              <a href="/User/profile">My Profile</a>
+              <a href="/appointments">My Appointments</a>
+              <a href="/User/settings">Settings</a>
+              <a href="/User/logout" class="logout-btn">Logout</a>
+            </div>
+          </div>
         <% } else { %>
           <a href="/User/login" class="<%= currentPage === 'login' ? 'active' : '' %>">Login</a>
           <a href="/Patient/signup" class="signup-btn <%= currentPage === 'signup' ? 'active' : '' %>">Sign Up</a>

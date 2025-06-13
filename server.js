@@ -7,6 +7,7 @@ const path = require('path');
 const { auth } = require('./middleware/authMiddleware');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
+const adminController = require('./Controllers/adminController'); // Import the adminController
 
 const app = express();
 
@@ -21,6 +22,7 @@ const AppRouter = require('./Routes/appointmentRouter');
 const InsurRouter = require('./Routes/insuranceRouter');
 const MedRouter = require('./Routes/medicalreportRouter');
 const TreatRouter = require('./Routes/treatmentplanRouter');
+const AdminRouter = require('./Routes/adminRoutes');
 const TreatmentPlan = require('./Models/treatmentplanModel');
 const MedicalReport = require('./Models/medicalreportModel');
 const User = require('./Models/userModel');
@@ -262,9 +264,59 @@ app.use('/Patient', PatRouter);
 app.use('/Document', DocRouter);
 app.use('/Department', DepRouter);
 app.use('/appointments', AppRouter);
-app.use('/Insurance', InsurRouter);
-app.use('/Treatment', TreatRouter);
-app.use('/MedicalReport', MedRouter);
+app.use('/insurance', InsurRouter);
+app.use('/medical-reports', MedRouter);
+app.use('/treatment-plans', TreatRouter);
+app.use('/admin', AdminRouter);
+
+// Admin Dashboard Page Route
+app.get('/admin/dashboard', async (req, res) => {
+    try {
+        const statsResponse = await adminController.getDashboardStats();
+        const backendStats = statsResponse.data; // This contains totalDoctors, totalPatients, etc.
+
+        // Construct the stats object with all expected properties for adminProfile.ejs
+        const stats = {
+            activeDoctors: backendStats.totalDoctors || 0, // Using totalDoctors as activeDoctors for now
+            doctorsChange: 0, // Placeholder: You can add logic to calculate this later
+            todayAppointments: backendStats.totalAppointments || 0, // Using totalAppointments as todayAppointments for now
+            appointmentsChange: 0, // Placeholder
+            onDutyDoctors: backendStats.totalDoctors || 0, // Placeholder: You might fetch actual on-duty doctors later
+            averageRating: 0.0, // Placeholder
+            ratingChange: 0.0, // Placeholder
+            specialists: backendStats.totalDepartments || 0, // Using totalDepartments as specialists count
+            departmentCount: backendStats.totalDepartments || 0, // Ensuring departmentCount is available
+            availableSlots: 0, // Placeholder
+            availableDoctors: backendStats.totalDoctors || 0, // Placeholder for available doctors
+            totalDoctors: backendStats.totalDoctors || 0, // Ensure totalDoctors is explicitly passed
+            coverageRate: 0, // Placeholder
+            onTimeRate: 0, // Placeholder
+            // Add any other stats properties expected by adminProfile.ejs here
+        };
+
+        // Placeholder admin user for testing
+        let admin = {
+            name: "Admin User", // Replace with actual admin name from session/DB if available
+            role: "Administrator",
+            profileImage: "/images/admin-avatar.png" // Default image
+        };
+
+        // Placeholder notifications and messages
+        const notifications = { unreadCount: 5 };
+        const messages = { unreadCount: 2 };
+
+        res.render('adminProfile', {
+            admin,
+            notifications,
+            messages,
+            stats, // Pass the constructed stats object to the EJS template
+            currentPage: 'dashboard' // Active page for sidebar highlighting
+        });
+    } catch (error) {
+        console.error("Error rendering admin dashboard:", error);
+        res.status(500).send("Error loading admin dashboard: " + error.message);
+    }
+});
 
 // Server setup
 const PORT = process.env.PORT || 3000;
