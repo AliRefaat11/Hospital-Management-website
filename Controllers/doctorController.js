@@ -1,16 +1,26 @@
 const Doctor = require("../Models/doctorModel");
 const User = require("../Models/userModel");
+<<<<<<< HEAD
 const Department = require("../Models/departmentModel");
 const bcrypt = require('bcryptjs');
 const { createToken } = require("../middleware/authMiddleware");
 const jwt = require('jsonwebtoken');
+=======
+const bcrypt = require('bcryptjs');
+const { createToken } = require("../middleware/authMiddleware");
+>>>>>>> 99de3df2183c3bdf5d283e3f000943eea2e2ee8a
 
 const getAll = async (req, res) => {
     try {
         const doctors = await Doctor.find()
+<<<<<<< HEAD
             .populate('userId', 'FName LName Email PhoneNumber Gender Age')
             .populate('departmentId', 'name');
         
+=======
+            .populate('userId', 'name email')
+            .populate('departmentId', 'name');
+>>>>>>> 99de3df2183c3bdf5d283e3f000943eea2e2ee8a
         res.status(200).json({
             status: 'success',
             results: doctors.length,
@@ -27,6 +37,7 @@ const getAll = async (req, res) => {
 const getById = async (req, res) => {
     try {
         const doctor = await Doctor.findById(req.params.id)
+<<<<<<< HEAD
             .populate('userId', 'FName LName Email PhoneNumber Gender Age')
             .populate('departmentId', 'name');
         
@@ -65,6 +76,27 @@ const getById = async (req, res) => {
     } catch (error) {
         console.error("Error fetching doctor profile:", error);
         res.status(500).send("Error loading doctor profile.");
+=======
+            .populate('userId', 'name email')
+            .populate('departmentId', 'name');
+        
+        if (!doctor) {
+            return res.status(404).json({
+                status: 'fail',
+                message: 'No doctor found with that ID'
+            });
+        }
+
+        res.status(200).json({
+            status: 'success',
+            data: doctor
+        });
+    } catch (error) {
+        res.status(400).json({
+            status: 'fail',
+            message: error.message
+        });
+>>>>>>> 99de3df2183c3bdf5d283e3f000943eea2e2ee8a
     }
 };
 
@@ -85,6 +117,7 @@ const create = async (req, res) => {
                 message: 'User with this email or phone number already exists'
             });
         }
+<<<<<<< HEAD
         // Find department by specialization (case-insensitive)
         const department = await Department.findOne({ departmentName: { $regex: specialization, $options: 'i' } });
         if (!department) {
@@ -93,6 +126,8 @@ const create = async (req, res) => {
                 message: `No department found for specialization: ${specialization}`
             });
         }
+=======
+>>>>>>> 99de3df2183c3bdf5d283e3f000943eea2e2ee8a
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(Password, salt);
         const newUser = await User.create({
@@ -107,7 +142,10 @@ const create = async (req, res) => {
         });
         const newDoctor = await Doctor.create({
             userId: newUser._id,
+<<<<<<< HEAD
             departmentId: department._id,
+=======
+>>>>>>> 99de3df2183c3bdf5d283e3f000943eea2e2ee8a
             specialization,
             rating,
             schedule
@@ -204,7 +242,11 @@ const getByDepartment = async (req, res) => {
 const getBySpecialization = async (req, res) => {
     try {
         const doctors = await Doctor.find({ specialization: req.params.specialization })
+<<<<<<< HEAD
             .populate('userId', 'FName LName email')
+=======
+            .populate('userId', 'name email')
+>>>>>>> 99de3df2183c3bdf5d283e3f000943eea2e2ee8a
             .populate('departmentId', 'name');
 
         res.status(200).json({
@@ -220,6 +262,7 @@ const getBySpecialization = async (req, res) => {
     }
 };
 
+<<<<<<< HEAD
 const search = async (req, res) => {
     try {
         const { query } = req.query;
@@ -352,6 +395,8 @@ const search = async (req, res) => {
     }
 };
 
+=======
+>>>>>>> 99de3df2183c3bdf5d283e3f000943eea2e2ee8a
 module.exports = {
     getAll,
     getById,
@@ -359,6 +404,10 @@ module.exports = {
     update,
     deleteById,
     getByDepartment,
+<<<<<<< HEAD
     getBySpecialization,
     search
+=======
+    getBySpecialization
+>>>>>>> 99de3df2183c3bdf5d283e3f000943eea2e2ee8a
 };

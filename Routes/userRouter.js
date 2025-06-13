@@ -2,16 +2,20 @@ const express = require("express");
 const UserRouter = express.Router();
 const UserController = require("../Controllers/userController");
 const { auth, allowedTo } = require("../middleware/authMiddleware");
+<<<<<<< HEAD
 const jwt = require('jsonwebtoken');
 const User = require('../Models/userModel');
 const Patient = require('../Models/patientModel');
 const Doctor = require('../Models/doctorModel');
 const path = require('path');
+=======
+>>>>>>> 99de3df2183c3bdf5d283e3f000943eea2e2ee8a
 
 // Public routes (no auth needed)
 UserRouter.post("/signup", UserController.create);
 UserRouter.post("/login", UserController.login);
 
+<<<<<<< HEAD
 // Logout route
 UserRouter.get('/logout', (req, res) => {
     res.clearCookie('token'); // Clear the JWT token cookie
@@ -214,6 +218,14 @@ UserRouter.patch("/profile", UserController.update);
 UserRouter.patch("/profile/update", UserController.updateProfile);
 UserRouter.patch("/profile/password", UserController.updatePassword);
 
+=======
+// Protected routes (require authentication)
+UserRouter.use(auth); // Apply auth middleware to all routes below
+// Routes accessible by the user themselves
+UserRouter.get("/profile", UserController.getProfile);
+UserRouter.patch("/profile", UserController.update);
+UserRouter.patch("/profile/password", UserController.updatePassword);
+>>>>>>> 99de3df2183c3bdf5d283e3f000943eea2e2ee8a
 // Admin only routes
 UserRouter.use(allowedTo('Admin')); // Apply admin role check to all routes below
 UserRouter.get("/", UserController.getAll);
@@ -222,6 +234,7 @@ UserRouter.patch("/:id", UserController.update);
 UserRouter.delete("/:id", UserController.deleteById);
 UserRouter.patch("/:id/password", UserController.updatePassword);
 
+<<<<<<< HEAD
 // Admin Doctor Management Page
 UserRouter.get('/admin/doctors', auth, allowedTo('Admin'), async (req, res, next) => {
     try {
@@ -253,4 +266,6 @@ UserRouter.get('/admin/doctors', auth, allowedTo('Admin'), async (req, res, next
     }
 });
 
+=======
+>>>>>>> 99de3df2183c3bdf5d283e3f000943eea2e2ee8a
 module.exports = UserRouter;

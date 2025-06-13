@@ -46,14 +46,24 @@ exports.getTreatmentPlansByAppointment = async (req, res) => {
 exports.createTreatmentPlan = async (req, res) => {
     try {
         const { appointmentId, patientId, startDate, endDate, description } = req.body;
-        const newTreatmentPlan = await TreatmentPlan.create({
+        const newTreatmentPlan = new TreatmentPlan({
             appointmentId,
             patientId,
             startDate,
             endDate,
-            description,
+            description
         });
-        res.status(201).json(newTreatmentPlan);
+        await newTreatmentPlan.save();
+        res.status(201).json({ message: 'Treatment plan created successfully', treatmentPlan: newTreatmentPlan });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+exports.getAllTreatmentPlans = async (req, res) => {
+    try {
+        // Fetch data from database logic here
+        res.status(200).json({ message: 'All treatment plans fetched successfully' });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -76,13 +86,17 @@ exports.updateTreatmentPlan = async (req, res) => {
 };
 
 exports.deleteTreatmentPlan = async (req, res) => {
-    try {
-        const deletedTreatmentPlan = await TreatmentPlan.findByIdAndDelete(req.params.id);
-        if (!deletedTreatmentPlan) {
-            return res.status(404).json({ message: 'Treatment plan not found' });
-        }
-        res.status(200).json({ message: 'Treatment plan deleted successfully' });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
+  const { id } = req.params;
+  try {
+    const deletedTreatmentPlan = await TreatmentPlan.findByIdAndDelete(id);
+    if (!deletedTreatmentPlan) {
+      return res.status(404).json({ message: "Treatment plan not found" });
     }
+<<<<<<< HEAD
+=======
+    res.status(200).json({ message: "Treatment plan deleted successfully", deletedTreatmentPlan });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+>>>>>>> 99de3df2183c3bdf5d283e3f000943eea2e2ee8a
 };

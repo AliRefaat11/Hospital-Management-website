@@ -11,7 +11,7 @@ const doctorSchema = new mongoose.Schema(
         departmentId:{
             type:mongoose.Schema.ObjectId,
             ref:"Department",
-            required:[true,"Department id is required"]
+            //required:[true,"Department id is required"]
         },
         specialization: {
             type: String,  

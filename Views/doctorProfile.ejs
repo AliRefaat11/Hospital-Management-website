@@ -3,10 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
     <title>Dr. <%= doctor.userId.FName %> <%= doctor.userId.LName %> - <%= hospital.name %></title>
     <link rel="stylesheet" href="/css/doctor_profile.css">
     <link rel="stylesheet" href="/css/common_footer.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+=======
+    <meta name="description" content="Book an appointment with <%= doctor.name %>, <%= doctor.specialty %> at <%= doctor.hospital %>, specializing in <%= doctor.specialties.join(', ') %>.">
+    <meta name="keywords" content="<%= doctor.name %>, <%= doctor.specialty %>, <%= doctor.specialties.join(', ') %>, <%= doctor.location %>, <%= doctor.hospital %>">
+    <title><%= doctor.name %> - <%= doctor.hospital %></title>
+    <link rel="stylesheet" href="../public/css/book_appointment.css" />
+    <link rel="stylesheet" href="../public/css/doctor_profile.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+>>>>>>> 99de3df2183c3bdf5d283e3f000943eea2e2ee8a
 </head>
 <body>
     <nav>
@@ -28,6 +37,7 @@
             </div>
         </div>
     </nav>
+<<<<<<< HEAD
 
     <main class="doctor-profile-container">
         <div class="profile-sidebar">
@@ -60,6 +70,74 @@
                 <div class="language-tags">
                     <span class="language-tag">English <span class="language-level">(Native)</span></span>
                     <span class="language-tag fluent">Mandarin <span class="language-level">(Fluent)</span></span>
+=======
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 col-12">
+      <!-- Content here -->
+    </div>
+    <div class="col-md-6 col-12">
+      <!-- Content here -->
+    </div>
+  </div>
+</div>
+    <main>
+        <div class="container">
+            <div class="profile-container">
+                <div class="profile-sidebar">
+                    <div class="profile-image">
+                        <img src="<%= doctor.profileImage || '../images/account-icon-33.png' %>" alt="<%= doctor.name %>">
+                        <% if (doctor.verified) { %>
+                        <div class="profile-verified"></div>
+                        <% } %>
+                    </div>
+                    
+                    <div class="contact-actions">
+                        <a href="./book-appointment.html?doctor=<%= doctor.id %>" class="btn-appointment">Book Appointment</a>
+                    </div>
+                    
+                    <div class="availability">
+                        <div class="section-title">Availability</div>
+                        <ul>
+                            <% doctor.availability.forEach(schedule => { %>
+                            <li><%= schedule.day %>: <%= schedule.hours %></li>
+                            <% }); %>
+                        </ul>
+                        <% if (doctor.virtualVisits) { %>
+                        <div class="telehealth-badge">Virtual Visits Available</div>
+                        <% } %>
+                    </div>
+                    
+                    <div class="languages-box">
+                        <div class="section-title">Languages</div>
+                        <div class="language-tags">
+                            <% doctor.languages.forEach(language => { %>
+                            <div class="language-tag <%= language.level.toLowerCase() %>">
+                                <%= language.name %>
+                                <span class="language-level">(<%= language.level %>)</span>
+                            </div>
+                            <% }); %>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-info">
+                        <div class="section-title">Contact & Location</div>
+                        <p><strong>Tel:</strong> <%= doctor.contact.phone %></p>
+                        <p><strong>Office:</strong><br>
+                        <%= doctor.contact.office.building %><br>
+                        <%= doctor.contact.office.suite %><br>
+                        <%= doctor.contact.office.campus %></p>
+                    </div>
+                    
+                    <div class="insurance-info">
+                        <div class="section-title">Insurance Accepted</div>
+                        <ul>
+                            <% doctor.insurance.forEach(provider => { %>
+                            <li><%= provider %></li>
+                            <% }); %>
+                        </ul>
+                    </div>
+>>>>>>> 99de3df2183c3bdf5d283e3f000943eea2e2ee8a
                 </div>
             </div>
         </div>

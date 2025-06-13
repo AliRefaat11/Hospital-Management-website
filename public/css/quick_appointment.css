@@ -47,11 +47,38 @@ nav {
   margin-right: 10px;
   font-size: 1.5rem;
 }
+/* Responsive Navbar: Horizontal scroll on mobile */
+.navbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  background: linear-gradient(135deg, #2c3e50, #3498db);
+}
+
+.site-name {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+}
+
 .navbar-links {
   display: flex;
   gap: 15px;
   align-items: center;
+  overflow-x: auto;      /* Enable horizontal scroll */
+  white-space: nowrap;   /* Prevent wrapping */
+  scrollbar-width: none; /* Hide scrollbar in Firefox */
 }
+.navbar-links::-webkit-scrollbar {
+  display: none;         /* Hide scrollbar in Chrome/Safari */
+}
+
 .navbar-links a {
   color: white;
   text-decoration: none;
@@ -59,18 +86,12 @@ nav {
   font-size: 1rem;
   transition: all 0.3s ease;
   border-radius: 30px;
-}
-.navbar-links a:hover {
-  background-color: rgba(255, 255, 255, 0.15);
-  transform: translateY(-2px);
-}
-.navbar-links a.active {
-  background-color: rgba(255, 255, 255, 0.15);
+  display: inline-block;
 }
 
-.navbar-links a:nth-last-child(2) {
-  border: 1px solid white;
-  border-radius: 30px;
+.navbar-links a:hover,
+.navbar-links a.active {
+  background-color: rgba(255, 255, 255, 0.15);
 }
 
 .navbar-links a.signup-btn {
@@ -78,8 +99,39 @@ nav {
   color: white;
   font-weight: 600;
   border-radius: 30px;
+  margin-left: 10px;
 }
 
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .navbar-container {
+    padding: 1rem 1rem;
+  }
+  .site-name {
+    font-size: 1.3rem;
+  }
+  .navbar-links {
+    gap: 10px;
+  }
+  .navbar-links a {
+    padding: 8px 10px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .navbar-container {
+    padding: 0.5rem 0.5rem;
+  }
+  .site-name {
+    font-size: 1.1rem;
+  }
+  .navbar-links {
+    gap: 6px;
+    font-size: 0.95rem;
+    padding-bottom: 4px;
+  }
+}
 /* Header Styling */
 header {
   background: linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9)), 
@@ -131,6 +183,40 @@ header p {
   font-weight: 500;
   transition: all 0.3s ease;
   border-radius: 20px;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.auth-buttons .btn {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.auth-buttons .login-btn {
+  background-color: transparent;
+  color: #ffffff;
+  border: 1px solid #ffffff;
+}
+
+.auth-buttons .login-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.auth-buttons .signup-btn {
+  background-color: #4ecdc4;
+  color: #ffffff;
+}
+
+.auth-buttons .signup-btn:hover {
+  background-color: #3db9b1;
 }
 
 /* Header Styling */
@@ -355,47 +441,4 @@ button[type="submit"]:hover {
   font-size: 4rem;
   color: #2ecc71;
   margin-bottom: 1rem;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .navbar-container {
-    flex-direction: column;
-    padding: 1rem;
-  }
-  
-  .navbar-links {
-    margin-top: 1rem;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  
-  header h1 {
-    font-size: 2rem;
-  }
-  
-  form {
-    padding: 1.5rem;
-  }
-  
-  /* Make name fields stack on smaller screens */
-  .name-row {
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .navbar-links a {
-    padding: 6px 10px;
-    font-size: 0.9rem;
-  }
-  
-  header {
-    padding: 1.5rem 1rem;
-  }
-  
-  .modal-content {
-    padding: 1.5rem;
-  }
 }

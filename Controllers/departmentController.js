@@ -297,6 +297,7 @@ const departmentController = {
     } catch (error) {
       res.status(500).send('Error loading departments');
     }
+<<<<<<< HEAD
   },
 
   // Get all doctors in a specific department by department id
@@ -324,6 +325,8 @@ const departmentController = {
         message: error.message
       });
     }
+=======
+>>>>>>> 99de3df2183c3bdf5d283e3f000943eea2e2ee8a
   }
 };
 

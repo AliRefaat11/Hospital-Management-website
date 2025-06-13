@@ -81,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem('token', data.token);
                 console.log('Login successful, redirecting...');
 
+<<<<<<< HEAD
                 // Redirect based on user role
                 const userRole = data.data.user.role;
                 if (userRole === 'Patient') {
@@ -90,6 +91,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else{
 
                 }
+=======
+                // Redirect to home page or dashboard
+                window.location.href = '/';
+>>>>>>> 99de3df2183c3bdf5d283e3f000943eea2e2ee8a
             } else {
                 // Show error message from server
                 showError(data.message || 'Login failed. Please try again.');

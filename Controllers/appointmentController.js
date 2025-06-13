@@ -1,6 +1,9 @@
 const Appointment = require('../Models/appointmentModel');
+<<<<<<< HEAD
 const Doctor = require('../Models/doctorModel');
 const Department = require('../Models/departmentModel');
+=======
+>>>>>>> 99de3df2183c3bdf5d283e3f000943eea2e2ee8a
 
 const appointmentController = {
 
@@ -347,6 +350,7 @@ const appointmentController = {
         error: error.message
       });
     }
+<<<<<<< HEAD
   },
 
   // Render booking page
@@ -384,6 +388,8 @@ const appointmentController = {
       console.error('Error rendering booking page:', error);
       res.status(500).send('Error loading booking page');
     }
+=======
+>>>>>>> 99de3df2183c3bdf5d283e3f000943eea2e2ee8a
   }
 };
 

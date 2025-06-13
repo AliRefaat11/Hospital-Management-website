@@ -5,8 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Departments - Prime Care</title>
   <link rel="stylesheet" href="/css/department_page.css" />
+<<<<<<< HEAD
   <link rel="stylesheet" href="/css/common_footer.css">
+=======
+>>>>>>> 99de3df2183c3bdf5d283e3f000943eea2e2ee8a
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
  
@@ -15,6 +19,7 @@
       <a href="#" class="site-name">PrimeCare</a>
       <div class="navbar-links">
         <a href="/" class="<%= activePage === 'home' ? 'active' : '' %>">HOME</a>
+<<<<<<< HEAD
         <a href="/User/about" class="<%= activePage === 'about' ? 'active' : '' %>">ABOUT US</a>
         <a href="/Department/view" class="<%= activePage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
         <a href="/doctors" class="<%= activePage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
@@ -36,9 +41,27 @@
           <a href="/User/login" class="<%= activePage === 'login' ? 'active' : '' %>">Login</a>
           <a href="/Patient/signup" class="signup-btn <%= activePage === 'signup' ? 'active' : '' %>">Sign Up</a>
         <% } %>
+=======
+        <a href="/about" class="<%= activePage === 'about' ? 'active' : '' %>">ABOUT US</a>
+        <a href="/department/view/all" class="<%= activePage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
+        <a href="/doctors" class="<%= activePage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
+        <a href="/book" class="<%= activePage === 'book' ? 'active' : '' %>">BOOK NOW</a>
+        <a href="/login" class="<%= activePage === 'login' ? 'active' : '' %>">Login</a>
+        <a href="/patient/signup" class="signup-btn <%= activePage === 'signup' ? 'active' : '' %>">Sign Up</a>
+>>>>>>> 99de3df2183c3bdf5d283e3f000943eea2e2ee8a
       </div>
     </div>
   </nav>
+  <div class="container">
+  <div class="row">
+    <div class="col-md-6 col-12">
+      <!-- Content here -->
+    </div>
+    <div class="col-md-6 col-12">
+      <!-- Content here -->
+    </div>
+  </div>
+</div>
   <section class="page-header">
     <h1>Our Departments</h1>
     <p>Explore the medical departments available at Prime Care</p>
@@ -48,7 +71,9 @@
       <div class="department-section">
         <h2><%= department.departmentName %></h2>
         <p><%= department.description %></p>
+        <p>Doctors: <%= department.numberOfDoctors %></p>
         <div class="doctor-grid">
+<<<<<<< HEAD
           <% if (department.doctors && department.doctors.length > 0) { %>
             <% department.doctors.forEach(function(doctor) { %>
               <div class="doctor-card">
@@ -66,6 +91,15 @@
           <% } else { %>
             <p>No doctors in this department.</p>
           <% } %>
+=======
+          <% department.doctors.forEach(function(doctor) { %>
+            <div class="doctor-card">
+              <i class="fas fa-user-md doctor-icon"></i>
+              <h3><%= doctor.name %></h3>
+              <p><%= doctor.specialization %></p>
+            </div>
+          <% }); %>
+>>>>>>> 99de3df2183c3bdf5d283e3f000943eea2e2ee8a
         </div>
       </div>
     <% }); %>

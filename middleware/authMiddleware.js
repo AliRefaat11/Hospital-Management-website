@@ -22,6 +22,7 @@ exports.createToken = (payload) =>
   
 exports.auth = asyncHandler(async (req, res, next) => {
     let token;
+<<<<<<< HEAD
     console.log('Auth Middleware - req.headers.authorization:', req.headers.authorization);
     console.log('Auth Middleware - req.cookies:', req.cookies);
 
@@ -68,6 +69,32 @@ exports.auth = asyncHandler(async (req, res, next) => {
       return next(new ApiError("Invalid or expired token. Please login again.", 401));
     }
 });
+=======
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith("bearer")
+    ) {
+      token = req.headers.authorization.split(" ")[1];
+    }
+    if (!token) {
+      return next(new ApiError("Please login to get access", 401));
+    }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    const user = await User.findById(decoded.id);
+    if (!user) {
+      return next(new ApiError("User not found", 401));
+    }
+    const passwordChangedTimeStamp = parseInt(
+      user.passwordChangedAt.getTime() / 1000,
+      10
+    );
+    if (passwordChangedTimeStamp > decoded.iat) {
+      return next(new ApiError("user changed password, login again", 401));
+    }
+    req.user = user;
+    next();
+  });
+>>>>>>> 99de3df2183c3bdf5d283e3f000943eea2e2ee8a
   
 exports.allowedTo = (...roles) =>
     asyncHandler(async (req, res, next) => {

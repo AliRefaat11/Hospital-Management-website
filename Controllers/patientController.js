@@ -3,7 +3,10 @@ const User = require('../Models/userModel');
 const { auth, allowedTo, ApiError } = require('../middleware/authMiddleware');
 const asyncHandler = require('express-async-handler');
 const bcrypt = require('bcryptjs');
+<<<<<<< HEAD
 const Doctor = require('../Models/doctorModel');
+=======
+>>>>>>> 99de3df2183c3bdf5d283e3f000943eea2e2ee8a
 
 // Public routes (no auth needed)
 exports.signup = asyncHandler(async (req, res, next) => {
@@ -27,13 +30,32 @@ exports.signup = asyncHandler(async (req, res, next) => {
             medicalNo
         });
         const savedPatient = await newPatient.save();
+<<<<<<< HEAD
         return res.redirect('/login');
+=======
+        return res.status(201).json({
+            status: 'success',
+            data: {
+                user: {
+                    id: savedUser._id,
+                    email: savedUser.Email,
+                    name: `${savedUser.FName} ${savedUser.LName}`
+                },
+                patient: {
+                    id: savedPatient._id,
+                    medicalNo: savedPatient.medicalNo,
+                    bloodType: savedPatient.bloodType
+                }
+            }
+        });
+>>>>>>> 99de3df2183c3bdf5d283e3f000943eea2e2ee8a
     } catch(error) {
         return next(new ApiError(error.message, 400));
     }
 });
 
 exports.getLoggedPatientData = asyncHandler(async (req, res, next) => {
+<<<<<<< HEAD
   const user = req.user;
   const patient = await Patient.findOne({ userId: req.user._id });
   if (!user) {
@@ -70,6 +92,9 @@ exports.getLoggedPatientData = asyncHandler(async (req, res, next) => {
       },
     },
   });
+=======
+    
+>>>>>>> 99de3df2183c3bdf5d283e3f000943eea2e2ee8a
 });
 
 exports.getAllPatients = asyncHandler(async (req, res, next) => {
