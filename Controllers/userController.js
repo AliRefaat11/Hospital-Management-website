@@ -3,10 +3,6 @@ const { auth, createToken, allowedTo, ApiError } = require("../middleware/authMi
 const bcrypt = require('bcryptjs');
 const validator = require('validator');
 const asyncHandler = require('express-async-handler');
-<<<<<<< HEAD
-const Patient = require("../Models/patientModel");
-=======
->>>>>>> 99de3df2183c3bdf5d283e3f000943eea2e2ee8a
 
 const getAll = async (req, res) => {
     try {
@@ -48,11 +44,7 @@ const getById = async (req, res) => {
 };
 
 const create = async (req, res) => {
-<<<<<<< HEAD
-    const {FName,LName,Email,Password,PhoneNumber,Gender,DateOfBirth,role}= req.body;
-=======
     const {FName,LName,Email,Password,PhoneNumber,Gender,Age,role}= req.body;
->>>>>>> 99de3df2183c3bdf5d283e3f000943eea2e2ee8a
     try {
         const existingUser = await User.findOne({ 
             $or: [
@@ -70,10 +62,6 @@ const create = async (req, res) => {
         const hashedPassword = await bcrypt.hash(req.body.Password, salt);
         const newUser = await User.create({
             ...req.body,
-<<<<<<< HEAD
-            DateOfBirth: new Date(DateOfBirth),
-=======
->>>>>>> 99de3df2183c3bdf5d283e3f000943eea2e2ee8a
             Password: hashedPassword
         });
         const token = createToken(newUser._id);
@@ -115,17 +103,7 @@ const login = asyncHandler(async (req, res, next) => {
     }
 
     const token = createToken(user._id);
-<<<<<<< HEAD
-    // Set JWT as HTTP-only cookie (always secure: false for local dev)
-    res.cookie('token', token, {
-        httpOnly: true,
-        secure: false, // Always false for local development
-        maxAge: 24 * 60 * 60 * 1000 // 1 day
-    });
-    console.log('Login successful, token created and cookie set.');
-=======
     console.log('Login successful, token created.');
->>>>>>> 99de3df2183c3bdf5d283e3f000943eea2e2ee8a
     res.status(200).json({
         status: "success",
         token,
@@ -180,11 +158,7 @@ const updatePassword = async (req, res) => {
         const { currentPassword, newPassword } = req.body;
 
         // Get user
-<<<<<<< HEAD
-        const user = await User.findById(req.user._id);
-=======
         const user = await User.findById(req.params.id);
->>>>>>> 99de3df2183c3bdf5d283e3f000943eea2e2ee8a
         if (!user) {
             return res.status(404).json({
                 status: 'fail',
@@ -221,70 +195,6 @@ const updatePassword = async (req, res) => {
     }
 };
 
-<<<<<<< HEAD
-const updateProfile = async (req, res) => {
-    try {
-        const { name, email, dob, gender, phone, address, doctor, insurance } = req.body;
-        const userId = req.user._id;
-
-        // Update User Model
-        const [FName, LName] = name.split(' ');
-
-        const updatedUser = await User.findByIdAndUpdate(userId, {
-            FName,
-            LName,
-            Email: email,
-            PhoneNumber: phone,
-            Gender: gender,
-            Address: address,
-            DateOfBirth: dob ? new Date(dob) : undefined, // Convert DOB string to Date object
-        },
-        {
-            new: true,
-            runValidators: true
-        }).select('-Password');
-
-        if (!updatedUser) {
-            return res.status(404).json({
-                status: 'fail',
-                message: 'User not found.'
-            });
-        }
-
-        // If user is a patient, update Patient Model as well
-        if (updatedUser.role === 'Patient') {
-            const updatedPatient = await Patient.findOneAndUpdate(
-                { userId: updatedUser._id },
-                { primaryDoctor: doctor, insuranceName: insurance },
-                {
-                    new: true,
-                    runValidators: true,
-                    upsert: true
-                }
-            );
-            if (!updatedPatient) {
-                console.log('Patient record not found for user but created new one.');
-            }
-        }
-
-        res.status(200).json({
-            status: 'success',
-            message: 'Profile updated successfully!',
-            data: {
-                user: updatedUser,
-            }
-        });
-    } catch (error) {
-        console.error("Error updating profile:", error);
-        res.status(400).json({
-            status: 'fail',
-            message: error.message
-        });
-    }
-};
-
-=======
->>>>>>> 99de3df2183c3bdf5d283e3f000943eea2e2ee8a
 const deleteById = async (req, res) => {
     try {
         const user = await User.findByIdAndDelete(req.params.id);
@@ -331,10 +241,6 @@ module.exports = {
     login,
     update,
     updatePassword,
-<<<<<<< HEAD
-    updateProfile,
-=======
->>>>>>> 99de3df2183c3bdf5d283e3f000943eea2e2ee8a
     deleteById,
     getProfile
 };

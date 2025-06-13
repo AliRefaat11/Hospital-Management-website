@@ -1,18 +1,4 @@
 const dotenv = require('dotenv');
-<<<<<<< HEAD
-dotenv.config({path:"config.env"});
-const dbconnection = require('./config/database');
-const express = require('express');
-const path = require('path');
-const { auth } = require('./middleware/authMiddleware');
-const jwt = require('jsonwebtoken');
-const cookieParser = require('cookie-parser');
-const Doctor = require('./Models/doctorModel'); // Import Doctor model
-
-const app = express();
-
-// Import routers
-=======
 dotenv.config({ path: "config.env" });
 
 const express = require('express');
@@ -24,7 +10,6 @@ const jwt = require('jsonwebtoken');
 
 const app = express();
 
->>>>>>> 99de3df2183c3bdf5d283e3f000943eea2e2ee8a
 const DrRouter = require('./Routes/doctorRouter');
 const UserRouter = require('./Routes/userRouter');
 const PatRouter = require('./Routes/patientRouter');
@@ -34,8 +19,6 @@ const AppRouter = require('./Routes/appointmentRouter');
 const InsurRouter = require('./Routes/insuranceRouter');
 const MedRouter = require('./Routes/medicalreportRouter');
 const TreatRouter = require('./Routes/treatmentplanRouter');
-<<<<<<< HEAD
-=======
 
 app.set('views', 'Views');
 app.set('view engine', 'ejs');
@@ -394,7 +377,6 @@ app.get('/patient/signup', (req, res) => {
         role: 'Patient'
     });
 });
->>>>>>> 99de3df2183c3bdf5d283e3f000943eea2e2ee8a
 
 // View engine setup
 app.set('views', path.join(__dirname, 'Views'));
