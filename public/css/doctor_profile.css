@@ -82,16 +82,16 @@
             min-height: calc(100vh - 80px);
         }
 
-        .profile-container {
+        .doctor-profile-container {
             display: grid;
-            grid-template-columns: 400px 1fr;
-            gap: 4rem;
+            grid-template-columns: 320px 1fr;
+            gap: 3rem;
             background: #fff;
             border-radius: 12px;
-            padding: 4rem;
+            padding: 3rem;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            width: 100%;
-            min-height: calc(100vh - 160px);
+            max-width: 1200px;
+            margin: 3rem auto;
         }
 
         .profile-sidebar {
@@ -99,41 +99,65 @@
             flex-direction: column;
             gap: 2rem;
             align-items: center;
+            padding-right: 2rem;
+            border-right: 1px solid var(--border-color);
         }
 
         .profile-image {
             position: relative;
+            margin-bottom: 1rem;
         }
 
         .profile-image img {
-            width: 220px;
-            height: 220px;
+            width: 180px;
+            height: 180px;
             border-radius: 50%;
             object-fit: cover;
             border: 4px solid var(--light-gray);
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
 
+        .profile-verified {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 30px;
+            height: 30px;
+            background-color: var(--success-color);
+            border-radius: 50%;
+            border: 3px solid #fff;
+        }
+
         .contact-info, .availability, .insurance-info, .languages-box {
-            background-color: var(--light-gray);
-            padding: 1.75rem;
-            border-radius: 10px;
+            background-color: transparent;
+            padding: 0;
+            border-radius: 0;
             width: 100%;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            box-shadow: none;
+            border: none;
+            margin-top: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .contact-info:last-child, .availability:last-child, .languages-box:last-child {
+            border-bottom: none;
         }
 
         .section-title {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 600;
-            margin-bottom: 1.2rem;
-            color: var(--accent-color);
-            border-bottom: 2px solid var(--accent-color);
-            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            border-bottom: none;
+            padding-bottom: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .contact-info p {
-            margin-bottom: 0.75rem;
-            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
         }
 
         .contact-actions {
@@ -146,9 +170,9 @@
 
         .btn-appointment {
             width: 100%;
-            padding: 1rem;
+            padding: 0.8rem 1.5rem;
             border-radius: 8px;
-            font-size: 1.1rem;
+            font-size: 1rem;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -160,6 +184,7 @@
             background-color: var(--accent-color);
             color: white;
             border: none;
+            text-decoration: none;
         }
 
         .btn-appointment:hover {
@@ -170,42 +195,40 @@
 
         .availability ul, .insurance-info ul {
             list-style: none;
-            font-size: 1rem;
+            font-size: 0.95rem;
+            margin-top: 0.5rem;
         }
 
         .availability ul li, .insurance-info ul li {
-            padding: 0.6rem 0;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .availability ul li:last-child, .insurance-info ul li:last-child {
+            padding: 0.4rem 0;
             border-bottom: none;
+            color: #555;
         }
 
         .telehealth-badge {
             display: inline-block;
             background-color: var(--tag-bg);
             color: var(--accent-color);
-            padding: 0.5rem 1rem;
+            padding: 0.4rem 0.8rem;
             border-radius: 20px;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             font-weight: 500;
-            margin-top: 1.2rem;
+            margin-top: 1rem;
         }
 
         .language-tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.75rem;
+            gap: 0.6rem;
             margin-top: 0.5rem;
         }
 
         .language-tag {
             background-color: var(--tag-bg);
             color: var(--accent-color);
-            padding: 0.5rem 0.75rem;
+            padding: 0.4rem 0.6rem;
             border-radius: 6px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .language-tag.fluent {
@@ -214,127 +237,162 @@
         }
 
         .language-level {
-            font-size: 0.8rem;
-            opacity: 0.8;
+            font-size: 0.75rem;
+            opacity: 0.9;
         }
 
         .profile-main {
             display: flex;
             flex-direction: column;
-            gap: 2.5rem;
+            gap: 2rem;
+            padding-left: 2rem;
         }
 
         .main-header {
-            margin-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .main-header h1 {
+        .main-header .doctor-name {
             color: var(--primary-color);
-            font-size: 2.2rem;
-            margin-bottom: 0.5rem;
+            font-size: 2rem;
+            margin-bottom: 0.4rem;
         }
 
-        .main-header p {
+        .main-header .doctor-title {
             color: #666;
-            font-size: 1.2rem;
-        }
-
-        .patient-info {
-            display: flex;
-            gap: 2.5rem;
+            font-size: 1rem;
             margin-bottom: 1rem;
         }
 
-        .patient-info > div {
+        .rating-experience {
             display: flex;
-            flex-direction: column;
-            align-items: flex-start;
+            align-items: center;
+            gap: 1.5rem;
         }
 
-        .value {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--primary-color);
-            margin-bottom: 0.3rem;
+        .doctor-rating {
+            display: flex;
+            align-items: center;
+            color: #f39c12;
+            font-size: 1rem;
         }
 
-        .label {
+        .doctor-rating i {
+            margin-right: 0.2rem;
+        }
+
+        .doctor-rating span {
+            color: var(--text-color);
             font-size: 0.9rem;
-            color: #666;
+            margin-left: 0.5rem;
         }
 
-        .rating {
-            color: #ffc107;
-            font-size: 1.5rem;
+        .doctor-experience {
+            color: #666;
+            font-size: 0.9rem;
+            font-weight: 500;
         }
 
         .main-sections {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: 1fr 1fr;
             gap: 2rem;
             margin-bottom: 2rem;
         }
 
         .section {
-            margin-bottom: 2.5rem;
+            background-color: #fff;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
         }
 
-        .about-text {
-            font-size: 1.05rem;
-            line-height: 1.8;
-            color: #444;
-            margin-top: 1rem;
+        .section h2.section-title {
+            color: var(--primary-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.8rem;
+            margin-bottom: 1rem;
+            font-size: 1.15rem;
+            text-transform: none;
+            letter-spacing: normal;
         }
 
         .specialties-list, .certifications-list {
-            list-style: disc;
-            padding-left: 1.5rem;
+            list-style: none;
+            font-size: 0.95rem;
             margin-top: 1rem;
         }
 
         .specialties-list li, .certifications-list li {
-            margin-bottom: 0.75rem;
-            font-size: 1.05rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px dashed var(--border-color);
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .specialties-list li:last-child, .certifications-list li:last-child {
+            border-bottom: none;
+        }
+
+        .specialties-list li::before, .certifications-list li::before {
+            content: '•';
+            color: var(--accent-color);
+            font-size: 1.2em;
+            margin-right: 0.5em;
+            line-height: 1;
+        }
+
+        .about-text {
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: #555;
         }
 
         @media (max-width: 1200px) {
-            .profile-container {
-                grid-template-columns: 350px 1fr;
-            }
-        }
-
-        @media (max-width: 900px) {
-            .container {
-                padding: 1.5rem;
-            }
-            
-            .profile-container {
+            .doctor-profile-container {
                 grid-template-columns: 1fr;
                 padding: 2rem;
+                margin: 2rem auto;
             }
-            
-            .navbar-links {
-                flex-wrap: wrap;
-                gap: 1rem;
+
+            .profile-sidebar {
+                border-right: none;
+                padding-right: 0;
+                border-bottom: 1px solid var(--border-color);
+                padding-bottom: 2rem;
+                margin-bottom: 2rem;
+            }
+
+            .profile-main {
+                padding-left: 0;
             }
         }
 
-        @media (max-width: 600px) {
-            .container {
-                padding: 1rem;
+        @media (max-width: 768px) {
+            .main-sections {
+                grid-template-columns: 1fr;
             }
-            
-            .profile-image img {
-                width: 180px;
-                height: 180px;
-            }
-            
-            .main-header h1 {
+        }
+
+        @media (max-width: 480px) {
+            .main-header .doctor-name {
                 font-size: 1.8rem;
             }
-            
-            .navbar-links {
+
+            .main-header .doctor-title {
+                font-size: 0.9rem;
+            }
+
+            .rating-experience {
                 flex-direction: column;
+                align-items: flex-start;
                 gap: 0.5rem;
+            }
+
+            .doctor-rating span {
+                margin-left: 0.2rem;
             }
         }

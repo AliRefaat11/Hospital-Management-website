@@ -4,28 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title || 'Settings - PrimeCare' %></title>
-    <link rel="stylesheet" href="../css/book-appointment.css" />
-    <link rel="stylesheet" href="../css/user_profile.css">
-    <link rel="stylesheet" href="../css/settings_profile.css">
+    <link rel="stylesheet" href="/css/book_appointment.css" />
+    <link rel="stylesheet" href="/css/user_profile.css">
+    <link rel="stylesheet" href="/css/settings_profile.css">
+    <link rel="stylesheet" href="/css/navbar.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <nav>
         <div class="navbar-container">
-            <a href="#" class="site-name">Prime Care</a>
+            <a href="/" class="site-name">Prime Care</a>
             <div class="navbar-links">
-                <a href="./home_page.html" class="<%= currentPage === 'home' ? 'active' : '' %>">HOME</a>
-                <a href="./about_us_page.html" class="<%= currentPage === 'about' ? 'active' : '' %>">ABOUT US</a>
-                <a href="./department_page.html" class="<%= currentPage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
-                <a href="./doctors_page.html" class="<%= currentPage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
-                <a href="./quick-appointment.html" class="<%= currentPage === 'book' ? 'active' : '' %>">BOOK NOW</a>
+                <a href="/" class="<%= currentPage === 'home' ? 'active' : '' %>">HOME</a>
+                <a href="/User/about" class="<%= currentPage === 'about' ? 'active' : '' %>">ABOUT US</a>
+                <a href="/Department/view" class="<%= currentPage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
+                <a href="/doctors" class="<%= currentPage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
+                <a href="/appointments/quick-appointment" class="<%= currentPage === 'book' ? 'active' : '' %>">BOOK NOW</a>
                 <% if (typeof user !== 'undefined' && user) { %>
-                    <a href="./user_profile.html" class="<%= currentPage === 'profile' ? 'active' : '' %>">Profile</a>
-                    <a href="/logout" class="logout-btn">Logout</a>
+                    <a href="/User/profile" class="<%= currentPage === 'profile' ? 'active' : '' %>">Profile</a>
+                    <a href="/User/logout" class="logout-btn">Logout</a>
                 <% } else { %>
-                    <a href="./login_page.html" class="<%= currentPage === 'login' ? 'active' : '' %>">Login</a>
-                    <a href="./sign_up_page.html" class="signup-btn <%= currentPage === 'signup' ? 'active' : '' %>">Sign Up</a>
+                    <a href="/User/login" class="<%= currentPage === 'login' ? 'active' : '' %>">Login</a>
+                    <a href="/Patient/signup" class="signup-btn <%= currentPage === 'signup' ? 'active' : '' %>">Sign Up</a>
                 <% } %>
             </div>
         </div>
@@ -107,7 +108,7 @@
                     <% } %>
 
                     <div class="form-actions">
-                        <a href="<%= backUrl || 'user_profile.html' %>" class="btn btn-outline">Cancel</a>
+                        <a href="/User/profile" class="btn btn-outline">Cancel</a>
                         <button type="submit" class="btn btn-primary">
                             <% if (typeof submitText !== 'undefined') { %>
                                 <%= submitText %>
@@ -129,6 +130,10 @@
                         </div>
                     </div>
                 <% } %>
+
+                <button class="add-appointment-btn" onclick="window.location.href='/appointments/book'">
+                    <i class="fas fa-plus"></i> New Appointment
+                </button>
             </div>
         </div>
     </main>

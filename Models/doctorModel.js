@@ -14,10 +14,10 @@ const doctorSchema = new mongoose.Schema(
             required:[true,"Department id is required"]
         },
         specialization: {
-            type: String,
+            type: String,  
             trim:true,
             required:[true,"speciality is required"],
-            enum:[">cardiology","dermatology","orthopedics","pediatrics","Neurology"]
+            enum:["cardiology","dermatology","orthopedics","pediatrics","Neurology"]
         },
         rating: {
             type: Number,
@@ -25,10 +25,16 @@ const doctorSchema = new mongoose.Schema(
             max:5,
             required: true
         },
-        schedule: {
+        schedule: [
+            {
+                day: { type: String, enum: ["saturday","sunday","monday","tuesday","wednesday","thursday"], required: true },
+                startTime: { type: String, required: true }, // e.g., "09:00"
+                endTime: { type: String, required: true }    // e.g., "17:00"
+            }
+        ],
+        departmentName: {
             type: String,
-            required:[true,"working days is required"],
-            enum:["saturday","sunday","monday","tuesday","wednesday","thursday"]
+            trim: true
         }
     }
 );

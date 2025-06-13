@@ -21,9 +21,11 @@ const patientSchema = new mongoose.Schema(
       unique: [true, "Medical number already exists"],
       required: [true, "Medical number is required"]
     },
-    insuranceId: {
-      type: mongoose.Schema.ObjectId,
-      ref: "Insurance"
+    insuranceName: {
+      type: String,
+    },
+    primaryDoctor: {
+      type: String,
     }
   }
 );

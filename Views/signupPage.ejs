@@ -4,20 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title || 'PrimeCare Hospital Sign Up' %></title>
-    <link rel="stylesheet" href="../css/sign_up_page.css">
+    <link rel="stylesheet" href="/css/sign_up_page.css">
 </head>
 <body>
     <nav>
         <div class="navbar-container">
-            <a href="#" class="site-name">Prime Care</a>
+            <a href="/" class="site-name">PrimeCare</a>
             <div class="navbar-links">
-                <a href="./home_page.html" class="<%= currentPage === 'home' ? 'active' : '' %>">HOME</a>
-                <a href="./about_us_page.html" class="<%= currentPage === 'about' ? 'active' : '' %>">ABOUT US</a>
-                <a href="./department_page.html" class="<%= currentPage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
-                <a href="./doctors_page.html" class="<%= currentPage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
-                <a href="./quick-appointment.html" class="<%= currentPage === 'book' ? 'active' : '' %>">BOOK NOW</a>
-                <a href="./login_page.html" class="<%= currentPage === 'login' ? 'active' : '' %>">Login</a>
-                <a href="./sign_up_page.html" class="signup-btn <%= currentPage === 'signup' ? 'active' : '' %>">Sign Up</a>
+                <a href="/" class="<%= currentPage === 'home' ? 'active' : '' %>">HOME</a>
+                <a href="/User/about" class="<%= currentPage === 'about' ? 'active' : '' %>">ABOUT US</a>
+                <a href="/Department/view" class="<%= currentPage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
+                <a href="/doctors" class="<%= currentPage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
+                <a href="/appointments/quick-appointment" class="<%= currentPage === 'book' ? 'active' : '' %>">BOOK NOW</a>
+                <a href="/User/login" class="<%= currentPage === 'login' ? 'active' : '' %>">Login</a>
+                <a href="/Patient/signup" class="signup-btn <%= currentPage === 'signup' ? 'active' : '' %>">Sign Up</a>
             </div>
         </div>
     </nav>
@@ -34,45 +34,71 @@
             <div class="success-message"><%= successMessage %></div>
         <% } %>
 
-        <form action="/signup" method="POST" id="signupForm">
+        <form action="/Patient/signup" method="POST" id="signupForm">
             <div class="input-group">
-                <input type="text" id="firstName" name="firstName" placeholder=" " required 
-                       value="<%= typeof formData !== 'undefined' && formData.firstName ? formData.firstName : '' %>">
-                <label for="firstName">First Name</label>
+                <input type="text" id="FName" name="FName" placeholder=" " required
+                       value="<%= typeof formData !== 'undefined' && formData.FName ? formData.FName : '' %>">
+                <label for="FName">First Name</label>
             </div>
             
             <div class="input-group">
-                <input type="text" id="lastName" name="lastName" placeholder=" " required
-                       value="<%= typeof formData !== 'undefined' && formData.lastName ? formData.lastName : '' %>">
-                <label for="lastName">Last Name</label>
+                <input type="text" id="LName" name="LName" placeholder=" " required
+                       value="<%= typeof formData !== 'undefined' && formData.LName ? formData.LName : '' %>">
+                <label for="LName">Last Name</label>
             </div>
             
             <div class="input-group">
-                <input type="tel" id="phoneNumber" name="phoneNumber" placeholder=" " required
-                       value="<%= typeof formData !== 'undefined' && formData.phoneNumber ? formData.phoneNumber : '' %>">
-                <label for="phoneNumber">Phone Number</label>
+                <input type="email" id="Email" name="Email" placeholder=" " required
+                       value="<%= typeof formData !== 'undefined' && formData.Email ? formData.Email : '' %>">
+                <label for="Email">Email</label>
             </div>
             
             <div class="input-group">
-                <input type="text" id="username" name="username" placeholder=" " required
-                       value="<%= typeof formData !== 'undefined' && formData.username ? formData.username : '' %>">
-                <label for="username">Username</label>
+                <input type="password" id="Password" name="Password" placeholder=" " required>
+                <label for="Password">Password</label>
             </div>
             
             <div class="input-group">
-                <input type="email" id="email" name="email" placeholder=" " required maxlength="50"
-                       value="<%= typeof formData !== 'undefined' && formData.email ? formData.email : '' %>">
-                <label for="email">Email</label>
+                <input type="number" id="Age" name="Age" placeholder=" " required min="0" max="120"
+                       value="<%= typeof formData !== 'undefined' && formData.Age ? formData.Age : '' %>">
+                <label for="Age">Age</label>
             </div>
             
             <div class="input-group">
-                <input type="password" id="password" name="password" placeholder=" " required maxlength="50">
-                <label for="password">Password</label>
+                <input type="tel" id="PhoneNumber" name="PhoneNumber" placeholder=" " required
+                       value="<%= typeof formData !== 'undefined' && formData.PhoneNumber ? formData.PhoneNumber : '' %>">
+                <label for="PhoneNumber">Phone Number</label>
             </div>
             
             <div class="input-group">
-                <input type="password" id="confirm-password" name="confirmPassword" placeholder=" " required maxlength="50">
-                <label for="confirm-password">Confirm Password</label>
+                <label for="Gender">Gender</label>
+                <select id="Gender" name="Gender" required>
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            
+            <div class="input-group">
+                <label for="bloodType">Blood Type</label>
+                <select id="bloodType" name="bloodType" required>
+                    <option value="">Select Blood Type</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                </select>
+            </div>
+            
+            <div class="input-group">
+                <input type="text" id="medicalNo" name="medicalNo" placeholder=" " required
+                       value="<%= typeof formData !== 'undefined' && formData.medicalNo ? formData.medicalNo : '' %>">
+                <label for="medicalNo">Medical Number</label>
             </div>
             
             <button type="submit" class="signup-btnm">
@@ -81,10 +107,22 @@
             </button>
         </form>
         
-        <a href="./login_page.html" class="login-link">Already have an account? Log In</a>
+        <a href="/login" class="login-link">Already have an account? Log In</a>
         <div class="error-message" id="errorMessage"></div>
     </div>
     
-    <script src="../javascript/sign_up_page.js"></script>
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            const password = document.getElementById('Password').value;
+            const errorMessage = document.getElementById('errorMessage');
+            
+            if (password.length < 6) {
+                e.preventDefault();
+                errorMessage.textContent = 'Password must be at least 6 characters long';
+                return;
+            }
+            errorMessage.textContent = '';
+        });
+    </script>
 </body>
 </html>

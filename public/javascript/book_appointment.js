@@ -122,6 +122,8 @@ const phone = document.getElementById('patientPhone');
 const email = document.getElementById('patientEmail');
 const age = document.getElementById('patientAge');
 const reason = document.getElementById('reason');
+const departmentSelect = document.getElementById('departmentSelect');
+const doctorSelect = document.getElementById('doctorSelect');
 
 // Custom error modal elements - Add to the HTML dynamically
 const errorModal = document.createElement('div');
@@ -164,6 +166,29 @@ window.addEventListener('DOMContentLoaded', () => {
   
   // Initialize placeholders
   updatePlaceholders();
+
+  // Handle department selection
+  departmentSelect.addEventListener('change', function() {
+    const selectedDepartment = this.value;
+    const doctors = Array.from(doctorSelect.options);
+    
+    doctors.forEach(doctor => {
+      if (doctor.value === '') return; // Skip the default option
+      
+      const doctorData = JSON.parse(doctor.dataset.doctor || '{}');
+      if (selectedDepartment === '' || doctorData.departmentId === selectedDepartment) {
+        doctor.style.display = '';
+      } else {
+        doctor.style.display = 'none';
+      }
+    });
+
+    // Reset doctor selection if current selection is not in the filtered list
+    const currentDoctor = doctorSelect.value;
+    if (currentDoctor && !Array.from(doctorSelect.options).some(opt => opt.value === currentDoctor && opt.style.display !== 'none')) {
+      doctorSelect.value = '';
+    }
+  });
 });
 
 // Function to add insurance fields to the form
@@ -238,8 +263,8 @@ function showErrorModal() {
 }
 
 // Form submission handler
-appointmentForm.addEventListener('submit', function(event) {
-  event.preventDefault();
+appointmentForm.addEventListener('submit', async function(e) {
+  e.preventDefault();
   
   // Validate the form including the date-time check
   if (!validateForm() || !validateDateAndTime()) {
@@ -249,19 +274,32 @@ appointmentForm.addEventListener('submit', function(event) {
   // Show loading state
   submitBtn.style.display = 'none';
   submitLoader.style.display = 'flex';
-  
-  // Simulate API call with timeout
-  setTimeout(() => {
-    // Hide loading state
+
+  try {
+    const formData = new FormData(this);
+    const response = await fetch('/appointments', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(Object.fromEntries(formData))
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      confirmationModal.style.display = 'flex';
+      appointmentForm.reset();
+    } else {
+      alert(result.message || 'Failed to book appointment. Please try again.');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('An error occurred. Please try again.');
+  } finally {
     submitBtn.style.display = 'flex';
     submitLoader.style.display = 'none';
-    
-    // Show confirmation modal
-    confirmationModal.style.display = 'flex';
-    
-    // Reset form
-    appointmentForm.reset();
-  }, 1500);
+  }
 });
 
 // Close modal handler

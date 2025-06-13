@@ -6,21 +6,36 @@
     <title><%= user.name %> - Patient Profile - PrimeCare</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../public/css/user_profile.css">
-    <link rel="stylesheet" href="../public/css/book_appointment.css" />
+    <link rel="stylesheet" href="/css/user_profile.css">
+    <link rel="stylesheet" href="css/book_appointment.css" />
 </head>
 <body>
     <nav>
         <div class="navbar-container">
-          <a href="#" class="site-name">Prime Care</a>
+          <a href="/" class="site-name">PrimeCare</a>
           <div class="navbar-links">
-            <a href="./home_page.html" class="<%= currentPage === 'home' ? 'active' : '' %>">HOME</a>
-            <a href="./about_us_page.html" class="<%= currentPage === 'about' ? 'active' : '' %>">ABOUT US</a>
-            <a href="./department_page.html" class="<%= currentPage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
-            <a href="./doctors_page.html" class="<%= currentPage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
-            <a href="./quick_appointment.html" class="<%= currentPage === 'book' ? 'active' : '' %>">BOOK NOW</a>
-            <a href="./login_page.html" class="<%= currentPage === 'login' ? 'active' : '' %>">Login</a>
-            <a href="./sign_up_page.html" class="signup-btn <%= currentPage === 'signup' ? 'active' : '' %>">Sign Up</a>
+            <a href="/" class="<%= currentPage === 'home' ? 'active' : '' %>">HOME</a>
+            <a href="/User/about" class="<%= currentPage === 'about' ? 'active' : '' %>">ABOUT US</a>
+            <a href="/Department/view" class="<%= currentPage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
+            <a href="/doctors" class="<%= currentPage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
+            <a href="/appointments/quick-appointment" class="<%= currentPage === 'book' ? 'active' : '' %>">BOOK NOW</a>
+            <% if (user) { %>
+            <div class="user-menu">
+              <a href="/User/profile" class="profile-link">
+                <i class="fas fa-user-circle"></i>
+                <%= user.FName %> <%= user.LName %>
+              </a>
+              <div class="dropdown-menu">
+                <a href="/User/profile">My Profile</a>
+                <a href="/appointments">My Appointments</a>
+                <a href="/User/settings">Settings</a>
+                <a href="/User/logout" class="logout-btn">Logout</a>
+              </div>
+            </div>
+            <% } else { %>
+              <a href="/User/login" class="<%= currentPage === 'login' ? 'active' : '' %>">Login</a>
+              <a href="/Patient/signup" class="signup-btn <%= currentPage === 'signup' ? 'active' : '' %>">Sign Up</a>
+            <% } %>
           </div>
         </div>
     </nav>
@@ -66,7 +81,7 @@
             <section class="content-card">
                 <div class="card-header">
                     <h2>Upcoming Appointments</h2>
-                    <button class="btn btn-sm btn-primary" onclick="window.location.href='./book-appointment.html'">
+                    <button class="btn btn-sm btn-primary" onclick="window.location.href='/appointments/book'">
                         <i class="fas fa-plus"></i> New Appointment
                     </button>
                 </div>
@@ -110,7 +125,7 @@
                     <% } else { %>
                         <div class="no-appointments">
                             <p>No upcoming appointments scheduled.</p>
-                            <button class="btn btn-primary" onclick="window.location.href='./book-appointment.html'">
+                            <button class="btn btn-primary" onclick="window.location.href='/appointments/book'">
                                 Schedule an Appointment
                             </button>
                         </div>
@@ -237,6 +252,6 @@
         </div>
     </footer>
 
-    <script src="../public/javascript/user_profile.js"></script>
+    <script src="javascript/user_profile.js"></script>
 </body>
 </html>

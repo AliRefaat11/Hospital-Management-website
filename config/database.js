@@ -6,5 +6,4 @@ const dbconnection = () => {
     console.log(`connected to database: ${conn.connection.host}`);
   });
 };
-
 module.exports = dbconnection;

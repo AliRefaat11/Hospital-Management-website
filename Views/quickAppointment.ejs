@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Prime Care - Quick Appointment</title>
-  <link rel="stylesheet" href="../public/css/quick_appointment.css">
+  <link rel="stylesheet" href="/css/quick_appointment.css">
 </head>
 <body>
 
@@ -12,17 +12,17 @@
     <div class="navbar-container">
       <a href="/" class="site-name">Prime Care</a>
       <div class="navbar-links">
-        <a href="/home">HOME</a>
-        <a href="/about">ABOUT US</a>
-        <a href="/departments">DEPARTMENTS</a>
-        <a href="/doctors">DOCTORS</a>
-        <a href="/quick-appointment" class="active">BOOK NOW</a>
+        <a href="/" class="<%= currentPage === 'home' ? 'active' : '' %>">HOME</a>
+        <a href="/User/about" class="<%= currentPage === 'about' ? 'active' : '' %>">ABOUT US</a>
+        <a href="/Department/view" class="<%= currentPage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
+        <a href="/doctors" class="<%= currentPage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
+        <a href="/appointments/quick-appointment" class="<%= currentPage === 'book' ? 'active' : '' %>">BOOK NOW</a>
         <% if (user) { %>
-          <a href="/profile"><%= user.name %></a>
-          <a href="/logout" class="signup-btn">Logout</a>
+          <a href="/User/profile" class="<%= currentPage === 'profile' ? 'active' : '' %>">My Profile</a>
+          <a href="/User/logout" class="logout-btn">Logout</a>
         <% } else { %>
-          <a href="/login">Login</a>
-          <a href="/signup" class="signup-btn">Sign Up</a>
+          <a href="/User/login" class="<%= currentPage === 'login' ? 'active' : '' %>">Login</a>
+          <a href="/Patient/signup" class="signup-btn <%= currentPage === 'signup' ? 'active' : '' %>">Sign Up</a>
         <% } %>
       </div>
     </div>
@@ -114,6 +114,6 @@
     </div>
   </main>
 
-  <script src="../public/javascript/quick_appointment.js"></script>
+  <script src="javascript/quick_appointment.js"></script>
 </body>
 </html>

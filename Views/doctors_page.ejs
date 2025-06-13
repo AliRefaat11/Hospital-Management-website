@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PrimeCare Hospital - Meet Our Doctors</title>
+  <link rel="stylesheet" href="/css/navbar.css">
+  <link rel="stylesheet" href="/css/doctors_page.css">
+  <link rel="icon" href="/images/logo.jpeg" type="image/jpeg">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+  <nav>
+    <div class="navbar-container">
+      <a href="/" class="site-name">Prime Care</a>
+      <div class="navbar-links">
+        <a href="/" class="<%= currentPage === 'home' ? 'active' : '' %>">HOME</a>
+        <a href="/User/about" class="<%= currentPage === 'about' ? 'active' : '' %>">ABOUT US</a>
+        <a href="/Department/view" class="<%= currentPage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
+        <a href="/doctors" class="<%= currentPage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
+        <a href="/appointments/quick-appointment" class="<%= currentPage === 'appointments' ? 'active' : '' %>">BOOK NOW</a>
+        <div class="auth-buttons">
+          <% if (user) { %>
+            <a href="/User/profile"><%= user.FName %> <%= user.LName %></a>
+            <a href="/User/logout" class="signup-btn">Logout</a>
+          <% } else { %>
+            <a href="/User/login" class="login-btn <%= currentPage === 'login' ? 'active' : '' %>">Login</a>
+            <a href="/Patient/signup" class="signup-btn">Sign Up</a>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <h1><%= pageContent.heroTitle %></h1>
+    <p><%= pageContent.heroSubtitle %></p>
+  </section>
+  
+  <form class="search-form" action="/doctors/search" method="GET">
+    <input type="search" id="search" name="query" placeholder="Search by name or specialization..." value="<%= searchQuery %>" />
+    <button type="submit"><i class="fas fa-search"></i></button>
+  </form>
+
+  <section class="doctors" id="doctors">
+    <h2>Our Doctors</h2>
+    <div class="doctor-list" id="doctor-list">
+      <% if (doctors && doctors.length > 0) { %>
+        <% doctors.forEach(function(doctor) { %>
+          <div class="doctor-card" data-name="<%= doctor.userId.FName %> <%= doctor.userId.LName %>" data-specialization="<%= doctor.specialization %>">
+            <div class="doctor-img-container">
+              <img src="<%= doctor.profileImage || '/images/account-icon-33.png' %>" 
+                   alt="<%= doctor.userId.FName %> <%= doctor.userId.LName %>" 
+                   class="doctor-img">
+            </div>
+            <h3>
+              <a href="/doctors/<%= doctor._id %>">Dr. <%= doctor.userId.FName %> <%= doctor.userId.LName %></a>
+            </h3>
+            <p><%= doctor.specialization %></p>
+            <% if (doctor.departmentId) { %>
+              <p class="department"><%= doctor.departmentId.name %></p>
+            <% } %>
+            <div class="doctor-info">
+              <p><i class="fas fa-phone"></i> <%= doctor.userId.PhoneNumber %></p>
+              <p><i class="fas fa-envelope"></i> <%= doctor.userId.Email %></p>
+            </div>
+            <div class="card-actions">
+              <a class="btn book-btn" href="/appointments/book?doctor=<%= doctor._id %>">Book Appointment</a>
+            </div>
+          </div>
+        <% }); %>
+      <% } else { %>
+        <div class="no-results-message">No doctors found.</div>
+      <% } %>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-container">
+      <div class="footer-column">
+        <h3>Location</h3>
+        <div class="map-container">
+          <img src="/images/location_map_icon.jpg" width="30" height="30" style="border:0;" allowfullscreen="" loading="lazy">
+        </div>
+      </div>
+      <div class="footer-column">
+        <h3>Quick Links</h3>
+        <ul>
+          <% footerLinks.forEach(function(link) { %>
+            <li><a href="<%= link.url %>"><%= link.text %></a></li>
+          <% }); %>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3>Contact</h3>
+        <p><%= hospital.address %><br /><%= hospital.phone %><br /><%= hospital.email %></p>
+      </div>
+      <div class="footer-column">
+        <h3>Follow Us</h3>
+        <div class="social-icons">
+          <% socialLinks.forEach(function(link) { %>
+            <a href="<%= link.url %>"><i class="<%= link.icon %>"></i></a>
+          <% }); %>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-bar">&copy; <%= new Date().getFullYear() %> <%= hospital.name %>. All rights reserved.</div>
+  </footer>
+
+  <script src="/javascript/doctors_page.js"></script>
+</body>
+</html> 
