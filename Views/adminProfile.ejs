@@ -330,17 +330,43 @@
             </section>
         </div>
     </main>
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 PrimeCare. All rights reserved.</p>
+        </div>
+    </footer>
+
     <script>
-        /*
-        const serverData = {
-            admin: <%- JSON.stringify(admin) %>,
-            stats: <%- JSON.stringify(stats) %>,
-            departments: <%- JSON.stringify(departments) %>,
-            systemStatus: <%- JSON.stringify(systemStatus) %>,
-            notifications: <%- JSON.stringify(notifications) %>,
-            messages: <%- JSON.stringify(messages) %>,
-            csrfToken: '<%= csrfToken %>'
-        };*/
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch('/admin/dashboard-stats');
+                const data = await response.json();
+
+                if (data.success) {
+                    const stats = data.data;
+                    document.querySelector('.stat-card:nth-child(1) .stat-value').textContent = stats.totalDoctors; // Assuming activeDoctors is totalDoctors
+                    // You can add more specific logic here if activeDoctors is a subset
+
+                    document.querySelector('.stat-card:nth-child(2) .stat-value').textContent = stats.totalAppointments; // Assuming todayAppointments is totalAppointments
+                    // You can add more specific logic for todayAppointments
+
+                    // Update other stats as needed based on your backend logic and desired display
+                    // For now, I'm mapping directly to the overall counts
+                    document.querySelector('.stat-card:nth-child(3) .stat-value').textContent = stats.totalDoctors; // Placeholder for onDutyDoctors
+                    document.querySelector('.stat-card:nth-child(4) .stat-value').textContent = 'N/A'; // Placeholder for Average Rating
+                    document.querySelector('.stat-card:nth-child(5) .stat-value').textContent = stats.totalDepartments; // Placeholder for Specialists (count of departments)
+                    document.querySelector('.stat-card:nth-child(6) .stat-value').textContent = 'N/A'; // Placeholder for Available Slots
+
+                    document.querySelector('.healthcare-stats .stat-card:nth-child(1) .stat-value').textContent = `${stats.totalDoctors}/${stats.totalDoctors}`; // Placeholder for Doctor Availability
+                    document.querySelector('.healthcare-stats .stat-card:nth-child(2) .stat-value').textContent = 'N/A%'; // Placeholder for Appointment Status
+
+                } else {
+                    console.error('Failed to fetch dashboard stats:', data.message);
+                }
+            } catch (error) {
+                console.error('Error fetching dashboard stats:', error);
+            }
+        });
     </script>
     <script src="/javascript/admin_profile.js"></script>
 </body>

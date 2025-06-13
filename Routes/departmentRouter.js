@@ -44,6 +44,7 @@ DepRouter.get('/view', async (req, res) => {
                 doctors
             };
         }));
+        console.log('Departments with Doctors data sent to EJS:', JSON.stringify(departmentsWithDoctors, null, 2));
         let user = null;
         try {
             const token = req.cookies?.token;

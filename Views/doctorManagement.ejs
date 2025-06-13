@@ -22,8 +22,8 @@
                 <img id="adminProfileImage" src="<%= admin.profileImage || '/images/admin-avatar.png' %>" alt="Admin">
             </div>
             <div class="admin-info">
-                <h3 id="adminName"><%= admin.name %></h3>
-                <span class="admin-role"><%= admin.role %></span>
+                <h3 id="adminName"><%= admin.name || 'Guest Admin' %></h3>
+                <span class="admin-role"><%= admin.role || 'System Administrator' %></span>
             </div>
         </div>
         <div class="sidebar-content">
@@ -177,26 +177,26 @@
                     </thead>
                     <tbody id="doctorTableBody">
                         <% doctors.forEach(function(doctor) { %>
-                            <tr data-doctor-id="<%= doctor.id %>">
-                                <td><%= doctor.id %></td>
-                                <td><%= doctor.name %></td>
-                                <td><%= doctor.email %></td>
+                            <tr data-doctor-id="<%= doctor._id %>">
+                                <td><%= doctor._id %></td>
+                                <td><%= doctor.userId.FName %> <%= doctor.userId.LName %></td>
+                                <td><%= doctor.userId.Email %></td>
                                 <td><%= doctor.specialization %></td>
-                                <td><%= doctor.department %></td>
-                                <td><%= new Date(doctor.lastActive).toLocaleString() %></td>
+                                <td><%= doctor.departmentId.departmentName %></td>
+                                <td><%= doctor.lastActive ? new Date(doctor.lastActive).toLocaleString() : 'N/A' %></td>
                                 <td>
-                                    <span class="status-badge <%= doctor.status.toLowerCase() %>">
-                                        <%= doctor.status %>
+                                    <span class="status-badge <%= doctor.status ? doctor.status.toLowerCase() : 'unknown' %>">
+                                        <%= doctor.status || 'Unknown' %>
                                     </span>
                                 </td>
                                 <td class="actions-cell">
-                                    <button class="btn-icon view-doctor" title="View Details">
+                                    <button class="btn-icon view-doctor" title="View Details" data-id="<%= doctor._id %>">
                                         <i class="fas fa-eye"></i>
                                     </button>
-                                    <button class="btn-icon edit-doctor" title="Edit Doctor">
+                                    <button class="btn-icon edit-doctor" title="Edit Doctor" data-id="<%= doctor._id %>">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <button class="btn-icon delete-doctor" title="Delete Doctor">
+                                    <button class="btn-icon delete-doctor" title="Delete Doctor" data-id="<%= doctor._id %>">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </td>
@@ -254,12 +254,9 @@
                             <label for="doctorRole">Specialization *</label>
                             <select id="doctorRole" required>
                                 <option value="">Select Specialization</option>
-                                <option value="Cardiologist">Cardiologist</option>
-                                <option value="Neurologist">Neurologist</option>
-                                <option value="Orthopedist">Orthopedist</option>
-                                <option value="General Practitioner">General Practitioner</option>
-                                <option value="Pediatrician">Pediatrician</option>
-                                <option value="Dermatologist">Dermatologist</option>
+                                <% specializations.forEach(function(specialization) { %>
+                                    <option value="<%= specialization %>"><%= specialization %></option>
+                                <% }); %>
                             </select>
                             <span class="validation-message">Please select a specialization</span>
                         </div>
@@ -267,12 +264,9 @@
                             <label for="doctorDepartment">Department *</label>
                             <select id="doctorDepartment" required>
                                 <option value="">Select Department</option>
-                                <option value="Cardiology">Cardiology</option>
-                                <option value="Neurology">Neurology</option>
-                                <option value="Orthopedics">Orthopedics</option>
-                                <option value="General Medicine">General Medicine</option>
-                                <option value="Pediatrics">Pediatrics</option>
-                                <option value="Dermatology">Dermatology</option>
+                                <% departments.forEach(function(department) { %>
+                                    <option value="<%= department._id %>"><%= department.departmentName %></option>
+                                <% }); %>
                             </select>
                             <span class="validation-message">Please select a department</span>
                         </div>
@@ -280,9 +274,9 @@
                             <label for="employmentType">Employment Type *</label>
                             <select id="employmentType" required>
                                 <option value="">Select Employment Type</option>
-                                <option value="Full-Time">Full-Time</option>
-                                <option value="Part-Time">Part-Time</option>
-                                <option value="Consultant">Consultant</option>
+                                <% employmentTypes.forEach(function(type) { %>
+                                    <option value="<%= type %>"><%= type %></option>
+                                <% }); %>
                             </select>
                             <span class="validation-message">Please select an employment type</span>
                         </div>
@@ -356,15 +350,16 @@
 
     </div>
     <script>
-        /*
         const serverData = {
             doctors: <%- JSON.stringify(doctors) %>,
             specializations: <%- JSON.stringify(specializations) %>,
             departments: <%- JSON.stringify(departments) %>,
             employmentTypes: <%- JSON.stringify(employmentTypes) %>,
-            csrfToken: '<%= csrfToken %>'
+            csrfToken: '<%= csrfToken %>',
+            admin: <%- JSON.stringify(admin) %>,
+            stats: <%- JSON.stringify(stats) %>,
+            activities: <%- JSON.stringify(activities) %>
         };
-        */
     </script>
     <script src="../public/javascript/doctor_management.js"></script>
 </body>

@@ -1,16 +1,19 @@
 const dotenv = require('dotenv');
 dotenv.config({path:"config.env"});
 const dbconnection = require('./config/database');
+dbconnection(); // Call the database connection function
 const express = require('express');
 const path = require('path');
 const { auth } = require('./middleware/authMiddleware');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
+const adminController = require('./Controllers/adminController'); // Import the adminController
 
 const app = express();
 
 // Import routers
 const DrRouter = require('./Routes/doctorRouter');
+const TestDrRouter = require('./Routes/testDoctorRoutes');
 const UserRouter = require('./Routes/userRouter');
 const PatRouter = require('./Routes/patientRouter');
 const DocRouter = require('./Routes/documentRouter');
@@ -19,6 +22,12 @@ const AppRouter = require('./Routes/appointmentRouter');
 const InsurRouter = require('./Routes/insuranceRouter');
 const MedRouter = require('./Routes/medicalreportRouter');
 const TreatRouter = require('./Routes/treatmentplanRouter');
+const AdminRouter = require('./Routes/adminRoutes');
+const TreatmentPlan = require('./Models/treatmentplanModel');
+const MedicalReport = require('./Models/medicalreportModel');
+const User = require('./Models/userModel');
+const Doctor = require('./Models/doctorModel');
+const Department = require('./Models/departmentModel');
 
 // View engine setup
 app.set('views', path.join(__dirname, 'Views'));
@@ -183,7 +192,7 @@ app.get('/', async (req, res) => {
             footerLinks,
             socialLinks,
             featuredDoctors,
-            siteName: 'PrimeCare'
+            siteName: 'PrimeCare Hospital - Updated'
         });
     } catch (error) {
         console.error("Error rendering home page:", error);
@@ -191,23 +200,157 @@ app.get('/', async (req, res) => {
     }
 });
 
+// Temporary test route for admin doctor management
+app.get('/test-admin-doctors', async (req, res) => {
+    try {
+        const doctors = await Doctor.find()
+            .populate('userId', 'FName LName Email PhoneNumber Gender Age')
+            .populate('departmentId', 'departmentName');
+
+        const departments = await Department.find();
+
+        // Placeholder admin user for testing
+        let admin = {
+            name: "Test Admin",
+            role: "System Administrator",
+            profileImage: "/images/admin-avatar.png" // Or any default image
+        };
+
+        // Placeholder stats and activities data
+        const stats = {
+            totalDoctors: doctors.length,
+            doctorsChange: 5, // Example value
+            activeDoctors: doctors.filter(doc => doc.status === 'active').length, // Assuming a status field exists
+            specialistDoctors: doctors.filter(doc => doc.specialization).length, // Example of specialists
+            generalDoctors: doctors.filter(doc => doc.specialization === 'General Practitioner').length // Example of general practitioners
+        };
+
+        const activities = [
+            { icon: 'fa-plus-circle', description: 'Test Doctor added', timestamp: new Date() },
+            { icon: 'fa-edit', description: 'Test Doctor updated', timestamp: new Date() },
+        ];
+
+        // Additional data required by doctorManagement.ejs
+        const specializations = ["Cardiology", "Dermatology", "Orthopedics", "Pediatrics", "Neurology", "General Practitioner"];
+        const employmentTypes = ["Full-Time", "Part-Time", "Consultant"];
+        const csrfToken = 'test-csrf-token'; // Placeholder, replace with actual CSRF token in production
+
+        res.render('doctorManagement', {
+            doctors,
+            departments,
+            admin,
+            stats,
+            activities,
+            specializations,
+            employmentTypes,
+            csrfToken,
+            currentPage: 'doctors-management' // Active page for sidebar highlighting
+        });
+    } catch (error) {
+        console.error("Error rendering test admin doctor management page:", error);
+        res.status(500).send("Error loading test admin doctor management page.");
+    }
+});
+
 // Mount routers
 app.use('/User', UserRouter);
+app.use('/doctors', TestDrRouter);
 app.use('/doctors', DrRouter);
 app.use('/Patient', PatRouter);
 app.use('/Document', DocRouter);
 app.use('/Department', DepRouter);
 app.use('/appointments', AppRouter);
-app.use('/Insurance', InsurRouter);
-app.use('/Treatment', TreatRouter);
-app.use('/MedicalReport', MedRouter);
+app.use('/insurance', InsurRouter);
+app.use('/medical-reports', MedRouter);
+app.use('/treatment-plans', TreatRouter);
+app.use('/admin', AdminRouter);
+
+// Admin Dashboard Page Route
+app.get('/admin/dashboard', async (req, res) => {
+    try {
+        const statsResponse = await adminController.getDashboardStats();
+        const backendStats = statsResponse.data; // This contains totalDoctors, totalPatients, etc.
+
+        // Construct the stats object with all expected properties for adminProfile.ejs
+        const stats = {
+            activeDoctors: backendStats.totalDoctors || 0, // Using totalDoctors as activeDoctors for now
+            doctorsChange: 0, // Placeholder: You can add logic to calculate this later
+            todayAppointments: backendStats.totalAppointments || 0, // Using totalAppointments as todayAppointments for now
+            appointmentsChange: 0, // Placeholder
+            onDutyDoctors: backendStats.totalDoctors || 0, // Placeholder: You might fetch actual on-duty doctors later
+            averageRating: 0.0, // Placeholder
+            ratingChange: 0.0, // Placeholder
+            specialists: backendStats.totalDepartments || 0, // Using totalDepartments as specialists count
+            departmentCount: backendStats.totalDepartments || 0, // Ensuring departmentCount is available
+            availableSlots: 0, // Placeholder
+            availableDoctors: backendStats.totalDoctors || 0, // Placeholder for available doctors
+            totalDoctors: backendStats.totalDoctors || 0, // Ensure totalDoctors is explicitly passed
+            coverageRate: 0, // Placeholder
+            onTimeRate: 0, // Placeholder
+            // Add any other stats properties expected by adminProfile.ejs here
+        };
+
+        // Placeholder admin user for testing
+        let admin = {
+            name: "Admin User", // Replace with actual admin name from session/DB if available
+            role: "Administrator",
+            profileImage: "/images/admin-avatar.png" // Default image
+        };
+
+        // Placeholder notifications and messages
+        const notifications = { unreadCount: 5 };
+        const messages = { unreadCount: 2 };
+
+        res.render('adminProfile', {
+            admin,
+            notifications,
+            messages,
+            stats, // Pass the constructed stats object to the EJS template
+            currentPage: 'dashboard' // Active page for sidebar highlighting
+        });
+    } catch (error) {
+        console.error("Error rendering admin dashboard:", error);
+        res.status(500).send("Error loading admin dashboard: " + error.message);
+    }
+});
 
 // Server setup
-const hostname = "127.0.0.1";
-const port = 3000;
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
 
-dbconnection();
+// Global error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack); // Log the error stack for debugging
 
-app.listen(port, () => {
-    console.log(`Server is running at http://${hostname}:${port}`);
+    // Default values for error
+    err.statusCode = err.statusCode || 500;
+    err.status = err.status || 'error';
+    err.message = err.message || 'Something went wrong!';
+
+    if (err.name === 'JsonWebTokenError') {
+        err.statusCode = 401;
+        err.message = 'Invalid token. Please login again.';
+    }
+    if (err.name === 'TokenExpiredError') {
+        err.statusCode = 401;
+        err.message = 'Your token has expired. Please login again.';
+    }
+
+    // Check if the request expects JSON or HTML
+    if (req.accepts('html')) {
+        // Render an error page for HTML requests
+        res.status(err.statusCode).render('errorPage', { // Assuming you have an errorPage.ejs
+            statusCode: err.statusCode,
+            message: err.message,
+            title: `Error ${err.statusCode}`
+        });
+    } else {
+        // Send JSON response for API requests
+        res.status(err.statusCode).json({
+            status: err.status,
+            message: err.message
+        });
+    }
 });

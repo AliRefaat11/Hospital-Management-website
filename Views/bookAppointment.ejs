@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+`<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="/css/navbar.css"/>
   <link rel="stylesheet" href="/css/book_appointment.css"/>
   <link rel="stylesheet" href="/css/common_footer.css">
+  <link rel="stylesheet" href="/css/navbar.css"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
@@ -19,7 +20,7 @@
         <a href="/User/about" class="<%= currentPage === 'about' ? 'active' : '' %>">ABOUT US</a>
         <a href="/Department/view" class="<%= currentPage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
         <a href="/doctors" class="<%= currentPage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
-        <a href="/appointments/quick-appointment" class="active">BOOK NOW</a>
+        <a href="/appointments/book" class="<%= currentPage === 'book' ? 'active' : '' %>">BOOK NOW</a>
         <% if (user) { %>
           <div class="user-menu">
             <a href="/User/profile" class="profile-link">
@@ -52,7 +53,7 @@
 
     <div class="appointment-container">
       <h2 id="formTitle">Personal Information</h2>
-      <form id="appointmentForm" action="/appointments/book" method="POST">
+      <form id="appointmentForm" action="/api/appointments" method="POST">
         <div class="form-row">
           <div class="form-group half">
             <label for="patientFirstName" id="labelFirstName">First Name</label>

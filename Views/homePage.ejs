@@ -20,7 +20,7 @@
         <a href="/User/about" class="<%= currentPage === 'about' ? 'active' : '' %>">ABOUT US</a>
         <a href="/Department/view" class="<%= currentPage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
         <a href="/doctors" class="<%= currentPage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
-        <a href="/appointments/quick-appointment" class="<%= currentPage === 'appointments' ? 'active' : '' %>">BOOK NOW</a>
+        <a href="/appointments/book" class="<%= currentPage === 'book' ? 'active' : '' %>">BOOK NOW</a>
         <% if (user) { %>
           <div class="user-menu">
             <a href="/User/profile" class="profile-link">
@@ -46,7 +46,7 @@
     <div class="container">
       <h2><%= hospital.tagline %></h2>
       <p><%= hospital.subTagline %></p>
-      <a href="/quick-appointment" class="btn">Book an Appointment</a>
+      <a href="/appointments/book" class="btn">Book an Appointment</a>
     </div>
   </section>
 
@@ -114,7 +114,7 @@
   <section class="appointment-cta">
     <div class="container">
       <h3><%= cta.heading %></h3>
-      <a href="/appointments/quick-appointment" class="btn"><%= cta.buttonText %></a>
+      <a href="/appointments/book" class="btn"><%= cta.buttonText %></a>
     </div>
   </section>
 
