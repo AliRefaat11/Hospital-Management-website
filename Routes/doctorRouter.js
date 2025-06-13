@@ -7,7 +7,6 @@ DrRouter.get("/:id", DocController.getById);
 DrRouter.post("/", DocController.create);
 DrRouter.patch("/:id", DocController.update);
 DrRouter.delete("/:id", DocController.deleteById);
-
 DrRouter.get("/department/:departmentId", DocController.getByDepartment);
 DrRouter.get("/specialization/:specialization", DocController.getBySpecialization);
 

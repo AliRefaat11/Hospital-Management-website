@@ -60,38 +60,15 @@ const validateObjectId = (req, res, next) => {
   next();
 };
 
-// ============================================
-// ROUTE DEFINITIONS
-// ============================================
-
-// CREATE - Create new appointment
 AppRouter.post('/', validateAppointment, appointmentController.createAppointment);
-
-// READ - Get all appointments (with pagination and filtering)
 AppRouter.get('/', appointmentController.getAllAppointments);
-
-// READ - Get today's appointments
 AppRouter.get('/today', appointmentController.getTodayAppointments);
-
-// READ - Get appointments by date range
 AppRouter.get('/date-range', appointmentController.getAppointmentsByDateRange);
-
-// READ - Get appointment by ID
 AppRouter.get('/:id', validateObjectId, appointmentController.getAppointmentById);
-
-// READ - Get appointments by doctor
 AppRouter.get('/doctor/:doctorID', validateObjectId, appointmentController.getAppointmentsByDoctor);
-
-// READ - Get appointments by patient
 AppRouter.get('/patient/:patientID', validateObjectId, appointmentController.getAppointmentsByPatient);
-
-// UPDATE - Update entire appointment
 AppRouter.put('/:id', validateObjectId, appointmentController.updateAppointment);
-
-// UPDATE - Update only appointment status
 AppRouter.patch('/:id/status', validateObjectId, appointmentController.updateAppointmentStatus);
-
-// DELETE - Delete appointment
 AppRouter.delete('/:id', validateObjectId, appointmentController.deleteAppointment);
 
 module.exports = AppRouter;

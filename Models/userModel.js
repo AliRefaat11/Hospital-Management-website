@@ -23,6 +23,11 @@ const userSchema = new mongoose.Schema(
             unique:[true,"Email already exists"],
             required:[true,"Email is required"]
         },
+        role:{
+            type:String,
+            enum:["Patient","Doctor","Admin"],
+            default:"Patient"
+        },
         Password:{
             type: String,
             trim:true,
@@ -38,7 +43,7 @@ const userSchema = new mongoose.Schema(
             type: String,
             trim:true,
             required: [true, "gender number is required"],
-            enum: ["male","female"]
+            enum: ["Male","Female"]
         },
         Age: {
             type: Number,

@@ -1,152 +1,149 @@
 const Patient = require('../Models/patientModel');
+const User = require('../Models/userModel');
+const { auth, allowedTo, ApiError } = require('../middleware/authMiddleware');
+const asyncHandler = require('express-async-handler');
+const bcrypt = require('bcryptjs');
 
-exports.getAllPatients = async (req, res) => {
+// Public routes (no auth needed)
+exports.signup = asyncHandler(async (req, res, next) => {
+    const {FName,LName,Email,Password,Age,PhoneNumber,Gender,bloodType,medicalNo}= req.body;
     try {
-        const patients = await Patient.find()
-            .populate('userId', 'FName LName Email PhoneNumber')
-            .populate('insuranceId', 'company policyNumber');
-            
-        res.status(200).json({
+        const hashedPassword = await bcrypt.hash(Password, 10);
+        const newUser = new User({
+            FName,
+            LName,
+            Email,
+            Password: hashedPassword,
+            Age,
+            PhoneNumber,
+            Gender,
+            role: "Patient"
+        });
+        const savedUser = await newUser.save();
+        const newPatient = new Patient({
+            userId: savedUser._id,
+            bloodType,
+            medicalNo
+        });
+        const savedPatient = await newPatient.save();
+        return res.status(201).json({
             status: 'success',
-            results: patients.length,
-            data: patients
+            data: {
+                user: {
+                    id: savedUser._id,
+                    email: savedUser.Email,
+                    name: `${savedUser.FName} ${savedUser.LName}`
+                },
+                patient: {
+                    id: savedPatient._id,
+                    medicalNo: savedPatient.medicalNo,
+                    bloodType: savedPatient.bloodType
+                }
+            }
         });
-    } catch (error) {
-        res.status(500).json({
-            status: 'error',
-            message: 'Failed to retrieve patients',
-            error: error.message
-        });
+    } catch(error) {
+        return next(new ApiError(error.message, 400));
     }
-};
+});
 
-// Get a single patient by ID
-exports.getPatientById = async (req, res) => {
-    try {
-        const patient = await Patient.findById(req.params.id)
-            .populate('userId', 'FName LName Email PhoneNumber Gender Age')
-            .populate('insuranceId', 'company policyNumber startDate endDate');
+exports.getLoggedPatientData = asyncHandler(async (req, res, next) => {
+    
+});
 
-        if (!patient) {
-            return res.status(404).json({
-                status: 'fail',
-                message: 'Patient not found'
-            });
-        }
+exports.getAllPatients = asyncHandler(async (req, res, next) => {
+    const patients = await Patient.find()
+        .populate('userId', 'FName LName Email PhoneNumber')
+        .populate('insuranceId', 'company policyNumber');
+        
+    res.status(200).json({
+        status: 'success',
+        results: patients.length,
+        data: patients
+    });
+});
 
-        res.status(200).json({
-            status: 'success',
-            data: patient
-        });
-    } catch (error) {
-        res.status(500).json({
-            status: 'error',
-            message: 'Failed to retrieve patient',
-            error: error.message
-        });
+exports.getPatientById = asyncHandler(async (req, res, next) => {
+    const patient = await Patient.findById(req.params.id)
+        .populate('userId', 'FName LName Email PhoneNumber Gender Age')
+        .populate('insuranceId', 'company policyNumber startDate endDate');
+
+    if (!patient) {
+        return next(new ApiError('Patient not found', 404));
     }
-};
 
-// Create a new patient
-exports.createPatient = async (req, res) => {
-    try {
-        // Check if patient with same medical number already exists
-        const existingPatient = await Patient.findOne({ medicalNo: req.body.medicalNo });
+    // Only allow access if user is admin or the patient themselves
+    if (req.user.role !== 'Admin' && patient.userId._id.toString() !== req.user._id.toString()) {
+        return next(new ApiError('You are not authorized to access this patient\'s data', 403));
+    }
+
+    res.status(200).json({
+        status: 'success',
+        data: patient
+    });
+});
+
+// Admin only routes
+exports.createPatient = asyncHandler(async (req, res, next) => {
+    const existingPatient = await Patient.findOne({ medicalNo: req.body.medicalNo });
+    if (existingPatient) {
+        return next(new ApiError('Patient with this medical number already exists', 400));
+    }
+
+    const newPatient = await Patient.create(req.body);
+    await newPatient.populate('userId', 'FName LName Email PhoneNumber');
+    await newPatient.populate('insuranceId', 'company policyNumber');
+
+    res.status(201).json({
+        status: 'success',
+        data: newPatient
+    });
+});
+
+exports.updatePatient = asyncHandler(async (req, res, next) => {
+    if (req.body.medicalNo) {
+        const existingPatient = await Patient.findOne({ 
+            medicalNo: req.body.medicalNo,
+            _id: { $ne: req.params.id }
+        });
+        
         if (existingPatient) {
-            return res.status(400).json({
-                status: 'fail',
-                message: 'Patient with this medical number already exists'
-            });
+            return next(new ApiError('Medical number already exists for another patient', 400));
         }
-
-        const newPatient = await Patient.create(req.body);
-        
-        // Populate the created patient's data
-        await newPatient.populate('userId', 'FName LName Email PhoneNumber');
-        await newPatient.populate('insuranceId', 'company policyNumber');
-
-        res.status(201).json({
-            status: 'success',
-            data: newPatient
-        });
-    } catch (error) {
-        res.status(400).json({
-            status: 'error',
-            message: 'Failed to create patient',
-            error: error.message
-        });
     }
-};
 
-// Update an existing patient
-exports.updatePatient = async (req, res) => {
-    try {
-        // Don't allow updating medical number if it's being changed
-        if (req.body.medicalNo) {
-            const existingPatient = await Patient.findOne({ 
-                medicalNo: req.body.medicalNo,
-                _id: { $ne: req.params.id }
-            });
-            
-            if (existingPatient) {
-                return res.status(400).json({
-                    status: 'fail',
-                    message: 'Medical number already exists for another patient'
-                });
-            }
+    const patient = await Patient.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        { 
+            new: true, 
+            runValidators: true 
         }
+    ).populate('userId', 'FName LName Email PhoneNumber')
+     .populate('insuranceId', 'company policyNumber');
 
-        const patient = await Patient.findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            { 
-                new: true, 
-                runValidators: true 
-            }
-        ).populate('userId', 'FName LName Email PhoneNumber')
-         .populate('insuranceId', 'company policyNumber');
-
-        if (!patient) {
-            return res.status(404).json({
-                status: 'fail',
-                message: 'Patient not found'
-            });
-        }
-
-        res.status(200).json({
-            status: 'success',
-            data: patient
-        });
-    } catch (error) {
-        res.status(400).json({
-            status: 'error',
-            message: 'Failed to update patient',
-            error: error.message
-        });
+    if (!patient) {
+        return next(new ApiError('Patient not found', 404));
     }
-};
 
-// Delete a patient
-exports.deletePatient = async (req, res) => {
-    try {
-        const patient = await Patient.findByIdAndDelete(req.params.id);
-        
-        if (!patient) {
-            return res.status(404).json({
-                status: 'fail',
-                message: 'Patient not found'
-            });
-        }
+    res.status(200).json({
+        status: 'success',
+        data: patient
+    });
+});
 
-        res.status(204).json({
-            status: 'success',
-            data: null
-        });
-    } catch (error) {
-        res.status(500).json({
-            status: 'error',
-            message: 'Failed to delete patient',
-            error: error.message
-        });
+exports.deletePatient = asyncHandler(async (req, res, next) => {
+    const patient = await Patient.findById(req.params.id);
+    
+    if (!patient) {
+        return next(new ApiError('Patient not found', 404));
     }
-}; 
+
+    const userId = patient.userId;
+    await Patient.findByIdAndDelete(req.params.id);
+    await User.findByIdAndDelete(userId);
+
+    res.status(204).json({
+        status: 'success',
+        data: null
+    });
+}); 

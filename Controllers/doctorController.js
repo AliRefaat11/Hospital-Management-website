@@ -1,4 +1,7 @@
 const Doctor = require("../Models/doctorModel");
+const User = require("../Models/userModel");
+const bcrypt = require('bcryptjs');
+const { createToken } = require("../middleware/authMiddleware");
 
 const getAll = async (req, res) => {
     try {
@@ -44,11 +47,50 @@ const getById = async (req, res) => {
 };
 
 const create = async (req, res) => {
+    const {FName, LName, Email, Password, Age, PhoneNumber, Gender, specialization, rating, schedule} = req.body;
     try {
-        const newDoctor = await Doctor.create(req.body);
+        // Check if user already exists
+        const existingUser = await User.findOne({ 
+            $or: [
+                { Email: Email },
+                { PhoneNumber: PhoneNumber }
+            ]
+        });
+        
+        if (existingUser) {
+            return res.status(400).json({
+                status: 'fail',
+                message: 'User with this email or phone number already exists'
+            });
+        }
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(Password, salt);
+        const newUser = await User.create({
+            FName,
+            LName,
+            Email,
+            Password: hashedPassword,
+            Age,
+            PhoneNumber,
+            Gender,
+            role: "Doctor"
+        });
+        const newDoctor = await Doctor.create({
+            userId: newUser._id,
+            specialization,
+            rating,
+            schedule
+        });
+        const token = createToken(newUser._id);
+        const userResponse = newUser.toObject();
+        delete userResponse.Password;
         res.status(201).json({
             status: 'success',
-            data: newDoctor
+            token,
+            data: {
+                user: userResponse,
+                doctor: newDoctor
+            }
         });
     } catch (error) {
         res.status(400).json({
@@ -68,14 +110,12 @@ const update = async (req, res) => {
                 runValidators: true
             }
         );
-
         if (!doctor) {
             return res.status(404).json({
                 status: 'fail',
                 message: 'No doctor found with that ID'
             });
         }
-
         res.status(200).json({
             status: 'success',
             data: doctor

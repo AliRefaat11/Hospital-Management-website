@@ -1,17 +1,12 @@
 const User = require("../Models/userModel");
+const { auth, createToken, allowedTo, ApiError } = require("../middleware/authMiddleware");
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-
-// Helper function to create JWT token
-const createToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_EXPIRES_IN
-    });
-};
+const validator = require('validator');
+const asyncHandler = require('express-async-handler');
 
 const getAll = async (req, res) => {
     try {
-        const users = await User.find().select('-Password'); // Exclude password from response
+        const users = await User.find().select('-Password');
         res.status(200).json({
             status: 'success',
             results: users.length,
@@ -49,34 +44,27 @@ const getById = async (req, res) => {
 };
 
 const create = async (req, res) => {
+    const {FName,LName,Email,Password,PhoneNumber,Gender,Age,role}= req.body;
     try {
-        // Check if user already exists
         const existingUser = await User.findOne({ 
             $or: [
                 { Email: req.body.Email },
-                { PhoneNumber: req.body.PhoneNumber }
+                { PhoneNumber: req.body.PhoneNumber}
             ]
         });
-
         if (existingUser) {
             return res.status(400).json({
                 status: 'fail',
                 message: 'User with this email or phone number already exists'
             });
         }
-
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(req.body.Password, salt);
-        
         const newUser = await User.create({
             ...req.body,
             Password: hashedPassword
         });
-
-        // Create token
         const token = createToken(newUser._id);
-
-        // Remove password from response
         const userResponse = newUser.toObject();
         delete userResponse.Password;
 
@@ -85,7 +73,8 @@ const create = async (req, res) => {
             token,
             data: userResponse
         });
-    } catch (error) {
+    }
+    catch (error) {
         res.status(400).json({
             status: 'fail',
             message: error.message
@@ -93,61 +82,44 @@ const create = async (req, res) => {
     }
 };
 
-// Login user
-const login = async (req, res) => {
-    try {
-        const { Email, Password } = req.body;
+const login = asyncHandler(async (req, res, next) => {
+    const {Email, Password} = req.body;
+    console.log(`Login attempt for Email: ${Email}, Password: ${Password}`);
 
-        // Check if email and password exist
-        if (!Email || !Password) {
-            return res.status(400).json({
-                status: 'fail',
-                message: 'Please provide email and password'
-            });
-        }
+    const user = await User.findOne({ Email: Email });
+    console.log('User found:', user ? user.Email : 'None');
 
-        // Check if user exists
-        const user = await User.findOne({ Email });
-        if (!user) {
-            return res.status(401).json({
-                status: 'fail',
-                message: 'Incorrect email or password'
-            });
-        }
-
-        // Check if password is correct
-        const isPasswordCorrect = await bcrypt.compare(Password, user.Password);
-        if (!isPasswordCorrect) {
-            return res.status(401).json({
-                status: 'fail',
-                message: 'Incorrect email or password'
-            });
-        }
-
-        // Create token
-        const token = createToken(user._id);
-
-        // Remove password from response
-        const userResponse = user.toObject();
-        delete userResponse.Password;
-
-        res.status(200).json({
-            status: 'success',
-            token,
-            data: userResponse
-        });
-    } catch (error) {
-        res.status(400).json({
-            status: 'fail',
-            message: error.message
-        });
+    if (!user) {
+        console.log('No user found for the provided email.');
+        return next(new ApiError("Invalid email or password", 401));
     }
-};
 
-// Update user
+    const isPasswordCorrect = await bcrypt.compare(Password, user.Password);
+    console.log(`Password comparison result: ${isPasswordCorrect}`);
+
+    if (!isPasswordCorrect) {
+        console.log('Password does not match.');
+        return next(new ApiError("Invalid email or password", 401));
+    }
+
+    const token = createToken(user._id);
+    console.log('Login successful, token created.');
+    res.status(200).json({
+        status: "success",
+        token,
+        data: {
+            user: {
+                id: user._id,
+                role: user.role,
+                email: user.Email,
+                name: `${user.FName} ${user.LName}`
+            }
+        }
+    });
+});
+
 const update = async (req, res) => {
     try {
-        // Don't allow password updates through this route
         if (req.body.Password) {
             delete req.body.Password;
         }
@@ -223,7 +195,6 @@ const updatePassword = async (req, res) => {
     }
 };
 
-// Delete user
 const deleteById = async (req, res) => {
     try {
         const user = await User.findByIdAndDelete(req.params.id);
@@ -273,4 +244,3 @@ module.exports = {
     deleteById,
     getProfile
 };
-
