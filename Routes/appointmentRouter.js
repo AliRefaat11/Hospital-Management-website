@@ -116,6 +116,11 @@ AppRouter.get('/book', async (req, res) => {
 AppRouter.get('/quick-appointment', async (req, res) => {
     try {
         const departments = await Department.find();
+        // Fetch all doctors for the dropdown
+        const doctors = await Doctor.find()
+            .populate('userId', 'FName LName')
+            .populate('departmentId', 'departmentName');
+
         let user = null;
         try {
             const token = req.cookies?.token;
@@ -126,7 +131,7 @@ AppRouter.get('/quick-appointment', async (req, res) => {
         } catch (error) {
             console.log('Token verification failed:', error.message);
         }
-        res.render('quickAppointment', { departments, user, currentPage: 'appointments' });
+        res.render('quickAppointment', { departments, user, doctors, currentPage: 'appointments' });
     } catch (error) {
         console.error("Error rendering quick appointment page:", error);
         res.status(500).send("Error loading quick appointment page.");

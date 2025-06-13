@@ -49,13 +49,17 @@
         <h2><%= department.departmentName %></h2>
         <p><%= department.description %></p>
         <div class="doctor-grid">
-          <% department.doctors.forEach(function(doctor) { %>
-            <div class="doctor-card">
-              <i class="fas fa-user-md doctor-icon"></i>
-              <h3><%= doctor.name %></h3>
-              <p><%= doctor.specialization %></p>
-            </div>
-          <% }); %>
+          <% if (department.doctors && department.doctors.length > 0) { %>
+            <% department.doctors.forEach(function(doctor) { %>
+              <div class="doctor-card">
+                <i class="fas fa-user-md doctor-icon"></i>
+                <h3><%= doctor.userId.FName %> <%= doctor.userId.LName %></h3>
+                <p><%= doctor.specialization %></p>
+              </div>
+            <% }); %>
+          <% } else { %>
+            <p>No doctors found for this department.</p>
+          <% } %>
         </div>
       </div>
     <% }); %>
