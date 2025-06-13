@@ -13,17 +13,27 @@
     <div class="navbar-container">
       <a href="/" class="site-name">Prime Care</a>
       <div class="navbar-links">
-        <a href="/home">HOME</a>
-        <a href="/about">ABOUT US</a>
-        <a href="/departments">DEPARTMENTS</a>
-        <a href="/doctors">DOCTORS</a>
-        <a href="/quick-appointment" class="active">BOOK NOW</a>
+        <a href="/" class="<%= currentPage === 'home' ? 'active' : '' %>">HOME</a>
+        <a href="/User/about" class="<%= currentPage === 'about' ? 'active' : '' %>">ABOUT US</a>
+        <a href="/Department/view" class="<%= currentPage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
+        <a href="/doctors" class="<%= currentPage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
+        <a href="/appointments/quick-appointment" class="active">BOOK NOW</a>
         <% if (user) { %>
-          <a href="/profile"><%= user.name %></a>
-          <a href="/logout" class="signup-btn">Logout</a>
+          <div class="user-menu">
+            <a href="/User/profile" class="profile-link">
+              <i class="fas fa-user-circle"></i>
+              <%= user.FName %> <%= user.LName %>
+            </a>
+            <div class="dropdown-menu">
+              <a href="/User/profile">My Profile</a>
+              <a href="/appointments">My Appointments</a>
+              <a href="/User/settings">Settings</a>
+              <a href="/User/logout" class="logout-btn">Logout</a>
+            </div>
+          </div>
         <% } else { %>
-          <a href="/login">Login</a>
-          <a href="/patient/signup" class="signup-btn">Sign Up</a>
+          <a href="/User/login" class="<%= currentPage === 'login' ? 'active' : '' %>">Login</a>
+          <a href="/Patient/signup" class="signup-btn">Sign Up</a>
         <% } %>
       </div>
     </div>

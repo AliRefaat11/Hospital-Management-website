@@ -81,8 +81,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem('token', data.token);
                 console.log('Login successful, redirecting...');
 
-                // Redirect to home page or dashboard
-                window.location.href = '/';
+                // Redirect based on user role
+                const userRole = data.data.user.role;
+                if (userRole === 'Patient') {
+                    window.location.href = '/User/profile'; // Redirect Patient to their profile
+                } else if(userRole === 'Doctor') {
+                    window.location.href = '/'; 
+                } else{
+
+                }
             } else {
                 // Show error message from server
                 showError(data.message || 'Login failed. Please try again.');

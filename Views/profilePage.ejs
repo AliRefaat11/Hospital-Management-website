@@ -6,6 +6,7 @@
   <title>Profile - <%= user.FName %> <%= user.LName %></title>
   <link rel="stylesheet" href="/css/navbar.css">
   <link rel="stylesheet" href="/css/user_profile.css">
+  <link rel="stylesheet" href="/css/common_footer.css">
 </head>
 <body>
   <nav>
@@ -13,67 +14,143 @@
       <a href="/" class="site-name">PrimeCare</a>
       <div class="navbar-links">
         <a href="/" class="">HOME</a>
-        <a href="/about" class="">ABOUT US</a>
-        <a href="/department/view/all" class="">DEPARTMENTS</a>
+        <a href="/User/about" class="">ABOUT US</a>
+        <a href="/Department/view" class="">DEPARTMENTS</a>
         <a href="/doctors" class="">DOCTORS</a>
-        <a href="/appointments" class="">BOOK NOW</a>
+        <a href="/appointments/quick-appointment" class="">BOOK NOW</a>
         <% if (user) { %>
         <div class="user-menu">
-          <a href="/profile" class="profile-link">
+          <a href="/User/profile" class="profile-link">
             <i class="fas fa-user-circle"></i>
             <%= user.FName %> <%= user.LName %>
           </a>
           <div class="dropdown-menu">
-            <a href="/profile">My Profile</a>
+            <a href="/User/profile">My Profile</a>
             <a href="/appointments">My Appointments</a>
-            <a href="/settings">Settings</a>
-            <a href="/auth/logout" class="logout-btn">Logout</a>
+            <a href="/User/settings">Settings</a>
+            <a href="/User/logout" class="logout-btn">Logout</a>
           </div>
         </div>
         <% } else { %>
-          <a href="/login" class="">Login</a>
-          <a href="/patient/signup" class="signup-btn">Sign Up</a>
+          <a href="/User/login" class="">Login</a>
+          <a href="/Patient/signup" class="signup-btn">Sign Up</a>
         <% } %>
       </div>
     </div>
   </nav>
-  <main style="max-width: 800px; margin: 2rem auto;">
-    <h1>Patient Profile</h1>
-    <section class="profile-section">
-      <h2>Basic Information</h2>
-      <ul>
-        <li><strong>Name:</strong> <%= user.FName %> <%= user.LName %></li>
-        <li><strong>Email:</strong> <%= user.Email %></li>
-        <li><strong>Phone:</strong> <%= user.PhoneNumber %></li>
-        <li><strong>Gender:</strong> <%= user.Gender %></li>
-        <li><strong>Age:</strong> <%= user.Age %></li>
-      </ul>
-    </section>
-    <section class="profile-section">
-      <h2>Patient Details</h2>
-      <ul>
-        <li><strong>Blood Type:</strong> <%= patient.bloodType %></li>
-        <li><strong>Medical Number:</strong> <%= patient.medicalNo %></li>
-        <% if (patient.medicalHistory) { %>
-        <li><strong>Medical History:</strong> <%= patient.medicalHistory %></li>
+
+  <div class="profile-container">
+    <div class="profile-header-card">
+      <div class="profile-avatar">
+        <img src="/images/account-icon-33.png" alt="User Avatar">
+      </div>
+      <div class="profile-info">
+        <h2 class="profile-name"><%= user.FName %> <%= user.LName %></h2>
+        <p class="profile-email"><i class="fas fa-envelope"></i> <%= user.Email %></p>
+        <span class="status-badge">ACTIVE PATIENT</span>
+      </div>
+    </div>
+
+    <div class="profile-actions">
+      <button class="action-button active"><i class="fas fa-calendar-alt"></i> Appointments</button>
+      <button class="action-button"><i class="fas fa-user-edit"></i> Edit Profile</button>
+      <button class="action-button"><i class="fas fa-cog"></i> Settings</button>
+    </div>
+
+    <section class="profile-section card">
+      <div class="section-header">
+        <h3>Upcoming Appointments</h3>
+        <button class="add-appointment-btn"><i class="fas fa-plus"></i> New Appointment</button>
+      </div>
+      <div class="section-content">
+        <% if (patient.appointments && patient.appointments.length > 0) { %>
+          <ul>
+            <% patient.appointments.forEach(function(appointment) { %>
+              <li>
+                Appointment with Dr. <%= appointment.doctorName %> on <%= appointment.date %> at <%= appointment.time %>
+              </li>
+            <% }); %>
+          </ul>
+        <% } else { %>
+          <p>No upcoming appointments.</p>
         <% } %>
-      </ul>
+      </div>
     </section>
-    <section class="profile-section">
-      <h2>Doctors</h2>
-      <% if (doctors && doctors.length > 0) { %>
-        <ul>
-          <% doctors.forEach(function(doc) { %>
-            <li>
-              <strong><%= doc.firstname %> <%= doc.lastname %></strong> - <%= doc.specialization %> (Rating: <%= doc.rating %>)<br>
-              Email: <%= doc.email %>
-            </li>
-          <% }); %>
-        </ul>
-      <% } else { %>
-        <p>No doctors found.</p>
-      <% } %>
+
+    <section class="profile-section card">
+      <div class="section-header">
+        <h3>Profile Information</h3>
+        <button class="edit-btn"><i class="fas fa-edit"></i> Edit</button>
+      </div>
+      <div class="section-content profile-details-grid">
+        <div class="detail-item">
+          <span class="label">Date of Birth</span>
+          <span class="value"><%= patient.dateOfBirth ? patient.dateOfBirth.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A' %></span>
+        </div>
+        <div class="detail-item">
+          <span class="label">Gender</span>
+          <span class="value"><%= user.Gender || 'N/A' %></span>
+        </div>
+        <div class="detail-item">
+          <span class="label">Phone</span>
+          <span class="value"><i class="fas fa-phone"></i> <%= user.PhoneNumber || 'N/A' %></span>
+        </div>
+        <div class="detail-item address-item">
+          <span class="label">Address</span>
+          <span class="value"><i class="fas fa-map-marker-alt"></i> <%= patient.address || 'N/A' %></span>
+        </div>
+        <div class="detail-item">
+          <span class="label">Primary Doctor</span>
+          <span class="value"><%= patient.primaryDoctorName || 'N/A' %></span>
+        </div>
+        <div class="detail-item">
+          <span class="label">Insurance</span>
+          <span class="value"><%= patient.insuranceProvider || 'N/A' %></span>
+        </div>
+      </div>
     </section>
-  </main>
+
+    <section class="profile-section card">
+      <div class="section-header">
+        <h3>Medical Records</h3>
+        <button class="download-all-btn"><i class="fas fa-download"></i> Download All</button>
+      </div>
+      <div class="section-content">
+        <% if (patient.medicalRecords && patient.medicalRecords.length > 0) { %>
+          <ul>
+            <% patient.medicalRecords.forEach(function(record) { %>
+              <li><%= record.name %> - <%= record.date %></li>
+            <% }); %>
+          </ul>
+        <% } else { %>
+          <p>No medical records available.</p>
+        <% } %>
+      </div>
+    </section>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-left">
+        <h3>Prime Care</h3>
+        <p>Committed to providing quality healthcare for all.</p>
+      </div>
+      <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Contact Us</a>
+      </div>
+      <div class="footer-socials">
+        <a href="#"><i class="fab fa-facebook"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-linkedin"></i></a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; <%= new Date().getFullYear() %> Prime Care. All Rights Reserved.</p>
+    </div>
+  </footer>
+
 </body>
 </html> 
