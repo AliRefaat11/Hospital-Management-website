@@ -1,54 +1,80 @@
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
+const asyncHandler = require("express-async-handler");
+const bcrypt = require("bcryptjs");
+const Patient = require("../Models/patientModel");
 const User = require('../Models/userModel');
 
-const authMiddleware = async (req, res, next) => {
-    try {
-        // 1) Check if token exists
-        let token;
-        if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-            token = req.headers.authorization.split(' ')[1];
-        }
-
-        if (!token) {
-            return res.status(401).json({
-                status: 'fail',
-                message: 'You are not logged in. Please log in to get access.'
-            });
-        }
-
-        // 2) Verify token
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-        // 3) Check if user still exists
-        const user = await User.findById(decoded.id);
-        if (!user) {
-            return res.status(401).json({
-                status: 'fail',
-                message: 'The user belonging to this token no longer exists.'
-            });
-        }
-
-        // 4) Grant access to protected route
-        req.user = user;
-        next();
-    } catch (error) {
-        if (error.name === 'JsonWebTokenError') {
-            return res.status(401).json({
-                status: 'fail',
-                message: 'Invalid token. Please log in again.'
-            });
-        }
-        if (error.name === 'TokenExpiredError') {
-            return res.status(401).json({
-                status: 'fail',
-                message: 'Your token has expired. Please log in again.'
-            });
-        }
-        res.status(401).json({
-            status: 'fail',
-            message: 'Authentication failed'
-        });
+class ApiError extends Error {
+    constructor(message, statusCode) {
+      super(message);
+      this.statusCode = statusCode;
+      this.status = `${statusCode}`.startsWith(4) ? "fail" : "error";
+      this.isOperational = true;
     }
-};
+  }
+  
+exports.ApiError = ApiError;
 
-module.exports = authMiddleware; 
+exports.createToken = (payload) =>
+    jwt.sign({ id: payload }, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EXPIRES_IN,
+    });
+  
+exports.auth = asyncHandler(async (req, res, next) => {
+    let token;
+    console.log('Auth Middleware - req.headers.authorization:', req.headers.authorization);
+    console.log('Auth Middleware - req.cookies:', req.cookies);
+
+    // 1. Check for token in Authorization header
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.toLowerCase().startsWith("bearer")
+    ) {
+      token = req.headers.authorization.split(" ")[1];
+    }
+    console.log('Auth Middleware - Token after header check:', token);
+
+    // 2. If not found in header, check for token in cookies
+    if (!token && req.cookies && req.cookies.token) {
+        token = req.cookies.token;
+    }
+    console.log('Auth Middleware - Token after cookie check:', token);
+
+    if (!token) {
+      return next(new ApiError("Please login to get access", 401));
+    }
+
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const user = await User.findById(decoded.id);
+      if (!user) {
+        return next(new ApiError("User not found", 401));
+      }
+      // Only check passwordChangedAt if it exists
+      if (user.passwordChangedAt) {
+        const passwordChangedTimeStamp = parseInt(
+          user.passwordChangedAt.getTime() / 1000,
+          10
+        );
+        if (passwordChangedTimeStamp > decoded.iat) {
+          return next(new ApiError("user changed password, login again", 401));
+        }
+      }
+      req.user = user; // Attach user to request object
+      res.locals.user = user; // Make user available to EJS templates
+      next();
+    } catch (err) {
+      // Handle invalid token or expired token
+      return next(new ApiError("Invalid or expired token. Please login again.", 401));
+    }
+});
+  
+exports.allowedTo = (...roles) =>
+    asyncHandler(async (req, res, next) => {
+      if (!roles.includes(req.user.role)) {
+        return next(
+          new ApiError("You are not allowed to access this route", 403)
+        );
+      }
+      next();
+    });

@@ -1,31 +1,12 @@
 const User = require("../Models/userModel");
+const { auth, createToken, allowedTo, ApiError } = require("../middleware/authMiddleware");
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 const validator = require('validator');
-
-const createToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_EXPIRES_IN
-    });
-};
-
-const validateLoginInput = (email, password) => {
-    const errors = [];
-    
-    if (!email || !validator.isEmail(email.trim())) {
-        errors.push('Please provide a valid email address');
-    }
-
-    if (!password || password.length < 6) {
-        errors.push('Password must be at least 6 characters long');
-    }
-    
-    return errors;
-};
+const asyncHandler = require('express-async-handler');
 
 const getAll = async (req, res) => {
     try {
-        const users = await User.find().select('-Password'); // Exclude password from response
+        const users = await User.find().select('-Password');
         res.status(200).json({
             status: 'success',
             results: users.length,
@@ -63,33 +44,27 @@ const getById = async (req, res) => {
 };
 
 const create = async (req, res) => {
+    const {FName,LName,Email,Password,PhoneNumber,Gender,Age,role}= req.body;
     try {
-        // Check if user already exists
         const existingUser = await User.findOne({ 
             $or: [
                 { Email: req.body.Email },
-                { PhoneNumber: req.body.PhoneNumber }
+                { PhoneNumber: req.body.PhoneNumber}
             ]
         });
-
         if (existingUser) {
             return res.status(400).json({
                 status: 'fail',
                 message: 'User with this email or phone number already exists'
             });
         }
-
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(req.body.Password, salt);
-        
         const newUser = await User.create({
             ...req.body,
             Password: hashedPassword
         });
-
         const token = createToken(newUser._id);
-
-        // Remove password from response
         const userResponse = newUser.toObject();
         delete userResponse.Password;
 
@@ -98,7 +73,8 @@ const create = async (req, res) => {
             token,
             data: userResponse
         });
-    } catch (error) {
+    }
+    catch (error) {
         res.status(400).json({
             status: 'fail',
             message: error.message
@@ -106,73 +82,47 @@ const create = async (req, res) => {
     }
 };
 
-const login = async (req, res) => {
-    try {
-        const { Email, Password } = req.body;
+const login = asyncHandler(async (req, res, next) => {
+    const {Email, Password} = req.body;
+    console.log(`Login attempt for Email: ${Email}, Password: ${Password}`);
 
-        const validationErrors = validateLoginInput(Email, Password);
-        if (validationErrors.length > 0) {
-            return res.status(400).json({
-                status: 'fail',
-                message: validationErrors.join(', ')
-            });
-        }
-        const normalizedEmail = Email.trim().toLowerCase();
+    const user = await User.findOne({ Email: Email });
+    console.log('User found:', user ? user.Email : 'None');
 
-        const user = await User.findOne({ 
-            Email: { $regex: new RegExp(`^${normalizedEmail}$`, 'i') }
-        });
-
-        if (!user) {
-
-            console.log(`Failed login attempt for email: ${normalizedEmail}`);
-            return res.status(401).json({
-                status: 'fail',
-                message: 'Invalid email or password'
-            });
-        }
-
-        // Verify password
-        const isPasswordCorrect = await bcrypt.compare(Password.trim(), user.Password);
-        if (!isPasswordCorrect) {
-            // Log failed login attempt
-            console.log(`Failed login attempt for user: ${user._id}`);
-            
-            return res.status(401).json({
-                status: 'fail',
-                message: 'Invalid email or password'
-            });
-        }
-
-        // Create token with expiration
-        const token = createToken(user._id);
-
-        // Prepare user response without sensitive data
-        const userResponse = user.toObject();
-        delete userResponse.Password;
-        delete userResponse.__v;
-
-        // Log successful login
-        console.log(`Successful login for user: ${user._id}`);
-
-        res.status(200).json({
-            status: 'success',
-            token,
-            data: {
-                user: userResponse,
-                tokenExpiresIn: process.env.JWT_EXPIRES_IN
-            }
-        });
-    } catch (error) {
-        // Log error
-        console.error('Login error:', error);
-        
-        res.status(500).json({
-            status: 'error',
-            message: 'An error occurred during login. Please try again later.'
-        });
+    if (!user) {
+        console.log('No user found for the provided email.');
+        return next(new ApiError("Invalid email or password", 401));
     }
-};
+
+    const isPasswordCorrect = await bcrypt.compare(Password, user.Password);
+    console.log(`Password comparison result: ${isPasswordCorrect}`);
+
+    if (!isPasswordCorrect) {
+        console.log('Password does not match.');
+        return next(new ApiError("Invalid email or password", 401));
+    }
+
+    const token = createToken(user._id);
+    // Set JWT as HTTP-only cookie (always secure: false for local dev)
+    res.cookie('token', token, {
+        httpOnly: true,
+        secure: false, // Always false for local development
+        maxAge: 24 * 60 * 60 * 1000 // 1 day
+    });
+    console.log('Login successful, token created and cookie set.');
+    res.status(200).json({
+        status: "success",
+        token,
+        data: {
+            user: {
+                id: user._id,
+                role: user.role,
+                email: user.Email,
+                name: `${user.FName} ${user.LName}`
+            }
+        }
+    });
+});
 
 const update = async (req, res) => {
     try {
@@ -251,7 +201,6 @@ const updatePassword = async (req, res) => {
     }
 };
 
-// Delete user
 const deleteById = async (req, res) => {
     try {
         const user = await User.findByIdAndDelete(req.params.id);
@@ -301,4 +250,3 @@ module.exports = {
     deleteById,
     getProfile
 };
-

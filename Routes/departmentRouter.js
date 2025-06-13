@@ -1,10 +1,11 @@
 const express = require('express');
 const DepRouter = express.Router();
 const departmentController = require('../Controllers/departmentController');
-
-// ============================================
-// SIMPLE VALIDATION MIDDLEWARE
-// ============================================
+const { auth } = require('../middleware/authMiddleware');
+const jwt = require('jsonwebtoken');
+const User = require('../Models/userModel');
+const Doctor = require('../Models/doctorModel');
+const Department = require('../Models/departmentModel');
 
 const validateDepartment = (req, res, next) => {
   const { departmentName, description } = req.body;
@@ -26,32 +27,47 @@ const validateDepartment = (req, res, next) => {
   next();
 };
 
-// ============================================
-// ROUTE DEFINITIONS
-// ============================================
-
-// CREATE - Create new department
+// API Routes
 DepRouter.post('/', validateDepartment, departmentController.createDepartment);
-
-// READ - Get all departments
 DepRouter.get('/', departmentController.getAllDepartments);
-
-// READ - Get top departments
 DepRouter.get('/top', departmentController.getTopDepartments);
-
-// READ - Search departments
 DepRouter.get('/search', departmentController.searchDepartments);
-
-// READ - Get department by ID
+DepRouter.get('/view', async (req, res) => {
+    try {
+        const departments = await Department.find();
+        const departmentsWithDoctors = await Promise.all(departments.map(async (department) => {
+            const doctors = await Doctor.find({ departmentId: department._id })
+                .populate('userId', 'FName LName Email PhoneNumber Gender Age')
+                .populate('departmentId', 'departmentName');
+            return {
+                ...department.toObject(),
+                doctors
+            };
+        }));
+        let user = null;
+        try {
+            const token = req.cookies?.token;
+            if (token) {
+                const decoded = jwt.verify(token, process.env.JWT_SECRET);
+                user = await User.findById(decoded.id).select('-Password');
+            }
+        } catch (error) {
+            console.log('Token verification failed:', error.message);
+        }
+        res.render('departmentPage', {
+            departments: departmentsWithDoctors,
+            user,
+            activePage: 'departments'
+        });
+    } catch (error) {
+        console.error('Error loading departments:', error);
+        res.status(500).send('Error loading departments page.');
+    }
+});
 DepRouter.get('/:id', departmentController.getDepartmentById);
-
-// READ - Get department by name
 DepRouter.get('/name/:name', departmentController.getDepartmentByName);
-
-// UPDATE - Update department
+DepRouter.get('/:id/doctors', departmentController.getDoctorsByDepartmentId);
 DepRouter.put('/:id', departmentController.updateDepartment);
-
-// DELETE - Delete department
 DepRouter.delete('/:id', departmentController.deleteDepartment);
 
 module.exports = DepRouter;

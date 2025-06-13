@@ -1,102 +1,5 @@
-const LOGIN_CONFIG = {
-    mockCredentials: {
-        doctor: { username: 'doc123', password: 'pass123' },
-        nurse: { username: 'nurse456', password: 'pass456' },
-        admin: { username: 'admin789', password: 'pass789' },
-        patient: { username: 'patient101', password: 'pass101' }
-    },
-    storageKey: 'primecare_credentials'
-};
-
-// DOM Elements
 const navToggle = document.getElementById('nav-toggle');
 const navLinks = document.querySelector('.navbar-links');
-const usernameInput = document.getElementById('username');
-const passwordInput = document.getElementById('password');
-const rememberMeCheckbox = document.getElementById('rememberMe');
-const errorMessage = document.getElementById('errorMessage');
-const loginButton = document.getElementById('loginButton');
-
-// Load Saved Credentials
-function loadSavedCredentials() {
-    const savedCredentials = localStorage.getItem(LOGIN_CONFIG.storageKey);
-    
-    if (savedCredentials) {
-        try {
-            const credentials = JSON.parse(savedCredentials);
-            usernameInput.value = credentials.username;
-            passwordInput.value = credentials.password;
-            rememberMeCheckbox.checked = true;
-        } catch (error) {
-            console.error('Error loading saved credentials:', error);
-        }
-    }
-}
-
-// Validate Credentials
-function validateCredentials(username, password) {
-    return Object.values(LOGIN_CONFIG.mockCredentials).some(
-        cred => cred.username === username && cred.password === password
-    );
-}
-
-// Show Error Message
-function showError(message) {
-    errorMessage.textContent = message;
-    errorMessage.style.display = 'block';
-}
-
-// Handle Login
-function handleLogin() {
-    const username = usernameInput.value.trim();
-    const password = passwordInput.value.trim();
-    const rememberMe = rememberMeCheckbox.checked;
-
-    // Basic validation
-    if (!username || !password) {
-        showError('Please fill in all fields');
-        return;
-    }
-
-    // Check credentials
-    if (validateCredentials(username, password)) {
-        // Clear any previous error
-        errorMessage.style.display = 'none';
-        
-        // Handle "Remember Me"
-        if (rememberMe) {
-            localStorage.setItem(LOGIN_CONFIG.storageKey, JSON.stringify({
-                username: username,
-                password: password
-            }));
-        } else {
-            localStorage.removeItem(LOGIN_CONFIG.storageKey);
-        }
-        
-        // Redirect or show success message
-        alert('Login successful! Redirecting to dashboard...');
-        // You might want to replace this with an actual redirect
-        // window.location.href = './dashboard.html';
-    } else {
-        showError('Invalid credentials');
-    }
-}
-
-// Event Listeners
-document.addEventListener('DOMContentLoaded', () => {
-    // Load saved credentials
-    loadSavedCredentials();
-
-    // Login button click
-    loginButton.addEventListener('click', handleLogin);
-
-    // Allow login on Enter key press
-    document.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            handleLogin();
-        }
-    });
-});
 
 // Navigation Toggle for Responsive Design
 if (navToggle) {
@@ -109,5 +12,103 @@ if (navToggle) {
 navLinks.addEventListener('click', (event) => {
     if (event.target.tagName === 'A') {
         navLinks.classList.remove('active');
+    }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const loginForm = document.querySelector('form');
+    const errorMessage = document.getElementById('errorMessage');
+    const emailInput = document.getElementById('Email');
+    const passwordInput = document.getElementById('Password');
+    const rememberMeCheckbox = document.getElementById('rememberMe');
+
+    // Load saved email if remember me was checked
+    const savedCredentials = localStorage.getItem('rememberMe');
+    if (savedCredentials) {
+        try {
+            const { email } = JSON.parse(savedCredentials);
+            emailInput.value = email;
+            rememberMeCheckbox.checked = true;
+        } catch (error) {
+            console.error('Error loading saved credentials:', error);
+            localStorage.removeItem('rememberMe');
+        }
+    }
+
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        errorMessage.style.display = 'none';
+
+        const email = emailInput.value.trim();
+        const password = passwordInput.value.trim();
+        const rememberMe = rememberMeCheckbox.checked;
+
+        // Basic validation
+        if (!email || !password) {
+            showError('Please fill in all fields');
+            return;
+        }
+
+        // Disable the submit button to prevent double submission
+        const submitButton = loginForm.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+        submitButton.textContent = 'Logging in...';
+
+        try {
+            console.log('Attempting login with:', { Email: email });
+            const response = await fetch('/User/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ Email: email, Password: password })
+            });
+
+            console.log('Login response status:', response.status);
+            const data = await response.json();
+            console.log('Login response data:', data);
+
+            if (response.ok) {
+                // Handle successful login
+                if (rememberMe) {
+                    localStorage.setItem('rememberMe', JSON.stringify({ email }));
+                } else {
+                    localStorage.removeItem('rememberMe');
+                }
+
+                // Store the token
+                localStorage.setItem('token', data.token);
+                console.log('Login successful, redirecting...');
+
+                // Redirect based on user role
+                const userRole = data.data.user.role;
+                if (userRole === 'Patient') {
+                    window.location.href = '/User/profile'; // Redirect Patient to their profile
+                } else if(userRole === 'Doctor') {
+                    window.location.href = '/'; 
+                } else{
+
+                }
+            } else {
+                // Show error message from server
+                showError(data.message || 'Login failed. Please try again.');
+                console.error('Login failed:', data);
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            showError('An error occurred. Please try again later.');
+        } finally {
+            // Re-enable the submit button
+            submitButton.disabled = false;
+            submitButton.textContent = 'Login';
+        }
+    });
+
+    function showError(message) {
+        errorMessage.textContent = message;
+        errorMessage.style.display = 'block';
+        // Scroll to error message
+        errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 });
