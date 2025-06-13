@@ -6,6 +6,7 @@
     <title><%= title || 'PrimeCare - Login' %></title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/css/login_page.css">
+    <link rel="stylesheet" href="/css/common_footer.css">
 </head>
 <body>
     <nav>
@@ -16,7 +17,7 @@
                 <a href="/about" class="<%= currentPage === 'about' ? 'active' : '' %>">ABOUT US</a>
                 <a href="/department/view/all" class="<%= currentPage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
                 <a href="/doctors" class="<%= currentPage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
-                <a href="/book-appointment" class="<%= currentPage === 'booking' ? 'active' : '' %>">BOOK NOW</a>
+                <a href="/quick-appointment" class="<%= currentPage === 'booking' ? 'active' : '' %>">BOOK NOW</a>
                 <a href="/login" class="<%= currentPage === 'login' ? 'active' : '' %>">Login</a>
                 <a href="/patient/signup" class="signup-btn <%= currentPage === 'signup' ? 'active' : '' %>">Sign Up</a>
             </div>

@@ -28,6 +28,7 @@ DepRouter.get('/top', departmentController.getTopDepartments);
 DepRouter.get('/search', departmentController.searchDepartments);
 DepRouter.get('/:id', departmentController.getDepartmentById);
 DepRouter.get('/name/:name', departmentController.getDepartmentByName);
+DepRouter.get('/:id/doctors', departmentController.getDoctorsByDepartmentId);
 
 // READ - Render all departments
 DepRouter.get('/view/all', departmentController.renderDepartmentsPage);

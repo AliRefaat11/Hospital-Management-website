@@ -60,6 +60,7 @@ const validateObjectId = (req, res, next) => {
   next();
 };
 
+AppRouter.get('/book', appointmentController.renderBookingPage);
 AppRouter.post('/', validateAppointment, appointmentController.createAppointment);
 AppRouter.get('/', appointmentController.getAllAppointments);
 AppRouter.get('/today', appointmentController.getTodayAppointments);

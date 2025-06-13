@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Prime Care - Book Appointment</title>
-  <link rel="stylesheet" href="../public/css/book_appointment.css"/>
+  <link rel="stylesheet" href="/css/book_appointment.css"/>
+  <link rel="stylesheet" href="/css/common_footer.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -16,13 +17,13 @@
         <a href="/about">ABOUT US</a>
         <a href="/departments">DEPARTMENTS</a>
         <a href="/doctors">DOCTORS</a>
-        <a href="/book-appointment" class="active">BOOK NOW</a>
+        <a href="/quick-appointment" class="active">BOOK NOW</a>
         <% if (user) { %>
           <a href="/profile"><%= user.name %></a>
           <a href="/logout" class="signup-btn">Logout</a>
         <% } else { %>
           <a href="/login">Login</a>
-          <a href="/signup" class="signup-btn">Sign Up</a>
+          <a href="/patient/signup" class="signup-btn">Sign Up</a>
         <% } %>
       </div>
     </div>
@@ -107,7 +108,9 @@
           <select id="departmentSelect" name="department" required>
             <option value="" disabled selected>Select Department</option>
             <% departments.forEach(dept => { %>
-              <option value="<%= dept.id %>"><%= dept.name %></option>
+              <option value="<%= dept._id %>" <%= selectedDoctor && selectedDoctor.departmentId && selectedDoctor.departmentId._id.toString() === dept._id.toString() ? 'selected' : '' %>>
+                <%= dept.name %>
+              </option>
             <% }); %>
           </select>
         </div>
@@ -117,7 +120,9 @@
           <select id="doctorSelect" name="doctor" required>
             <option value="" disabled selected>Select Doctor</option>
             <% doctors.forEach(doctor => { %>
-              <option value="<%= doctor.id %>"><%= doctor.name %> - <%= doctor.specialization %></option>
+              <option value="<%= doctor._id %>" <%= selectedDoctor && selectedDoctor._id.toString() === doctor._id.toString() ? 'selected' : '' %>>
+                Dr. <%= doctor.userId.FName %> <%= doctor.userId.LName %> - <%= doctor.specialization %>
+              </option>
             <% }); %>
           </select>
         </div>
@@ -159,6 +164,29 @@
     </div>
   </div>
 
-  <script src="../public/javascript/book_appointment.js"></script>
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-left">
+        <h3>Prime Care</h3>
+        <p>Committed to providing quality healthcare for all.</p>
+      </div>
+      <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Contact Us</a>
+      </div>
+      <div class="footer-socials">
+        <a href="#"><i class="fab fa-facebook"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-linkedin"></i></a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; <%= new Date().getFullYear() %> Prime Care. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <script src="/javascript/book_appointment.js"></script>
 </body>
 </html>

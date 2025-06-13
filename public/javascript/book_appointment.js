@@ -122,6 +122,8 @@ const phone = document.getElementById('patientPhone');
 const email = document.getElementById('patientEmail');
 const age = document.getElementById('patientAge');
 const reason = document.getElementById('reason');
+const departmentSelect = document.getElementById('departmentSelect');
+const doctorSelect = document.getElementById('doctorSelect');
 
 // Custom error modal elements - Add to the HTML dynamically
 const errorModal = document.createElement('div');
@@ -164,6 +166,29 @@ window.addEventListener('DOMContentLoaded', () => {
   
   // Initialize placeholders
   updatePlaceholders();
+
+  // Handle department selection
+  departmentSelect.addEventListener('change', function() {
+    const selectedDepartment = this.value;
+    const doctors = Array.from(doctorSelect.options);
+    
+    doctors.forEach(doctor => {
+      if (doctor.value === '') return; // Skip the default option
+      
+      const doctorData = JSON.parse(doctor.dataset.doctor || '{}');
+      if (selectedDepartment === '' || doctorData.departmentId === selectedDepartment) {
+        doctor.style.display = '';
+      } else {
+        doctor.style.display = 'none';
+      }
+    });
+
+    // Reset doctor selection if current selection is not in the filtered list
+    const currentDoctor = doctorSelect.value;
+    if (currentDoctor && !Array.from(doctorSelect.options).some(opt => opt.value === currentDoctor && opt.style.display !== 'none')) {
+      doctorSelect.value = '';
+    }
+  });
 });
 
 // Function to add insurance fields to the form
@@ -237,33 +262,39 @@ function showErrorModal() {
   timeInput.value = '';
 }
 
-// Add form submission handling for AJAX
+// Form submission handler
 appointmentForm.addEventListener('submit', async function(event) {
-  event.preventDefault(); // Prevent default form submission
-
-  // Client-side validation before sending
-  if (!validateForm()) {
-    showErrorModal(translations[currentLanguage].errorTitle, 'Please correct the errors in the form.');
+  event.preventDefault();
+  
+  // Validate the form including the date-time check
+  if (!validateForm() || !validateDateAndTime()) {
+    showErrorModal(translations[currentLanguage].errorTitle || 'Validation Error', 'Please correct the errors in the form.');
     return;
   }
 
   submitBtn.disabled = true; // Disable button to prevent double clicks
   submitLoader.style.display = 'inline-flex'; // Show loader
-  
-  const formData = new FormData(appointmentForm);
+
+  const formData = new FormData(this);
   const patientId = document.getElementById('patientID') ? document.getElementById('patientID').value : null; // Get patientID from hidden input
 
   const appointmentData = {
-    doctorID: formData.get('doctor'),
-    patientID: patientId, // Use the dynamically retrieved patientID
+    firstName: formData.get('firstName'),
+    lastName: formData.get('lastName'),
+    phone: formData.get('phone'),
+    email: formData.get('email'),
+    gender: formData.get('gender'),
+    age: formData.get('age'),
+    department: formData.get('department'),
+    doctor: formData.get('doctor'),
     date: formData.get('date'),
-    startingHour: formData.get('time'),
+    time: formData.get('time'),
     reason: formData.get('reason'),
-    status: 'scheduled' // Default status
+    terms: formData.get('terms') === 'on' // Check if terms checkbox is checked
   };
 
   try {
-    const response = await fetch('/api/appointments', {
+    const response = await fetch('/appointments/book', { // Use the correct endpoint for booking
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -273,7 +304,7 @@ appointmentForm.addEventListener('submit', async function(event) {
 
     const result = await response.json();
 
-    if (response.ok) {
+    if (response.ok && result.success) {
       // Success
       document.getElementById('modalTitle').textContent = translations[currentLanguage].modalTitle;
       document.getElementById('modalMessage').textContent = translations[currentLanguage].modalMessage;

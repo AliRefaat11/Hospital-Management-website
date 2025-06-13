@@ -297,6 +297,33 @@ const departmentController = {
     } catch (error) {
       res.status(500).send('Error loading departments');
     }
+  },
+
+  // Get all doctors in a specific department by department id
+  getDoctorsByDepartmentId: async (req, res) => {
+    try {
+      const departmentId = req.params.id;
+      const department = await Department.findById(departmentId);
+      if (!department) {
+        return res.status(404).json({
+          success: false,
+          message: 'Department not found'
+        });
+      }
+      const doctors = await Doctor.find({ departmentId })
+        .populate('userId', 'FName LName Email PhoneNumber Gender Age')
+        .populate('departmentId', 'departmentName');
+      res.status(200).json({
+        success: true,
+        department: department.departmentName,
+        doctors
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: error.message
+      });
+    }
   }
 };
 

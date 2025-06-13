@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= hospital.name %> - Meet Our Doctors</title>
   <link rel="stylesheet" href="css/home_page.css">
+  <link rel="stylesheet" href="/css/common_footer.css">
   <link rel="icon" href="/images/logo.jpeg" type="image/jpeg">
   <meta name="theme-color" content="#3498db">
 </head>
@@ -18,7 +19,7 @@
         <a href="/about" class="<%= currentPage === 'about' ? 'active' : '' %>">ABOUT US</a>
         <a href="/department/view/all" class="<%= currentPage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
         <a href="/doctors" class="<%= currentPage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
-        <a href="/appointments" class="<%= currentPage === 'appointments' ? 'active' : '' %>">BOOK NOW</a>
+        <a href="/quick-appointment" class="<%= currentPage === 'appointments' ? 'active' : '' %>">BOOK NOW</a>
         <% if (user) { %>
           <div class="user-menu">
             <a href="/profile" class="profile-link">
@@ -44,7 +45,7 @@
     <div class="container">
       <h2><%= hospital.tagline %></h2>
       <p><%= hospital.subTagline %></p>
-      <a href="/appointments" class="btn">Book an Appointment</a>
+      <a href="/quick-appointment" class="btn">Book an Appointment</a>
     </div>
   </section>
 
@@ -112,45 +113,31 @@
   <section class="appointment-cta">
     <div class="container">
       <h3><%= cta.heading %></h3>
-      <a href="/appointments" class="btn"><%= cta.buttonText %></a>
+      <a href="/quick-appointment" class="btn"><%= cta.buttonText %></a>
     </div>
   </section>
 
-  <footer>
-    <div class="footer-container">
-      <div class="footer-column">
-        <h3>Location</h3>
-        <div class="map-container">
-          <img src="/images/location_map_icon.jpg" width="30" height="30" style="border:0;" allowfullscreen="" loading="lazy" alt="Location Map">
-        </div>
-        <p><%= hospital.address %></p>
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-left">
+        <h3>Prime Care</h3>
+        <p>Committed to providing quality healthcare for all.</p>
       </div>
-      <div class="footer-column">
-        <h3>Quick Links</h3>
-        <ul>
-          <% footerLinks.forEach(function(link) { %>
-            <li><a href="<%= link.url %>"><%= link.text %></a></li>
-          <% }); %>
-        </ul>
+      <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Contact Us</a>
       </div>
-      <div class="footer-column">
-        <h3>Contact</h3>
-        <p>
-          <%= hospital.address %><br />
-          <%= hospital.phone %><br />
-          <%= hospital.email %>
-        </p>
-      </div>
-      <div class="footer-column">
-        <h3>Follow Us</h3>
-        <div class="social-icons">
-          <% socialLinks.forEach(function(social) { %>
-            <a href="<%= social.url %>" target="_blank" rel="noopener noreferrer"><%= social.icon %></a>
-          <% }); %>
-        </div>
+      <div class="footer-socials">
+        <a href="#"><i class="fab fa-facebook"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-linkedin"></i></a>
       </div>
     </div>
-    <div class="bottom-bar">&copy; <%= new Date().getFullYear() %> <%= hospital.name %>. All rights reserved.</div>
+    <div class="footer-bottom">
+      <p>&copy; <%= new Date().getFullYear() %> Prime Care. All Rights Reserved.</p>
+    </div>
   </footer>
 
   <script>

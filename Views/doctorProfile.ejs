@@ -3,146 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Book an appointment with <%= doctor.name %>, <%= doctor.specialty %> at <%= doctor.hospital %>, specializing in <%= doctor.specialties.join(', ') %>.">
-    <meta name="keywords" content="<%= doctor.name %>, <%= doctor.specialty %>, <%= doctor.specialties.join(', ') %>, <%= doctor.location %>, <%= doctor.hospital %>">
-    <title><%= doctor.name %> - <%= doctor.hospital %></title>
-    <link rel="stylesheet" href="../public/css/book_appointment.css" />
-    <link rel="stylesheet" href="../public/css/doctor_profile.css" />
+    <title>Dr. <%= doctor.userId.FName %> <%= doctor.userId.LName %> - <%= hospital.name %></title>
+    <link rel="stylesheet" href="/css/doctor_profile.css">
+    <link rel="stylesheet" href="/css/common_footer.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <nav>
         <div class="navbar-container">
-            <a href="#" class="site-name">Prime Care</a>
+            <a href="/" class="site-name">Prime Care</a>
             <div class="navbar-links">
-                <a href="./home_page.html">HOME</a>
-                <a href="./about_us_page.html">ABOUT US</a>
-                <a href="./department_page.html">DEPARTMENTS</a>
-                <a href="./doctors_page.html">DOCTORS</a>
-                <a href="./quick-appointment.html" class="active">BOOK NOW</a>
-                <a href="./login_page.html">Login</a>
-                <a href="./sign_up_page.html" class="signup-btn">Sign Up</a>
+                <a href="/home">HOME</a>
+                <a href="/about">ABOUT US</a>
+                <a href="/departments">DEPARTMENTS</a>
+                <a href="/doctors" class="<%= currentPage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
+                <a href="/quick-appointment">BOOK NOW</a>
+                <% if (user) { %>
+                    <a href="/profile"><%= user.FName %> <%= user.LName %></a>
+                    <a href="/logout" class="signup-btn">Logout</a>
+                <% } else { %>
+                    <a href="/login">Login</a>
+                    <a href="/patient/signup" class="signup-btn">Sign Up</a>
+                <% } %>
             </div>
         </div>
     </nav>
 
-    <main>
-        <div class="container">
-            <div class="profile-container">
-                <div class="profile-sidebar">
-                    <div class="profile-image">
-                        <img src="<%= doctor.profileImage || '../images/account-icon-33.png' %>" alt="<%= doctor.name %>">
-                        <% if (doctor.verified) { %>
-                        <div class="profile-verified"></div>
-                        <% } %>
-                    </div>
-                    
-                    <div class="contact-actions">
-                        <a href="./book-appointment.html?doctor=<%= doctor.id %>" class="btn-appointment">Book Appointment</a>
-                    </div>
-                    
-                    <div class="availability">
-                        <div class="section-title">Availability</div>
-                        <ul>
-                            <% doctor.availability.forEach(schedule => { %>
-                            <li><%= schedule.day %>: <%= schedule.hours %></li>
-                            <% }); %>
-                        </ul>
-                        <% if (doctor.virtualVisits) { %>
-                        <div class="telehealth-badge">Virtual Visits Available</div>
-                        <% } %>
-                    </div>
-                    
-                    <div class="languages-box">
-                        <div class="section-title">Languages</div>
-                        <div class="language-tags">
-                            <% doctor.languages.forEach(language => { %>
-                            <div class="language-tag <%= language.level.toLowerCase() %>">
-                                <%= language.name %>
-                                <span class="language-level">(<%= language.level %>)</span>
-                            </div>
-                            <% }); %>
-                        </div>
-                    </div>
-                    
-                    <div class="contact-info">
-                        <div class="section-title">Contact & Location</div>
-                        <p><strong>Tel:</strong> <%= doctor.contact.phone %></p>
-                        <p><strong>Office:</strong><br>
-                        <%= doctor.contact.office.building %><br>
-                        <%= doctor.contact.office.suite %><br>
-                        <%= doctor.contact.office.campus %></p>
-                    </div>
-                    
-                    <div class="insurance-info">
-                        <div class="section-title">Insurance Accepted</div>
-                        <ul>
-                            <% doctor.insurance.forEach(provider => { %>
-                            <li><%= provider %></li>
-                            <% }); %>
-                        </ul>
-                    </div>
-                </div>
+    <header>
+        <h1 class="page-title">Dr. <%= doctor.userId.FName %> <%= doctor.userId.LName %></h1>
+        <p class="subtitle"><%= doctor.specialization %></p>
+    </header>
+
+    <main class="doctor-profile-container">
+        <div class="profile-card">
+            <div class="profile-image">
+                <img src="<%= doctor.profileImage || '/images/account-icon-33.png' %>" alt="Dr. <%= doctor.userId.FName %> <%= doctor.userId.LName %>">
+                <% if (doctor.verified) { %>
+                <div class="profile-verified"></div>
+                <% } %>
+            </div>
+            <div class="profile-details">
+                <h2>About Dr. <%= doctor.userId.LName %></h2>
+                <p><strong>Specialization:</strong> <%= doctor.specialization %></p>
+                <% if (doctor.departmentId) { %>
+                <p><strong>Department:</strong> <%= doctor.departmentId.name %></p>
+                <% } %>
+                <p><strong>Experience:</strong> <%= doctor.experience || 'N/A' %> years</p>
+                <p><strong>Rating:</strong> <%= doctor.rating || 'N/A' %> <i class="fas fa-star"></i></p>
                 
-                <div class="profile-main">
-                    <div class="main-header">
-                        <h1><%= doctor.name %><% if (doctor.credentials) { %>, <%= doctor.credentials %><% } %></h1>
-                        <p><%= doctor.title %>, <%= doctor.department %></p>
-                    </div>
-                    
-                    <div class="patient-info">
-                        <div>
-                            <div class="value">
-                                <div class="rating">
-                                    <% for (let i = 1; i <= 5; i++) { %>
-                                        <% if (i <= Math.floor(doctor.rating.score)) { %>
-                                            <span>★</span>
-                                        <% } else if (i <= doctor.rating.score) { %>
-                                            <span>☆</span>
-                                        <% } else { %>
-                                            <span>☆</span>
-                                        <% } %>
-                                    <% } %>
-                                </div>
-                            </div>
-                            <div class="label"><%= doctor.rating.score %>/5 (<%= doctor.rating.reviewCount %> Reviews)</div>
-                        </div>
-                        <div>
-                            <div class="value"><%= doctor.experience %>+ Years</div>
-                            <div class="label">Experience</div>
-                        </div>
-                    </div>
-                    
-                    <div class="main-sections">
-                        <div class="section">
-                            <div class="section-title">Specialties & Expertise</div>
-                            <ul class="specialties-list">
-                                <% doctor.specialties.forEach(specialty => { %>
-                                <li><%= specialty %></li>
-                                <% }); %>
-                            </ul>
-                        </div>
-                        
-                        <div class="section">
-                            <div class="section-title">Board Certifications</div>
-                            <ul class="certifications-list">
-                                <% doctor.certifications.forEach(certification => { %>
-                                <li><%= certification %></li>
-                                <% }); %>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="section">
-                        <div class="section-title">About Dr. <%= doctor.lastName || doctor.name.split(' ').pop() %></div>
-                        <p class="about-text">
-                            <%= doctor.about %>
-                        </p>
-                    </div>
+                <hr>
+
+                <h3>Contact Information</h3>
+                <p><i class="fas fa-envelope"></i> <%= doctor.userId.Email %></p>
+                <p><i class="fas fa-phone"></i> <%= doctor.userId.PhoneNumber %></p>
+                <p><strong>Gender:</strong> <%= doctor.userId.Gender %></p>
+                <p><strong>Age:</strong> <%= doctor.userId.Age %></p>
+
+                <% if (doctor.schedule && Array.isArray(doctor.schedule) && doctor.schedule.length > 0) { %>
+                <hr>
+                <h3>Availability</h3>
+                <ul>
+                    <% doctor.schedule.forEach(slot => { %>
+                    <li><%= slot.day %>: <%= slot.startTime %> - <%= slot.endTime %></li>
+                    <% }); %>
+                </ul>
+                <% } %>
+
+                <div class="profile-actions">
+                    <a href="/appointments/book?doctor=<%= doctor._id %>" class="btn book-btn"><i class="fas fa-calendar-alt"></i> Book Appointment</a>
                 </div>
             </div>
         </div>
     </main>
 
-    <script src="../public/javascript/doctor_profile.js"></script>
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-left">
+                <h3>Prime Care</h3>
+                <p>Committed to providing quality healthcare for all.</p>
+            </div>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Contact Us</a>
+            </div>
+            <div class="footer-socials">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; <%= new Date().getFullYear() %> Prime Care. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script src="/javascript/doctor_profile.js"></script>
 </body>
 </html>

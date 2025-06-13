@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= hospital.name %> - Meet Our Doctors</title>
   <link rel="stylesheet" href="/css/doctors_page.css">
+  <link rel="stylesheet" href="/css/common_footer.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="icon" href="/images/logo.jpeg" type="image/jpeg">
 </head>
 
@@ -17,7 +19,7 @@
         <a href="/about" class="<%= currentPage === 'about' ? 'active' : '' %>">ABOUT US</a>
         <a href="/department/view/all" class="<%= currentPage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
         <a href="/doctors" class="<%= currentPage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
-        <a href="/appointments" class="<%= currentPage === 'appointments' ? 'active' : '' %>">BOOK NOW</a>
+        <a href="/quick-appointment" class="<%= currentPage === 'appointments' ? 'active' : '' %>">BOOK NOW</a>
         <% if (user) { %>
           <div class="user-menu">
             <a href="/profile" class="profile-link">
@@ -43,67 +45,69 @@
     <h1><%= pageContent.heroTitle %></h1>
     <p><%= pageContent.heroSubtitle %></p>
   </section>
-  
-  <form action="/doctors/search" method="GET" class="search-form">
-    <input type="search" id="search" name="query" placeholder="Search doctors..." value="<%= searchQuery || '' %>" />
-    <button type="submit"><i class="fa fa-search"></i></button>
-  </form>
+
+  <% var noResults = typeof noResults !== 'undefined' ? noResults : false; %>
+  <% var searchQuery = typeof searchQuery !== 'undefined' ? searchQuery : ''; %>
 
   <section class="doctors" id="doctors">
-    <h2>Our Doctors</h2>
+    <div class="doctors-header">
+      <form action="/doctors/search" method="GET" class="search-form">
+        <input type="search" id="search" name="query" placeholder="Search doctors..." value="<%= searchQuery || '' %>" />
+        <button type="submit"><i class="fa fa-search"></i></button>
+      </form>
+      <h2>Our Doctors</h2>
+    </div>
     <div class="doctor-list" id="doctor-list">
+      <% if (noResults && searchQuery) { %>
+        <div class="no-results-message">
+          <i class="fa fa-search"></i> No doctors found for "<%= searchQuery %>".
+        </div>
+      <% } %>
       <% doctors.forEach(function(doctor) { %>
-        <div class="doctor-card" data-name="<%= doctor.name %>" data-specialization="<%= doctor.specialization %>">
+        <div class="doctor-card" data-name="<%= doctor.userId.FName %> <%= doctor.userId.LName %>" data-specialization="<%= doctor.specialization %>">
           <div class="doctor-img-container">
-            <img src="<%= doctor.profileImage || '/images/account-icon-33.png' %>" alt="<%= doctor.name %>" class="doctor-img">
+            <img src="<%= doctor.profileImage || '/images/account-icon-33.png' %>" alt="<%= doctor.userId.FName %> <%= doctor.userId.LName %>" class="doctor-img">
           </div>
           <h3>
-            <a href="/doctors/<%= doctor.id %>"><%= doctor.name %></a>
+            <a href="/doctors/<%= doctor._id %>">Dr. <%= doctor.userId.FName %> <%= doctor.userId.LName %></a>
           </h3>
           <p><%= doctor.specialization %></p>
+          <% if (doctor.departmentId) { %>
+            <p class="department"><%= doctor.departmentId.name %></p>
+          <% } %>
+          <div class="doctor-info">
+            <p><i class="fas fa-phone"></i> <%= doctor.userId.PhoneNumber %></p>
+            <p><i class="fas fa-envelope"></i> <%= doctor.userId.Email %></p>
+          </div>
           <div class="card-actions">
-            <a class="btn book-btn" href="/appointments/book?doctor=<%= doctor.id %>">Book Appointment</a>
+            <a class="btn book-btn" href="/appointments/book?doctor=<%= doctor._id %>">Book Appointment</a>
           </div>
         </div>
       <% }); %>
     </div>
   </section>
 
-  <footer>
-    <div class="footer-container">
-      <div class="footer-column">
-        <h3>Location</h3>
-        <div class="map-container">
-          <img src="/images/location_map_icon.jpg" width="30" height="30" style="border:0;" allowfullscreen="" loading="lazy" alt="Location Map">
-        </div>
-        <p><%= hospital.address %></p>
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-left">
+        <h3>Prime Care</h3>
+        <p>Committed to providing quality healthcare for all.</p>
       </div>
-      <div class="footer-column">
-        <h3>Quick Links</h3>
-        <ul>
-          <% footerLinks.forEach(function(link) { %>
-            <li><a href="<%= link.url %>"><%= link.text %></a></li>
-          <% }); %>
-        </ul>
+      <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Contact Us</a>
       </div>
-      <div class="footer-column">
-        <h3>Contact</h3>
-        <p>
-          <%= hospital.address %><br />
-          <%= hospital.phone %><br />
-          <%= hospital.email %>
-        </p>
-      </div>
-      <div class="footer-column">
-        <h3>Follow Us</h3>
-        <div class="social-icons">
-          <% socialLinks.forEach(function(social) { %>
-            <a href="<%= social.url %>" target="_blank" rel="noopener noreferrer"><%= social.icon %></a>
-          <% }); %>
-        </div>
+      <div class="footer-socials">
+        <a href="#"><i class="fab fa-facebook"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-linkedin"></i></a>
       </div>
     </div>
-    <div class="bottom-bar">&copy; <%= new Date().getFullYear() %> <%= hospital.name %>. All rights reserved.</div>
+    <div class="footer-bottom">
+      <p>&copy; <%= new Date().getFullYear() %> Prime Care. All Rights Reserved.</p>
+    </div>
   </footer>
 
   <script>

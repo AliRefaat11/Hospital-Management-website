@@ -1,4 +1,6 @@
 const Appointment = require('../Models/appointmentModel');
+const Doctor = require('../Models/doctorModel');
+const Department = require('../Models/departmentModel');
 
 const appointmentController = {
 
@@ -356,6 +358,43 @@ const appointmentController = {
         message: 'Failed to retrieve appointments',
         error: error.message
       });
+    }
+  },
+
+  // Render booking page
+  renderBookingPage: async (req, res) => {
+    try {
+      const { doctor } = req.query;
+      let selectedDoctor = null;
+      
+      if (doctor) {
+        selectedDoctor = await Doctor.findById(doctor)
+          .populate('userId', 'FName LName Email PhoneNumber Gender Age')
+          .populate('departmentId', 'name');
+      }
+
+      const doctors = await Doctor.find()
+        .populate('userId', 'FName LName Email PhoneNumber Gender Age')
+        .populate('departmentId', 'name');
+
+      const departments = await Department.find();
+
+      res.render('bookAppointment', {
+        selectedDoctor,
+        doctors,
+        departments,
+        user: req.user || null,
+        hospital: {
+          name: "PrimeCare",
+          address: "123 Health St, Wellness City",
+          phone: "+1234567890",
+          email: "info@primecare.com"
+        },
+        currentPage: 'appointments'
+      });
+    } catch (error) {
+      console.error('Error rendering booking page:', error);
+      res.status(500).send('Error loading booking page');
     }
   }
 };
