@@ -13,65 +13,99 @@
         <div class="navbar-container">
             <a href="/" class="site-name">Prime Care</a>
             <div class="navbar-links">
-                <a href="/home">HOME</a>
-                <a href="/about">ABOUT US</a>
-                <a href="/departments">DEPARTMENTS</a>
+                <a href="/" class="<%= currentPage === 'home' ? 'active' : '' %>">HOME</a>
+                <a href="/User/about" class="<%= currentPage === 'about' ? 'active' : '' %>">ABOUT US</a>
+                <a href="/Department/view" class="<%= currentPage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
                 <a href="/doctors" class="<%= currentPage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
-                <a href="/quick-appointment">BOOK NOW</a>
+                <a href="/appointments/quick-appointment" class="<%= currentPage === 'appointments' ? 'active' : '' %>">BOOK NOW</a>
                 <% if (user) { %>
-                    <a href="/profile"><%= user.FName %> <%= user.LName %></a>
-                    <a href="/logout" class="signup-btn">Logout</a>
+                    <a href="/User/profile"><%= user.FName %> <%= user.LName %></a>
+                    <a href="/User/logout" class="signup-btn">Logout</a>
                 <% } else { %>
-                    <a href="/login">Login</a>
-                    <a href="/patient/signup" class="signup-btn">Sign Up</a>
+                    <a href="/User/login" class="<%= currentPage === 'login' ? 'active' : '' %>">Login</a>
+                    <a href="/Patient/signup" class="signup-btn">Sign Up</a>
                 <% } %>
             </div>
         </div>
     </nav>
 
-    <header>
-        <h1 class="page-title">Dr. <%= doctor.userId.FName %> <%= doctor.userId.LName %></h1>
-        <p class="subtitle"><%= doctor.specialization %></p>
-    </header>
-
     <main class="doctor-profile-container">
-        <div class="profile-card">
+        <div class="profile-sidebar">
             <div class="profile-image">
                 <img src="<%= doctor.profileImage || '/images/account-icon-33.png' %>" alt="Dr. <%= doctor.userId.FName %> <%= doctor.userId.LName %>">
                 <% if (doctor.verified) { %>
                 <div class="profile-verified"></div>
                 <% } %>
             </div>
-            <div class="profile-details">
-                <h2>About Dr. <%= doctor.userId.LName %></h2>
-                <p><strong>Specialization:</strong> <%= doctor.specialization %></p>
-                <% if (doctor.departmentId) { %>
-                <p><strong>Department:</strong> <%= doctor.departmentId.name %></p>
-                <% } %>
-                <p><strong>Experience:</strong> <%= doctor.experience || 'N/A' %> years</p>
-                <p><strong>Rating:</strong> <%= doctor.rating || 'N/A' %> <i class="fas fa-star"></i></p>
-                
-                <hr>
+            <div class="contact-actions">
+                <a class="btn book-btn" href="/appointments/book?doctor=<%= doctor._id %>">Book Appointment</a>
+            </div>
 
-                <h3>Contact Information</h3>
-                <p><i class="fas fa-envelope"></i> <%= doctor.userId.Email %></p>
-                <p><i class="fas fa-phone"></i> <%= doctor.userId.PhoneNumber %></p>
-                <p><strong>Gender:</strong> <%= doctor.userId.Gender %></p>
-                <p><strong>Age:</strong> <%= doctor.userId.Age %></p>
-
+            <div class="availability contact-info">
+                <h3 class="section-title">Availability</h3>
                 <% if (doctor.schedule && Array.isArray(doctor.schedule) && doctor.schedule.length > 0) { %>
-                <hr>
-                <h3>Availability</h3>
                 <ul>
                     <% doctor.schedule.forEach(slot => { %>
                     <li><%= slot.day %>: <%= slot.startTime %> - <%= slot.endTime %></li>
                     <% }); %>
                 </ul>
+                <% } else { %>
+                    <p>No availability information.</p>
                 <% } %>
+                <span class="telehealth-badge">Virtual Visits Available</span>
+            </div>
 
-                <div class="profile-actions">
-                    <a href="/appointments/book?doctor=<%= doctor._id %>" class="btn book-btn"><i class="fas fa-calendar-alt"></i> Book Appointment</a>
+            <div class="languages-box contact-info">
+                <h3 class="section-title">Languages</h3>
+                <div class="language-tags">
+                    <span class="language-tag">English <span class="language-level">(Native)</span></span>
+                    <span class="language-tag fluent">Mandarin <span class="language-level">(Fluent)</span></span>
                 </div>
+            </div>
+        </div>
+
+        <div class="profile-main">
+            <div class="main-header">
+                <h1 class="doctor-name">Dr. <%= doctor.userId.FName %> <%= doctor.userId.LName %>, MD, PhD</h1>
+                <p class="doctor-title"><%= doctor.specialization %>, Department of Neurological Sciences</p>
+                <div class="rating-experience">
+                    <div class="doctor-rating">
+                        <% for(let i = 0; i < Math.floor(doctor.rating || 0); i++) { %><i class="fas fa-star"></i><% } %>
+                        <% if (doctor.rating % 1 !== 0) { %><i class="fas fa-star-half-alt"></i><% } %>
+                        <span><%= (doctor.rating || 'N/A') %>/5 (<%= doctor.reviewsCount || '--' %> Reviews)</span>
+                    </div>
+                    <p class="doctor-experience"><%= doctor.experience || 'N/A' %>+ Years Experience</p>
+                </div>
+            </div>
+
+            <div class="main-sections">
+                <div class="section">
+                    <h2 class="section-title">Specialties & Expertise</h2>
+                    <ul class="specialties-list">
+                        <li>Movement Disorders & Parkinson's Disease</li>
+                        <li>Neuroimaging & Brain Network Analysis</li>
+                        <li>Deep Brain Stimulation</li>
+                        <li>Clinical Research in Neurodegenerative Disorders</li>
+                    </ul>
+                </div>
+                <div class="section">
+                    <h2 class="section-title">Board Certifications</h2>
+                    <ul class="certifications-list">
+                        <li>American Board of Psychiatry and Neurology</li>
+                        <li>Subspecialty Certification in Movement Disorders</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">About Dr. <%= doctor.userId.LName %></h2>
+                <p class="about-text">
+                    <% if (doctor.bio) { %>
+                        <%= doctor.bio %>
+                    <% } else { %>
+                        Dr. <%= doctor.userId.FName %> <%= doctor.userId.LName %> is a dedicated medical professional committed to providing exceptional patient care.
+                    <% } %>
+                </p>
             </div>
         </div>
     </main>

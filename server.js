@@ -5,6 +5,7 @@ const express = require('express');
 const path = require('path');
 const { auth } = require('./middleware/authMiddleware');
 const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
 const appointmentController = require('./controllers/appointmentController');
 const cookieParser = require('cookie-parser');
 
@@ -25,11 +26,30 @@ const InsurRouter = require('./Routes/insuranceRouter');
 const MedRouter = require('./Routes/medicalreportRouter');
 const TreatRouter = require('./Routes/treatmentplanRouter');
 
-app.set('views', 'Views');
-app.set('view engine', 'ejs');
+// View engine setup
 app.set('views', path.join(__dirname, 'Views'));
+app.set('view engine', 'ejs');
 
+// Middleware
 app.use(express.static('public'));
+app.use(cookieParser());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Request logging middleware
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.url}`);
+    if (req.method === 'POST') {
+        console.log('Request body:', req.body);
+    }
+    next();
+});
+
+// Removed global auth middleware - auth should be applied within specific routers
+// app.use(auth); // THIS LINE WAS POTENTIALLY CAUSING ISSUES, REMOVED
+
+// Home page route
 
 const Doctor = require('./Models/doctorModel');
 const User = require('./Models/userModel');
@@ -112,8 +132,8 @@ app.get('/', async (req, res) => {
 
         const footerLinks = [
             { url: "/", text: "Home" },
-            { url: "/about", text: "About Us" },
-            { url: "/departments", text: "Departments" },
+            { url: "/User/about", text: "About Us" },
+            { url: "/Department/view", text: "Departments" },
             { url: "/doctors", text: "Doctors" },
             { url: "/appointments", text: "Book Appointment" }
         ];
@@ -164,7 +184,6 @@ app.get('/', async (req, res) => {
                 user = await User.findById(decoded.id).select('-Password');
             }
         } catch (error) {
-            // If token is invalid, just continue with user as null
             console.log('Token verification failed:', error.message);
         }
 
