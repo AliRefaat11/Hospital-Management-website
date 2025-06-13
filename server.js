@@ -70,11 +70,6 @@ app.get('/', async (req, res) => {
                 description: "24/7 emergency medical services"
             },
             {
-                name: "Outpatient Services",
-                icon: "/images/istockphoto-1330046035-612x612.jpg",
-                description: "Comprehensive outpatient care"
-            },
-            {
                 name: "Radiology",
                 icon: "/images/Neurology_Icon.jpg",
                 description: "Advanced imaging services"

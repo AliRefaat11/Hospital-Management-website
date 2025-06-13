@@ -1,7 +1,11 @@
 const express = require("express");
 const UserRouter = express.Router();
 const UserController = require("../Controllers/userController");
-const authMiddleware = require("../middleware/authMiddleware");
+const { auth, allowedTo } = require("../middleware/authMiddleware");
+const jwt = require('jsonwebtoken');
+const User = require('../Models/userModel');
+const Patient = require('../Models/patientModel');
+const Doctor = require('../Models/doctorModel');
 
 UserRouter.post("/signup", UserController.create);
 UserRouter.post("/login", UserController.login);
@@ -143,8 +147,8 @@ UserRouter.patch("/profile/password", UserController.updatePassword);
 UserRouter.use(allowedTo('Admin')); // Apply admin role check to all routes below
 UserRouter.get("/", UserController.getAll);
 UserRouter.get("/:id", UserController.getById);
-UserRouter.patch("/:id", validateRequest(updateValidation), UserController.update);
+UserRouter.patch("/:id", UserController.update);
 UserRouter.delete("/:id", UserController.deleteById);
-UserRouter.patch("/:id/password", validateRequest(updatePasswordValidation), UserController.updatePassword);
+UserRouter.patch("/:id/password", UserController.updatePassword);
 
 module.exports = UserRouter;
