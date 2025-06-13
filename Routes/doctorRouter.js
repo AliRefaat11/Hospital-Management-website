@@ -1,6 +1,7 @@
 const express = require("express");
 const DrRouter = express.Router();
 const DocController = require("../Controllers/doctorController");
+const Department = require('../Models/departmentModel');
 
 DrRouter.get("/", DocController.getAll);
 DrRouter.get("/search", DocController.search);

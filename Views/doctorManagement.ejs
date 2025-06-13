@@ -286,6 +286,24 @@
                             </select>
                             <span class="validation-message">Please select an employment type</span>
                         </div>
+                        <div class="form-group full-width">
+                            <label>Schedule</label>
+                            <div id="scheduleInputs">
+                                <!-- Schedule inputs will be added here by JavaScript -->
+                            </div>
+                            <div class="schedule-help-text">
+                                <p>Add at least two schedule slots. Each slot requires:</p>
+                                <ul>
+                                    <li>Day of the week</li>
+                                    <li>Start time</li>
+                                    <li>End time</li>
+                                    <li>Buffer time (minutes between appointments, default: 15)</li>
+                                    <li>Slot duration (minutes per appointment, default: 30)</li>
+                                </ul>
+                            </div>
+                            <button type="button" id="addScheduleSlot" class="btn btn-secondary">Add Schedule Slot</button>
+                            <span id="scheduleErrorMessage" class="validation-message" style="display: none;"></span>
+                        </div>
                     </div>
                     <div class="form-actions">
                         <button type="button" class="btn btn-outline" id="cancelBtn">Cancel</button>

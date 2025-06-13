@@ -5,11 +5,8 @@ const express = require('express');
 const path = require('path');
 const { auth } = require('./middleware/authMiddleware');
 const jwt = require('jsonwebtoken');
-<<<<<<< HEAD
 const appointmentController = require('./controllers/appointmentController');
-=======
 const cookieParser = require('cookie-parser');
->>>>>>> refaat
 
 const app = express();
 
@@ -32,11 +29,8 @@ app.use(cookieParser());
 
 const Doctor = require('./Models/doctorModel');
 const User = require('./Models/userModel');
-<<<<<<< HEAD
 const Department = require('./Models/departmentModel');
-=======
 const Patient = require('./Models/patientModel');
->>>>>>> refaat
 
 app.get('/', async (req, res) => {
     try {
@@ -447,12 +441,9 @@ app.get('/doctors', async (req, res) => {
         const footerLinks = [
             { url: "/", text: "Home" },
             { url: "/about", text: "About Us" },
-<<<<<<< HEAD
             { url: "/departments", text: "Departments" },
             { url: "/doctors", text: "Doctors" },
-=======
             { url: "/doctors-page", text: "Doctors" },
->>>>>>> refaat
             { url: "/appointments", text: "Book Appointment" }
         ];
         const socialLinks = [
@@ -602,7 +593,6 @@ app.get('/patient/signup', (req, res) => {
     });
 });
 
-<<<<<<< HEAD
 app.get('/appointments', async (req, res) => {
     // This is the existing /appointments route handling.
     // No changes here.
@@ -630,28 +620,9 @@ app.get('/quick-appointment', async (req, res) => {
 
 app.use('/api/doctors', DrRouter);
 
-app.get('/profile', auth, async (req, res) => {
-    try {
-        const user = req.user; // User object should be available from auth middleware
-
-        if (!user) {
-            return res.redirect('/login'); // Redirect to login if user not found (shouldn't happen with auth middleware)
-        }
-
-        res.render('userProfile', { user, currentPage: 'profile' });
-    } catch (error) {
-        console.error("Error rendering user profile page:", error);
-        res.status(500).send("Error loading user profile page.");
-    }
-});
-
-app.get('/logout', (req, res) => {
-    res.clearCookie('token');
-    res.redirect('/login');
-=======
 app.get('/profile', auth, async (req, res, next) => {
   try {
-    const user = req.user;
+    const user = req.user; // User object should be available from auth middleware
     const patient = await Patient.findOne({ userId: user._id });
     if (!patient) {
       return res.status(404).send('Patient not found');
@@ -683,7 +654,6 @@ app.get('/profile', auth, async (req, res, next) => {
 app.get('/auth/logout', (req, res) => {
   res.clearCookie('token');
   res.redirect('/login');
->>>>>>> refaat
 });
 
 const hostname = "127.0.0.1";

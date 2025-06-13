@@ -4,6 +4,7 @@ const Department = require("../Models/departmentModel");
 const bcrypt = require('bcryptjs');
 const { createToken } = require("../middleware/authMiddleware");
 const jwt = require('jsonwebtoken');
+const Appointment = require("../Models/appointmentModel");
 
 const getAll = async (req, res) => {
     try {
@@ -69,58 +70,46 @@ const getById = async (req, res) => {
 };
 
 const create = async (req, res) => {
-    const {FName, LName, Email, Password, Age, PhoneNumber, Gender, specialization, rating, schedule} = req.body;
     try {
-        // Check if user already exists
-        const existingUser = await User.findOne({ 
-            $or: [
-                { Email: Email },
-                { PhoneNumber: PhoneNumber }
-            ]
-        });
-        
-        if (existingUser) {
-            return res.status(400).json({
-                status: 'fail',
-                message: 'User with this email or phone number already exists'
-            });
-        }
-        // Find department by specialization (case-insensitive)
-        const department = await Department.findOne({ departmentName: { $regex: specialization, $options: 'i' } });
-        if (!department) {
-            return res.status(400).json({
-                status: 'fail',
-                message: `No department found for specialization: ${specialization}`
-            });
-        }
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(Password, salt);
+        const { FName, LName, Email, Password, PhoneNumber, Gender, Age, departmentId, specialization, rating } = req.body;
+
+        // Create user
+        const hashedPassword = await bcrypt.hash(Password, 12);
         const newUser = await User.create({
             FName,
             LName,
             Email,
             Password: hashedPassword,
-            Age,
             PhoneNumber,
             Gender,
-            role: "Doctor"
+            Age,
+            role: 'Doctor'
         });
+
+        // Get department name
+        const department = await Department.findById(departmentId);
+        if (!department) {
+            await User.findByIdAndDelete(newUser._id);
+            return res.status(400).json({
+                status: 'fail',
+                message: 'Department not found'
+            });
+        }
+
+        // Create doctor
         const newDoctor = await Doctor.create({
             userId: newUser._id,
-            departmentId: department._id,
+            departmentId,
             specialization,
             rating,
-            schedule
+            departmentName: department.name
         });
-        const token = createToken(newUser._id);
-        const userResponse = newUser.toObject();
-        delete userResponse.Password;
+
         res.status(201).json({
             status: 'success',
-            token,
             data: {
-                user: userResponse,
-                doctor: newDoctor
+                doctor: newDoctor,
+                user: newUser
             }
         });
     } catch (error) {

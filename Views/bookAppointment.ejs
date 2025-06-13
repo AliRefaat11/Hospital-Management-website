@@ -90,11 +90,7 @@
           <div class="form-group half">
             <label for="appointmentTime" id="labelTime">Preferred Time</label>
             <select id="appointmentTime" name="time" required>
-              <option value="" disabled selected>Select Time</option>
-              <% const timeSlots = ['09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00']; %>
-              <% timeSlots.forEach(time => { %>
-                <option value="<%= time %>"><%= time %></option>
-              <% }); %>
+              <option value="" disabled selected>Select Preferred Time</option>
             </select>
           </div>
         </div>

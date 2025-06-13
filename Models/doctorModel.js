@@ -25,19 +25,14 @@ const doctorSchema = new mongoose.Schema(
             max:5,
             required: true
         },
-        schedule: [
-            {
-                day: { type: String, enum: ["saturday","sunday","monday","tuesday","wednesday","thursday"], required: true },
-                startTime: { type: String, required: true }, // e.g., "09:00"
-                endTime: { type: String, required: true }    // e.g., "17:00"
-            }
-        ],
         departmentName: {
             type: String,
             trim: true
         }
+    },
+    {
+        timestamps: true
     }
 );
 
-const Doctor = mongoose.model("Doctor",doctorSchema);
-module.exports = Doctor;
+module.exports = mongoose.model('Doctor', doctorSchema);
