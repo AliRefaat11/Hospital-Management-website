@@ -9,6 +9,18 @@ const appointmentController = {
     try {
       const { doctorID, patientID, date, startingHour, status, reason } = req.body;
 
+      const existing = await Appointment.findOne({
+        doctorID,
+        date: new Date(date),
+        startingHour
+      });
+      if (existing) {
+        return res.status(409).json({
+          success: false,
+          message: 'This doctor already has an appointment at this time.'
+        });
+      }
+
       // Create new appointment
       const appointment = new Appointment({
         doctorID,

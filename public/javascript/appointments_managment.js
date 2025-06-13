@@ -23,6 +23,7 @@ class AppointmentManagement {
     init() {
         this.setupEventListeners();
         this.loadAppointmentData();
+        this.populateDropdowns();
         this.updateStatistics();
         this.updateNextAppointments();
         
@@ -91,15 +92,54 @@ class AppointmentManagement {
     }
 
     loadAppointmentData() {
-        const savedData = localStorage.getItem('appointmentManagement');
-        if (savedData) {
-            this.appointmentData = JSON.parse(savedData);
-        } else {
-            this.appointmentData = this.getSampleData();
-            this.saveAppointmentData();
-        }
-        this.filteredData = [...this.appointmentData];
-        this.renderAppointmentTable();
+        fetch('/api/appointments') // Changed from /Appointment to /api/appointments
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(errorData => {
+                        throw new Error(errorData.message || 'Failed to fetch appointments');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Map backend _id to frontend id, and populate doctor/patient names
+                this.appointmentData = data.data.map(appointment => ({
+                    id: appointment._id,
+                    doctorID: appointment.doctorID._id, // Store actual ObjectIDs
+                    patientID: appointment.patientID._id,
+                    patientName: appointment.patientID.name || 'N/A',
+                    doctorName: appointment.doctorID.name || 'N/A',
+                    date: new Date(appointment.date).toISOString().split('T')[0],
+                    time: appointment.startingHour, // Assuming startingHour is HH:MM string
+                    department: appointment.doctorID.departmentId ? appointment.doctorID.departmentId.name : 'N/A',
+                    type: appointment.reason, // Re-purpose 'reason' as 'type' or add a new field if needed
+                    status: appointment.status,
+                    notes: appointment.reason || 'No notes',
+                    dateCreated: appointment.dateCreated || new Date().toISOString().split('T')[0]
+                }));
+                this.saveAppointmentData(); // Keep local storage updated as a fallback/cache
+                this.applyFilters();
+                this.updateStatistics();
+                this.updateNextAppointments();
+                this.renderAppointmentTable();
+            })
+            .catch(error => {
+                console.error('Error loading appointment data:', error);
+                this.showNotification(`Failed to load appointments: ${error.message}`, 'error');
+                // Fallback to local storage if API fails
+                const savedData = localStorage.getItem('appointmentManagement');
+                if (savedData) {
+                    this.appointmentData = JSON.parse(savedData);
+                    this.applyFilters();
+                    this.updateStatistics();
+                    this.updateNextAppointments();
+                    this.renderAppointmentTable();
+                } else {
+                    this.appointmentData = []; // No data if both fail
+                    this.showNotification('No appointment data available.', 'info');
+                    this.renderAppointmentTable(); // Render empty table
+                }
+            });
     }
 
     saveAppointmentData() {
@@ -416,31 +456,41 @@ class AppointmentManagement {
     }
 
     openAddAppointmentModal() {
-        this.currentEditingId = null;
+        // Reset form for new appointment
         document.getElementById('modalTitle').textContent = 'Schedule New Appointment';
-        document.getElementById('appointmentId').value = this.generateAppointmentId();
         document.getElementById('appointmentForm').reset();
-        
-        const now = new Date();
-        const nextHour = new Date(now.getTime() + 60 * 60 * 1000);
-        document.getElementById('appointmentTime').value = nextHour.toTimeString().slice(0, 5);
-        
+        document.getElementById('appointmentId').value = this.generateAppointmentId(); // Use local ID for now, backend generates MongoDB ID
+        this.currentEditingId = null;
+        document.getElementById('appointmentForm').dataset.hasAttemptedSubmit = 'false'; // Reset validation state
+
+        // Reset validation messages
+        document.querySelectorAll('.validation-message').forEach(span => span.style.display = 'none');
+        document.querySelectorAll('[required]').forEach(input => input.classList.remove('invalid'));
+
+        // Ensure dropdowns are populated (in case they weren't on initial load)
+        this.populateDropdowns(null, null, null); // Pass nulls for initial population
+
         this.showModal(this.appointmentModal);
     }
 
     editAppointment(id) {
+        this.currentEditingId = id;
         const appointment = this.appointmentData.find(a => a.id === id);
         if (!appointment) return;
 
-        this.currentEditingId = id;
         document.getElementById('modalTitle').textContent = 'Edit Appointment';
-        
         document.getElementById('appointmentId').value = appointment.id;
-        document.getElementById('patientName').value = appointment.patientName;
-        document.getElementById('doctorName').value = appointment.doctorName;
+        
+        // Populate dropdowns and then select the correct values
+        this.populateDropdowns(appointment.doctorID, appointment.patientID, appointment.department).then(() => {
+            // Use the actual MongoDB IDs for selection
+            document.getElementById('patientName').value = appointment.patientID;
+            document.getElementById('doctorName').value = appointment.doctorID;
+            document.getElementById('appointmentDepartment').value = appointment.department;
+        });
+
         document.getElementById('appointmentDate').value = appointment.date;
         document.getElementById('appointmentTime').value = appointment.time;
-        document.getElementById('appointmentDepartment').value = appointment.department;
         document.getElementById('appointmentType').value = appointment.type;
         document.getElementById('appointmentNotes').value = appointment.notes || '';
 
@@ -473,42 +523,77 @@ class AppointmentManagement {
     }
 
     markAsCompleted(id) {
-        const appointment = this.appointmentData.find(a => a.id === id);
-        if (appointment) {
-            appointment.status = 'completed';
-            this.saveAppointmentData();
-            this.applyFilters();
-            this.updateStatistics();
-            this.updateNextAppointments();
-            this.closeDetailsModal();
-            this.showNotification(`Appointment for ${appointment.patientName} marked as completed!`, 'success');
-        }
+        fetch(`/api/appointments/${id}/status`, { // Changed from /Appointment to /api/appointments
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(errorData => {
+                    throw new Error(errorData.message || 'Failed to mark appointment as completed');
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            const appointment = this.appointmentData.find(a => a.id === id);
+            if (appointment) {
+                appointment.status = 'completed';
+                this.saveAppointmentData();
+                this.applyFilters();
+                this.updateStatistics();
+                this.updateNextAppointments();
+                this.closeDetailsModal();
+                this.showNotification(`Appointment for ${appointment.patientName} marked as completed!`, 'success');
+            }
+        })
+        .catch(error => {
+            console.error('Error marking appointment as completed:', error);
+            this.showNotification(`Failed to mark appointment as completed: ${error.message}`, 'error');
+        });
     }
 
     deleteAppointment(id) {
         this.currentDeleteId = id;
-        const appointment = this.appointmentData.find(a => a.id === id);
-        
-        const modalContent = this.deleteConfirmModal.querySelector('p');
-        modalContent.innerHTML = `Are you sure you want to cancel the appointment for <strong>${appointment.patientName}</strong> with <strong>${appointment.doctorName}</strong>?`;
-        
         this.showModal(this.deleteConfirmModal);
     }
 
     confirmDelete() {
         if (!this.currentDeleteId) return;
         
-        const appointmentIndex = this.appointmentData.findIndex(a => a.id === this.currentDeleteId);
-        if (appointmentIndex !== -1) {
-            this.appointmentData.splice(appointmentIndex, 1);
-            this.saveAppointmentData();
-            this.applyFilters();
-            this.updateStatistics();
-            this.updateNextAppointments();
-            this.showNotification('Appointment cancelled successfully!', 'success');
-        }
-        
-        this.closeDeleteModal();
+        fetch(`/api/appointments/${this.currentDeleteId}`, { // Changed from /Appointment to /api/appointments
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(errorData => {
+                    throw new Error(errorData.message || 'Failed to delete appointment');
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            const appointmentIndex = this.appointmentData.findIndex(a => a.id === this.currentDeleteId);
+            if (appointmentIndex !== -1) {
+                this.appointmentData.splice(appointmentIndex, 1);
+                this.saveAppointmentData();
+                this.applyFilters();
+                this.updateStatistics();
+                this.updateNextAppointments();
+                this.showNotification('Appointment cancelled successfully!', 'success');
+            }
+            this.closeDeleteModal();
+        })
+        .catch(error => {
+            console.error('Error deleting appointment:', error);
+            this.showNotification(`Failed to delete appointment: ${error.message}`, 'error');
+            this.closeDeleteModal();
+        });
     }
 
     showModal(modal) {
@@ -545,35 +630,51 @@ class AppointmentManagement {
     handleFormSubmission(e) {
         e.preventDefault();
         
+        const form = e.target;
+        const submitBtn = document.getElementById('submitBtn');
+        const submitLoader = document.getElementById('submitLoader');
+        
+        submitBtn.style.display = 'none';
+        submitLoader.style.display = 'inline-flex'; // Show loader
+
+        const formData = new FormData(form);
         const appointmentData = {
-            id: document.getElementById('appointmentId').value,
-            patientName: document.getElementById('patientName').value,
-            doctorName: document.getElementById('doctorName').value,
-            date: document.getElementById('appointmentDate').value,
-            time: document.getElementById('appointmentTime').value,
-            department: document.getElementById('appointmentDepartment').value,
-            type: document.getElementById('appointmentType').value,
-            status: 'scheduled',
-            notes: document.getElementById('appointmentNotes').value || '',
-            dateCreated: this.currentEditingId ? 
-                this.appointmentData.find(a => a.id === this.currentEditingId).dateCreated :
-                new Date().toISOString().split('T')[0]
+            doctorID: formData.get('doctor'),
+            patientID: '<%= user._id %>', // This needs to be dynamically set from the logged-in user
+            date: formData.get('date'),
+            startingHour: formData.get('time'),
+            reason: formData.get('reason'),
+            status: 'scheduled' // Default status
         };
+        
+        // You might need to dynamically get patientID and doctorID from your EJS context or a hidden input
+        // For now, assuming patientID is available from `user` object in EJS
+        // Ensure the doctorID is correctly retrieved from the form
 
-        if (this.currentEditingId) {
-            const index = this.appointmentData.findIndex(a => a.id === this.currentEditingId);
-            this.appointmentData[index] = appointmentData;
-            this.showNotification('Appointment updated successfully!', 'success');
-        } else {
-            this.appointmentData.push(appointmentData);
-            this.showNotification('Appointment scheduled successfully!', 'success');
-        }
-
-        this.saveAppointmentData();
-        this.applyFilters();
-        this.updateStatistics();
-        this.updateNextAppointments();
-        this.closeAppointmentModal();
+        fetch('/api/appointments', { // Changed from /Appointment to /api/appointments
+            method: this.currentEditingId ? 'PUT' : 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(appointmentData)
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(errorData => {
+                    throw new Error(errorData.message || 'Failed to save appointment');
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            this.showNotification(`Appointment ${this.currentEditingId ? 'updated' : 'scheduled'} successfully!`, 'success');
+            this.closeAppointmentModal();
+            this.loadAppointmentData(); // Reload all data from backend to ensure consistency
+        })
+        .catch(error => {
+            console.error('Error saving appointment:', error);
+            this.showNotification(`Failed to save appointment: ${error.message}`, 'error');
+        });
     }
 
     generateAppointmentId() {
@@ -631,6 +732,67 @@ class AppointmentManagement {
             info: 'Information'
         };
         return titles[type] || 'Notification';
+    }
+
+    async populateDropdowns(selectedDoctorId = null, selectedPatientId = null, selectedDepartmentName = null) {
+        try {
+            // Fetch Doctors
+            const doctorsResponse = await fetch('/Doctor'); // Assuming /Doctor is your endpoint
+            const doctorsData = await doctorsResponse.json();
+            const doctorSelect = document.getElementById('doctorName');
+            doctorSelect.innerHTML = '<option value="">Select Doctor</option>'; // Clear previous options
+            if (doctorsData.data) {
+                doctorsData.data.forEach(doctor => {
+                    const option = document.createElement('option');
+                    option.value = doctor._id;
+                    option.textContent = `${doctor.name} - ${doctor.specialization || 'N/A'}`;
+                    option.dataset.id = doctor._id; // Store MongoDB ID in data attribute
+                    doctorSelect.appendChild(option);
+                });
+                if (selectedDoctorId) {
+                    doctorSelect.value = selectedDoctorId;
+                }
+            }
+
+            // Fetch Patients
+            const patientsResponse = await fetch('/Patient'); // Assuming /Patient is your endpoint
+            const patientsData = await patientsResponse.json();
+            const patientSelect = document.getElementById('patientName');
+            patientSelect.innerHTML = '<option value="">Select Patient</option>'; // Clear previous options
+            if (patientsData.data) {
+                patientsData.data.forEach(patient => {
+                    const option = document.createElement('option');
+                    option.value = patient._id;
+                    option.textContent = patient.name;
+                    option.dataset.id = patient._id; // Store MongoDB ID in data attribute
+                    patientSelect.appendChild(option);
+                });
+                if (selectedPatientId) {
+                    patientSelect.value = selectedPatientId;
+                }
+            }
+
+            // Fetch Departments
+            const departmentsResponse = await fetch('/Department'); // Assuming /Department is your endpoint
+            const departmentsData = await departmentsResponse.json();
+            const departmentSelect = document.getElementById('appointmentDepartment');
+            departmentSelect.innerHTML = '<option value="">Select Department</option>'; // Clear previous options
+            if (departmentsData.data) {
+                departmentsData.data.forEach(department => {
+                    const option = document.createElement('option');
+                    option.value = department.name; // Assuming department name is used as value
+                    option.textContent = department.name;
+                    departmentSelect.appendChild(option);
+                });
+                if (selectedDepartmentName) {
+                    departmentSelect.value = selectedDepartmentName;
+                }
+            }
+
+        } catch (error) {
+            console.error('Error populating dropdowns:', error);
+            this.showNotification(`Failed to load dropdown data: ${error.message}`, 'error');
+        }
     }
 }
 

@@ -7,8 +7,13 @@
   <link rel="stylesheet" href="/css/navbar.css">
   <link rel="stylesheet" href="/css/common_footer.css">
   <link rel="stylesheet" href="/css/quick_appointment.css">
+  <link rel="stylesheet" href="/css/common_footer.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 <body>
+  <script>
+    console.log('Doctors data received in quickAppointment.ejs:', <%- JSON.stringify(doctors) %>);
+  </script>
 
   <nav>
     <div class="navbar-container">
@@ -83,6 +88,18 @@
           <% }); %>
         </select>
         <div class="error-message" id="departmentError">Please select a department</div>
+      </div>
+
+      <!-- Add Doctor selection for Quick Appointment -->
+      <div class="form-group">
+        <label id="labelDoctor" for="quickDoctor">Select Doctor</label>
+        <select id="quickDoctor" name="doctor" required>
+          <option value="" disabled selected>Choose a doctor</option>
+          <% doctors.forEach(doctor => { %>
+            <option value="<%= doctor.id %>"><%= doctor.name %> - <%= doctor.specialization %></option>
+          <% }); %>
+        </select>
+        <div class="error-message" id="doctorError">Please select a doctor</div>
       </div>
 
       <div class="form-group">

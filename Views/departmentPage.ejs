@@ -54,18 +54,12 @@
             <% department.doctors.forEach(function(doctor) { %>
               <div class="doctor-card">
                 <i class="fas fa-user-md doctor-icon"></i>
-                <h3>
-                  <% if (doctor.userId) { %>
-                    Dr. <%= doctor.userId.FName %> <%= doctor.userId.LName %>
-                  <% } else { %>
-                    Dr. Unknown
-                  <% } %>
-                </h3>
+                <h3><%= doctor.userId.FName %> <%= doctor.userId.LName %></h3>
                 <p><%= doctor.specialization %></p>
               </div>
             <% }); %>
           <% } else { %>
-            <p>No doctors in this department.</p>
+            <p>No doctors found for this department.</p>
           <% } %>
         </div>
       </div>
