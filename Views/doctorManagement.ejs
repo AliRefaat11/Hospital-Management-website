@@ -29,41 +29,41 @@
         <div class="sidebar-content">
             <ul class="nav-links">
                 <li>
-                    <a href="admin_profile.html">
+                    <a href="/admin/dashboard">
                     <i class="fas fa-home"></i>
                     <span>Dashboard</span>
                     </a>
                 </li>
                 <li>
-                    <a href="admin_management.html">
+                    <a href="/admin/management">
                         <i class="fas fa-user-shield"></i>
                         <span>Admins</span>
                     </a>
                 </li>
                 <li class="active">
-                    <a href="doctor_management.html">
+                    <a href="/doctors">
                         <i class="fas fa-user-md"></i>
                         <span>Doctors</span>
                     </a>
                 </li>
                 <li>
-                    <a href="patient_management.html">
+                    <a href="/Patient/all">
                     <i class="fas fa-user-injured"></i>
                     <span>Patients</span>
                 </a>
                 </li>
                 <li>
-                    <a href="appointments_management.html">
+                    <a href="/appointments">
                         <i class="fas fa-calendar-check"></i>
                         <span>Appointments</span>
                     </a>
                 </li>
-                <li><a href="reports.html">
+                <li><a href="/MedicalReport">
                     <i class="fas fa-chart-bar"></i>
                     <span>Reports</span></a>
                 </li>
                 <li>
-                    <a href="admin_settings.html">
+                    <a href="/User/settings">
                         <i class="fas fa-cog"></i>
                         <span>Settings</span>
                     </a>
@@ -71,7 +71,7 @@
             </ul>
         </div>
         <div class="sidebar-footer">
-            <a href="#" class="logout-btn">
+            <a href="/User/logout" class="logout-btn">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>Logout</span>
             </a>
@@ -251,15 +251,15 @@
                             <span class="validation-message">Please enter a valid phone number</span>
                         </div>
                         <div class="form-group">
-                            <label for="doctorRole">Specialization *</label>
-                            <select id="doctorRole" required>
+                            <label for="doctorSpecialization">Specialization *</label>
+                            <select id="doctorSpecialization" required>
                                 <option value="">Select Specialization</option>
-                                <option value="Cardiologist">Cardiologist</option>
-                                <option value="Neurologist">Neurologist</option>
-                                <option value="Orthopedist">Orthopedist</option>
+                                <option value="cardiology">Cardiology</option>
+                                <option value="dermatology">Dermatology</option>
+                                <option value="orthopedics">Orthopedics</option>
+                                <option value="pediatrics">Pediatrics</option>
+                                <option value="Neurology">Neurology</option>
                                 <option value="General Practitioner">General Practitioner</option>
-                                <option value="Pediatrician">Pediatrician</option>
-                                <option value="Dermatologist">Dermatologist</option>
                             </select>
                             <span class="validation-message">Please select a specialization</span>
                         </div>
@@ -267,44 +267,69 @@
                             <label for="doctorDepartment">Department *</label>
                             <select id="doctorDepartment" required>
                                 <option value="">Select Department</option>
-                                <option value="Cardiology">Cardiology</option>
-                                <option value="Neurology">Neurology</option>
-                                <option value="Orthopedics">Orthopedics</option>
-                                <option value="General Medicine">General Medicine</option>
-                                <option value="Pediatrics">Pediatrics</option>
-                                <option value="Dermatology">Dermatology</option>
+                                <% departments.forEach(function(dept) { %>
+                                    <option value="<%= dept._id %>"><%= dept.name %></option>
+                                <% }); %>
                             </select>
                             <span class="validation-message">Please select a department</span>
                         </div>
                         <div class="form-group">
-                            <label for="employmentType">Employment Type *</label>
-                            <select id="employmentType" required>
-                                <option value="">Select Employment Type</option>
-                                <option value="Full-Time">Full-Time</option>
-                                <option value="Part-Time">Part-Time</option>
-                                <option value="Consultant">Consultant</option>
-                            </select>
-                            <span class="validation-message">Please select an employment type</span>
+                            <label for="doctorRating">Rating</label>
+                            <input type="number" id="doctorRating" min="1" max="5" step="0.1">
+                            <span class="validation-message">Rating must be between 1 and 5</span>
                         </div>
-                        <div class="form-group full-width">
-                            <label>Schedule</label>
-                            <div id="scheduleInputs">
-                                <!-- Schedule inputs will be added here by JavaScript -->
-                            </div>
-                            <div class="schedule-help-text">
-                                <p>Add at least two schedule slots. Each slot requires:</p>
-                                <ul>
-                                    <li>Day of the week</li>
-                                    <li>Start time</li>
-                                    <li>End time</li>
-                                    <li>Buffer time (minutes between appointments, default: 15)</li>
-                                    <li>Slot duration (minutes per appointment, default: 30)</li>
-                                </ul>
-                            </div>
-                            <button type="button" id="addScheduleSlot" class="btn btn-secondary">Add Schedule Slot</button>
-                            <span id="scheduleErrorMessage" class="validation-message" style="display: none;"></span>
+                        <div class="form-group">
+                            <label for="doctorExperience">Experience (Years)</label>
+                            <input type="number" id="doctorExperience" min="0">
+                            <span class="validation-message">Please enter a valid experience in years</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="doctorProfileImage">Profile Image URL</label>
+                            <input type="text" id="doctorProfileImage" placeholder="e.g., /images/doctor-avatar.png">
+                            <span class="validation-message">Please enter a valid URL</span>
                         </div>
                     </div>
+
+                    <h3 class="section-title">Weekly Schedule</h3>
+                    <div id="weeklyScheduleContainer" class="form-grid schedule-grid">
+                        <!-- Days of the week with time slot inputs -->
+                        <div class="form-group schedule-day-group">
+                            <input type="checkbox" id="scheduleSunday" name="dayOfWeek" value="Sunday">
+                            <label for="scheduleSunday">Sunday</label>
+                            <input type="text" class="time-slots-input" data-day="Sunday" placeholder="e.g., 09:00,10:00,11:00">
+                        </div>
+                        <div class="form-group schedule-day-group">
+                            <input type="checkbox" id="scheduleMonday" name="dayOfWeek" value="Monday">
+                            <label for="scheduleMonday">Monday</label>
+                            <input type="text" class="time-slots-input" data-day="Monday" placeholder="e.g., 09:00,10:00,11:00">
+                        </div>
+                        <div class="form-group schedule-day-group">
+                            <input type="checkbox" id="scheduleTuesday" name="dayOfWeek" value="Tuesday">
+                            <label for="scheduleTuesday">Tuesday</label>
+                            <input type="text" class="time-slots-input" data-day="Tuesday" placeholder="e.g., 09:00,10:00,11:00">
+                        </div>
+                        <div class="form-group schedule-day-group">
+                            <input type="checkbox" id="scheduleWednesday" name="dayOfWeek" value="Wednesday">
+                            <label for="scheduleWednesday">Wednesday</label>
+                            <input type="text" class="time-slots-input" data-day="Wednesday" placeholder="e.g., 09:00,10:00,11:00">
+                        </div>
+                        <div class="form-group schedule-day-group">
+                            <input type="checkbox" id="scheduleThursday" name="dayOfWeek" value="Thursday">
+                            <label for="scheduleThursday">Thursday</label>
+                            <input type="text" class="time-slots-input" data-day="Thursday" placeholder="e.g., 09:00,10:00,11:00">
+                        </div>
+                        <div class="form-group schedule-day-group">
+                            <input type="checkbox" id="scheduleFriday" name="dayOfWeek" value="Friday">
+                            <label for="scheduleFriday">Friday</label>
+                            <input type="text" class="time-slots-input" data-day="Friday" placeholder="e.g., 09:00,10:00,11:00">
+                        </div>
+                        <div class="form-group schedule-day-group">
+                            <input type="checkbox" id="scheduleSaturday" name="dayOfWeek" value="Saturday">
+                            <label for="scheduleSaturday">Saturday</label>
+                            <input type="text" class="time-slots-input" data-day="Saturday" placeholder="e.g., 09:00,10:00,11:00">
+                        </div>
+                    </div>
+                    
                     <div class="form-actions">
                         <button type="button" class="btn btn-outline" id="cancelBtn">Cancel</button>
                         <button type="submit" class="btn" id="saveBtn">Save</button>

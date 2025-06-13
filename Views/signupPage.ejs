@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title || 'PrimeCare Hospital Sign Up' %></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/css/sign_up_page.css">
 </head>
 <body>
@@ -12,12 +13,12 @@
             <a href="/" class="site-name">PrimeCare</a>
             <div class="navbar-links">
                 <a href="/" class="<%= currentPage === 'home' ? 'active' : '' %>">HOME</a>
-                <a href="/about" class="<%= currentPage === 'about' ? 'active' : '' %>">ABOUT US</a>
-                <a href="/department/view/all" class="<%= currentPage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
+                <a href="/User/about" class="<%= currentPage === 'about' ? 'active' : '' %>">ABOUT US</a>
+                <a href="/Department/view" class="<%= currentPage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
                 <a href="/doctors" class="<%= currentPage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
-                <a href="/quick-appointment" class="<%= currentPage === 'book' ? 'active' : '' %>">BOOK NOW</a>
-                <a href="/login" class="<%= currentPage === 'login' ? 'active' : '' %>">Login</a>
-                <a href="/patient/signup" class="signup-btn <%= currentPage === 'signup' ? 'active' : '' %>">Sign Up</a>
+                <a href="/appointments/quick-appointment" class="<%= currentPage === 'book' ? 'active' : '' %>">BOOK NOW</a>
+                <a href="/User/login" class="<%= currentPage === 'login' ? 'active' : '' %>">Login</a>
+                <a href="/Patient/signup" class="signup-btn <%= currentPage === 'signup' ? 'active' : '' %>">Sign Up</a>
             </div>
         </div>
     </nav>
@@ -107,7 +108,7 @@
             </button>
         </form>
         
-        <a href="/login" class="login-link">Already have an account? Log In</a>
+        <a href="/User/login" class="login-link">Already have an account? Log In</a>
         <div class="error-message" id="errorMessage"></div>
     </div>
     

@@ -7,7 +7,36 @@ const Doctor = require('../Models/doctorModel');
 
 // Public routes (no auth needed)
 exports.signup = asyncHandler(async (req, res, next) => {
-    const {FName,LName,Email,Password,Age,PhoneNumber,Gender,bloodType,medicalNo}= req.body;
+    const {FName, LName, Email, Password, Age, PhoneNumber, Gender, bloodType, medicalNo} = req.body;
+    
+    // Check if user already exists
+    const existingUser = await User.findOne({ Email });
+    if (existingUser) {
+        return res.render('signupPage', {
+            title: 'Patient Sign Up',
+            formTitle: 'Create Patient Account',
+            currentPage: 'signup',
+            siteName: 'PrimeCare',
+            role: 'Patient',
+            errorMessage: 'Email already registered',
+            formData: req.body
+        });
+    }
+
+    // Check if medical number already exists
+    const existingPatient = await Patient.findOne({ medicalNo });
+    if (existingPatient) {
+        return res.render('signupPage', {
+            title: 'Patient Sign Up',
+            formTitle: 'Create Patient Account',
+            currentPage: 'signup',
+            siteName: 'PrimeCare',
+            role: 'Patient',
+            errorMessage: 'Medical number already registered',
+            formData: req.body
+        });
+    }
+
     try {
         const hashedPassword = await bcrypt.hash(Password, 10);
         const newUser = new User({
@@ -27,9 +56,17 @@ exports.signup = asyncHandler(async (req, res, next) => {
             medicalNo
         });
         const savedPatient = await newPatient.save();
-        return res.redirect('/login');
+        return res.redirect('/User/login');
     } catch(error) {
-        return next(new ApiError(error.message, 400));
+        return res.render('signupPage', {
+            title: 'Patient Sign Up',
+            formTitle: 'Create Patient Account',
+            currentPage: 'signup',
+            siteName: 'PrimeCare',
+            role: 'Patient',
+            errorMessage: error.message,
+            formData: req.body
+        });
     }
 });
 

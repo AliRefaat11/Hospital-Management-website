@@ -18,6 +18,25 @@ class DoctorManagement {
         this.sidebarToggle = document.getElementById('sidebarToggle');
         this.mainContent = document.querySelector('.main-content');
 
+        // Doctor form specific inputs
+        this.doctorIdInput = document.getElementById('doctorId');
+        this.doctorNameInput = document.getElementById('doctorNameInput');
+        this.doctorEmail = document.getElementById('doctorEmail');
+        this.doctorPhone = document.getElementById('doctorPhone');
+        this.doctorSpecialization = document.getElementById('doctorSpecialization');
+        this.doctorDepartment = document.getElementById('doctorDepartment');
+        this.doctorRating = document.getElementById('doctorRating');
+        this.doctorExperience = document.getElementById('doctorExperience');
+        this.doctorProfileImage = document.getElementById('doctorProfileImage');
+
+        // Weekly schedule elements
+        this.weeklyScheduleContainer = document.getElementById('weeklyScheduleContainer');
+        this.scheduleDayCheckboxes = this.weeklyScheduleContainer.querySelectorAll('input[type="checkbox"]');
+        this.timeSlotsInputs = this.weeklyScheduleContainer.querySelectorAll('.time-slots-input');
+
+        // Notification element
+        this.notificationContainer = document.getElementById('notificationContainer');
+
         // Initialize
         this.initializeEventListeners();
         this.loadDoctorData();
@@ -66,7 +85,11 @@ class DoctorManagement {
         });
 
         document.getElementById('cancelBtn').addEventListener('click', () => this.closeModal(this.doctorModal));
-        document.getElementById('addScheduleSlot').addEventListener('click', () => this.addScheduleSlot());
+
+        // Event listeners for weekly schedule checkboxes
+        this.scheduleDayCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', (e) => this.toggleTimeSlotsInput(e.target));
+        });
     }
 
     async loadDoctorData() {
@@ -84,11 +107,14 @@ class DoctorManagement {
                 phone: doc.userId.PhoneNumber,
                 specialization: doc.specialization,
                 department: doc.departmentId.name,
-                employmentType: 'Full-time', // Default or fetch if available
+                departmentId: doc.departmentId._id, // Store department ID for form
+                rating: doc.rating,
+                experience: doc.experience,
+                profileImage: doc.profileImage,
                 lastActive: new Date().toLocaleString(),
-                status: 'active',
+                status: 'active', // Assuming status is active by default or fetched from user model
                 dateAdded: new Date(doc.createdAt).toISOString().split('T')[0],
-                schedule: doc.schedule || [] // Ensure schedule is an array
+                weeklySchedule: doc.weeklySchedule || [] // Ensure weeklySchedule is an array
             }));
             this.applyFilters();
             this.updateStatistics();
@@ -290,80 +316,118 @@ class DoctorManagement {
 
     showAddDoctorModal() {
         this.currentEditingId = null;
-        document.getElementById('modalTitle').textContent = 'Add New Doctor';
+        this.doctorModal.querySelector('#modalTitle').textContent = 'Add New Doctor';
         this.clearForm();
-        this.clearValidationMessages();
-        // Clear existing schedule inputs
-        const scheduleInputsContainer = document.getElementById('scheduleInputs');
-        scheduleInputsContainer.innerHTML = '';
-        this.addScheduleSlot(); // Add at least one empty slot for new doctors
         this.showModal(this.doctorModal);
     }
 
     editDoctor(id) {
         this.currentEditingId = id;
-        document.getElementById('modalTitle').textContent = 'Edit Doctor';
-        const doctor = this.doctorData.find(d => d._id === id); // Use _id for backend data
-        if (!doctor) {
-            console.error('Doctor not found for editing:', id);
-            this.showNotification('Doctor not found!', 'error');
-            return;
-        }
-        this.populateForm(doctor);
-        this.clearValidationMessages();
-        // Populate schedule inputs
-        const scheduleInputsContainer = document.getElementById('scheduleInputs');
-        scheduleInputsContainer.innerHTML = ''; // Clear existing
-        if (doctor.schedule && doctor.schedule.length > 0) {
-            doctor.schedule.forEach(slot => {
-                this.addScheduleSlot(slot.day, slot.startTime, slot.endTime);
-            });
+        this.doctorModal.querySelector('#modalTitle').textContent = 'Edit Doctor';
+        const doctor = this.doctorData.find(d => d.id === id);
+        if (doctor) {
+            this.populateForm(doctor);
+            this.showModal(this.doctorModal);
         } else {
-            this.addScheduleSlot(); // Add a default empty slot if no schedule exists
+            this.showNotification('Doctor not found for editing.', 'error');
         }
-        this.showModal(this.doctorModal);
     }
 
     populateForm(doctor) {
-        document.getElementById('doctorId').value = doctor._id || ''; // Use _id
-        document.getElementById('doctorNameInput').value = doctor.userId.FName + " " + doctor.userId.LName || '';
-        document.getElementById('doctorEmail').value = doctor.userId.Email || '';
-        document.getElementById('doctorPhone').value = doctor.userId.PhoneNumber || '';
-        document.getElementById('doctorRole').value = doctor.specialization || '';
-        document.getElementById('doctorDepartment').value = doctor.departmentId.departmentName || '';
-        // employmentType is not in the model, so we skip it.
+        this.doctorIdInput.value = doctor.id || '';
+        this.doctorNameInput.value = doctor.name.split(' ').slice(0, -1).join(' ') || ''; // Assuming first name is part of name
+        this.doctorEmail.value = doctor.email || '';
+        this.doctorPhone.value = doctor.phone || '';
+        this.doctorSpecialization.value = doctor.specialization || '';
+        this.doctorDepartment.value = doctor.departmentId || ''; // Use departmentId
+        this.doctorRating.value = doctor.rating || '';
+        this.doctorExperience.value = doctor.experience || '';
+        this.doctorProfileImage.value = doctor.profileImage || '';
+
+        // Populate weekly schedule
+        this.clearWeeklyScheduleInputs();
+        if (doctor.weeklySchedule && doctor.weeklySchedule.length > 0) {
+            doctor.weeklySchedule.forEach(schedule => {
+                const dayCheckbox = this.weeklyScheduleContainer.querySelector(`input[type="checkbox"][value="${schedule.dayOfWeek}"]`);
+                const timeSlotsInput = this.weeklyScheduleContainer.querySelector(`.time-slots-input[data-day="${schedule.dayOfWeek}"]`);
+                if (dayCheckbox && timeSlotsInput) {
+                    dayCheckbox.checked = true;
+                    timeSlotsInput.value = schedule.timeSlots.join(',');
+                    timeSlotsInput.disabled = false; // Enable input if day is scheduled
+                }
+            });
+        }
+
+        this.clearValidationMessages();
     }
 
     clearForm() {
-        document.getElementById('doctorId').value = '';
-        document.getElementById('doctorNameInput').value = '';
-        document.getElementById('doctorEmail').value = '';
-        document.getElementById('doctorPhone').value = '';
-        document.getElementById('doctorRole').value = '';
-        document.getElementById('doctorDepartment').value = '';
-        // Clear employmentType if it exists in the form, even if not in model
-        const employmentTypeElement = document.getElementById('employmentType');
-        if (employmentTypeElement) {
-            employmentTypeElement.value = '';
+        this.doctorForm.reset();
+        this.currentEditingId = null;
+        this.doctorIdInput.value = ''; // Clear ID field
+        this.clearValidationMessages();
+        this.clearWeeklyScheduleInputs(); // Clear schedule inputs
+    }
+
+    clearWeeklyScheduleInputs() {
+        this.scheduleDayCheckboxes.forEach(checkbox => {
+            checkbox.checked = false;
+        });
+        this.timeSlotsInputs.forEach(input => {
+            input.value = '';
+            input.disabled = true; // Disable by default
+        });
+    }
+
+    toggleTimeSlotsInput(checkbox) {
+        const day = checkbox.value;
+        const timeSlotsInput = this.weeklyScheduleContainer.querySelector(`.time-slots-input[data-day="${day}"]`);
+        if (timeSlotsInput) {
+            timeSlotsInput.disabled = !checkbox.checked;
+            if (!checkbox.checked) {
+                timeSlotsInput.value = ''; // Clear times if unchecked
+            }
         }
-        // Schedule inputs are cleared and re-added in showAddDoctorModal
     }
 
     viewDoctorDetails(id) {
         const doctor = this.doctorData.find(d => d.id === id);
-        if (!doctor) return;
+        if (doctor) {
+            document.getElementById('viewDoctorId').textContent = doctor.id;
+            document.getElementById('viewDoctorName').textContent = doctor.name;
+            document.getElementById('viewDoctorEmail').textContent = doctor.email;
+            document.getElementById('viewDoctorPhone').textContent = doctor.phone;
+            document.getElementById('viewDoctorSpecialization').textContent = doctor.specialization;
+            document.getElementById('viewDoctorDepartment').textContent = doctor.department;
+            document.getElementById('viewDoctorRating').textContent = doctor.rating || 'N/A';
+            document.getElementById('viewDoctorExperience').textContent = doctor.experience !== undefined ? `${doctor.experience} years` : 'N/A';
+            document.getElementById('viewDoctorProfileImage').src = doctor.profileImage || '/images/account-icon-33.png';
+            document.getElementById('editDoctorFromView').dataset.id = doctor.id;
+            document.getElementById('deleteDoctorFromView').dataset.id = doctor.id;
 
-        document.getElementById('detailName').textContent = doctor.name;
-        document.getElementById('detailEmail').textContent = doctor.email;
-        document.getElementById('detailSpecialization').textContent = doctor.specialization;
-        document.getElementById('detailDepartment').textContent = doctor.department;
-        document.getElementById('detailPhone').textContent = doctor.phone;
-        document.getElementById('detailEmploymentType').textContent = doctor.employmentType;
-        document.getElementById('detailLastActive').textContent = this.formatDateTime(doctor.lastActive);
-        document.getElementById('detailStatus').innerHTML = `<span class="status-badge ${doctor.status}">${this.formatStatus(doctor.status)}</span>`;
-
-        this.doctorDetailsModal.dataset.doctorId = id;
-        this.showModal(this.doctorDetailsModal);
+            // Populate weekly schedule for viewing
+            const viewScheduleContainer = document.getElementById('viewDoctorWeeklySchedule');
+            viewScheduleContainer.innerHTML = ''; // Clear previous
+            if (doctor.weeklySchedule && doctor.weeklySchedule.length > 0) {
+                doctor.weeklySchedule.sort((a, b) => {
+                    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                    return days.indexOf(a.dayOfWeek) - days.indexOf(b.dayOfWeek);
+                }).forEach(schedule => {
+                    const scheduleItem = document.createElement('div');
+                    scheduleItem.className = 'detail-item';
+                    scheduleItem.innerHTML = `
+                        <span class="detail-label">${schedule.dayOfWeek}:</span>
+                        <span class="detail-value">${schedule.timeSlots.join(', ') || 'No time slots'}</span>
+                    `;
+                    viewScheduleContainer.appendChild(scheduleItem);
+                });
+            } else {
+                viewScheduleContainer.innerHTML = '<div class="detail-item full-width"><span class="detail-value">No weekly schedule defined.</span></div>';
+            }
+            this.showModal(this.doctorDetailsModal);
+        } else {
+            this.showNotification('Doctor details not found.', 'error');
+        }
     }
 
     deleteDoctor(id) {
@@ -393,88 +457,114 @@ class DoctorManagement {
 
     async handleFormSubmission(e) {
         e.preventDefault();
-        
-        if (!this.validateForm()) return;
 
-        const schedule = [];
-        document.querySelectorAll('.schedule-slot').forEach(slotDiv => {
-            const day = slotDiv.querySelector('.schedule-day').value;
-            const startTime = slotDiv.querySelector('.schedule-start-time').value;
-            const endTime = slotDiv.querySelector('.schedule-end-time').value;
-            const bufferTime = parseInt(slotDiv.querySelector('.schedule-buffer-time').value) || 15;
-            const slotDuration = parseInt(slotDiv.querySelector('.schedule-duration').value) || 30;
-            
-            if (day && startTime && endTime) {
-                schedule.push({ day, startTime, endTime, bufferTime, slotDuration });
-            }
-        });
-
-        const FName = document.getElementById('doctorNameInput').value.split(' ')[0];
-        const LName = document.getElementById('doctorNameInput').value.split(' ').slice(1).join(' ');
-        const Email = document.getElementById('doctorEmail').value;
-        const PhoneNumber = document.getElementById('doctorPhone').value;
-        const specialization = document.getElementById('doctorRole').value;
-        const departmentName = document.getElementById('doctorDepartment').value;
-
-        // Fetch the departmentId based on departmentName
-        let departmentId = null;
-        try {
-            const response = await fetch(`/api/departments/name/${departmentName}`);
-            const data = await response.json();
-            if (data.success && data.department) {
-                departmentId = data.department._id;
-            } else {
-                this.showNotification(`Department ${departmentName} not found.`, 'error');
-                return;
-            }
-        } catch (error) {
-            console.error('Error fetching department ID:', error);
-            this.showNotification('Error fetching department information.', 'error');
+        if (!this.validateForm()) {
             return;
         }
 
-        const formData = {
-            FName,
-            LName,
-            Email,
-            PhoneNumber,
-            specialization,
-            departmentId,
-            schedule
+        const userId = this.currentEditingId ? this.doctorData.find(d => d._id === this.currentEditingId)?.userId?._id : undefined;
+        const doctorId = this.currentEditingId;
+
+        // Gather weekly schedule data
+        const weeklySchedule = [];
+        let scheduleValidationPassed = true;
+        this.scheduleDayCheckboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                const day = checkbox.value;
+                const timeSlotsInput = this.weeklyScheduleContainer.querySelector(`.time-slots-input[data-day="${day}"]`);
+                const timeSlotsString = timeSlotsInput.value.trim();
+                
+                if (timeSlotsString) {
+                    const timeSlots = timeSlotsString.split(',').map(s => s.trim());
+                    // Basic time format validation (HH:MM)
+                    const invalidTime = timeSlots.find(time => !/^([01]\d|2[0-3]):([0-5]\d)$/.test(time));
+                    if (invalidTime) {
+                        this.showNotification(`Invalid time format for ${day}: ${invalidTime}. Use HH:MM.`, 'error');
+                        scheduleValidationPassed = false;
+                        return;
+                    }
+                    weeklySchedule.push({ dayOfWeek: day, timeSlots: timeSlots });
+                } else {
+                    this.showNotification(`Please enter time slots for ${day} or uncheck the day.`, 'error');
+                    scheduleValidationPassed = false;
+                    return;
+                }
+            }
+        });
+
+        if (!scheduleValidationPassed) {
+            return;
+        }
+
+        const doctorData = {
+            // userId will be included when creating a new user or fetched for existing
+            // For simplicity, directly mapping to doctor model fields
+            // Assuming userId, FName, LName, Email, PhoneNumber are handled by User model implicitly
+            // during doctor creation/update based on email/phone.
+            // This part needs careful review with your backend logic.
+            specialization: this.doctorSpecialization.value,
+            departmentId: this.doctorDepartment.value,
+            rating: parseFloat(this.doctorRating.value),
+            experience: parseInt(this.doctorExperience.value),
+            profileImage: this.doctorProfileImage.value,
+            weeklySchedule: weeklySchedule, // Add the collected schedule
         };
 
-        try {
-            const url = this.currentEditingId 
-                ? `/api/doctors/${this.currentEditingId}`
-                : '/api/doctors';
-            
-            const method = this.currentEditingId ? 'PUT' : 'POST';
-            
-            const response = await fetch(url, {
-                method,
+        // User data (for User model fields)
+        const userData = {
+            FName: this.doctorNameInput.value.split(' ')[0], // Assuming first word is FName
+            LName: this.doctorNameInput.value.split(' ').slice(1).join(' '), // Rest is LName
+            Email: this.doctorEmail.value,
+            PhoneNumber: this.doctorPhone.value,
+            role: 'Doctor' // Set role as Doctor
+        };
+
+        let url = '/api/doctors';
+        let method = 'POST';
+
+        if (this.currentEditingId) {
+            // For editing, we update the existing doctor and potentially the associated user
+            url = `/api/doctors/${this.currentEditingId}`;
+            method = 'PUT';
+            doctorData.userId = userId; // Ensure userId is sent for update
+        } else {
+            // For new doctor, send user data for creation first
+            const userResponse = await fetch('/api/users', {
+                method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(userData)
+            });
+            if (!userResponse.ok) {
+                const errorData = await userResponse.json();
+                this.showNotification(`Failed to create user: ${errorData.message || userResponse.statusText}`, 'error');
+                return;
+            }
+            const userResult = await userResponse.json();
+            doctorData.userId = userResult.data._id; // Link new doctor to newly created user
+        }
+
+        try {
+            const response = await fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(doctorData)
             });
 
-            const result = await response.json();
-
-            if (response.ok) {
-                this.showNotification(
-                    this.currentEditingId 
-                        ? 'Doctor updated successfully!' 
-                        : 'Doctor added successfully!',
-                    'success'
-                );
-                this.hideModal(this.doctorModal);
-                await this.loadDoctorData();
-            } else {
-                throw new Error(result.message || 'Failed to save doctor');
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to save doctor');
             }
+
+            this.showNotification('Doctor saved successfully!', 'success');
+            this.closeModal(this.doctorModal);
+            this.loadDoctorData(); // Reload data to update the table
         } catch (error) {
             console.error('Error saving doctor:', error);
-            this.showNotification(error.message, 'error');
+            this.showNotification(`Error: ${error.message}`, 'error');
         }
     }
 
@@ -690,12 +780,7 @@ class DoctorManagement {
     }
 }
 
-// Initialize the doctor management system when DOM is loaded
+// Initialize the DoctorManagement class
 document.addEventListener('DOMContentLoaded', () => {
-    // Ensure the script runs after the DOM is fully loaded
-    if (window.doctorManager) {
-        window.doctorManager.loadDoctorData();
-    } else {
-        window.doctorManager = new DoctorManagement();
-    }
+    new DoctorManagement();
 });

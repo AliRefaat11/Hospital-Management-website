@@ -28,7 +28,28 @@ const doctorSchema = new mongoose.Schema(
         departmentName: {
             type: String,
             trim: true
-        }
+        },
+        availableDays: [
+            {
+                type: String,
+                enum: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+            }
+        ],
+        weeklySchedule: [
+            {
+                dayOfWeek: {
+                    type: String,
+                    enum: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+                    required: true
+                },
+                timeSlots: [
+                    {
+                        type: String, // e.g., "09:00", "14:30"
+                        match: /^[0-9]{2}:[0-9]{2}$/ // HH:MM format
+                    }
+                ]
+            }
+        ]
     },
     {
         timestamps: true

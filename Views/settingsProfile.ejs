@@ -13,19 +13,19 @@
 <body>
     <nav>
         <div class="navbar-container">
-            <a href="#" class="site-name">Prime Care</a>
+            <a href="/" class="site-name">Prime Care</a>
             <div class="navbar-links">
-                <a href="./home_page.html" class="<%= currentPage === 'home' ? 'active' : '' %>">HOME</a>
-                <a href="./about_us_page.html" class="<%= currentPage === 'about' ? 'active' : '' %>">ABOUT US</a>
-                <a href="./department_page.html" class="<%= currentPage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
-                <a href="./doctors_page.html" class="<%= currentPage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
-                <a href="./quick-appointment.html" class="<%= currentPage === 'book' ? 'active' : '' %>">BOOK NOW</a>
+                <a href="/" class="<%= currentPage === 'home' ? 'active' : '' %>">HOME</a>
+                <a href="/User/about" class="<%= currentPage === 'about' ? 'active' : '' %>">ABOUT US</a>
+                <a href="/Department/view" class="<%= currentPage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
+                <a href="/doctors" class="<%= currentPage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
+                <a href="/appointments/quick-appointment" class="<%= currentPage === 'book' ? 'active' : '' %>">BOOK NOW</a>
                 <% if (typeof user !== 'undefined' && user) { %>
-                    <a href="./user_profile.html" class="<%= currentPage === 'profile' ? 'active' : '' %>">Profile</a>
-                    <a href="/logout" class="logout-btn">Logout</a>
+                    <a href="/User/profile" class="<%= currentPage === 'profile' ? 'active' : '' %>">Profile</a>
+                    <a href="/User/logout" class="logout-btn">Logout</a>
                 <% } else { %>
-                    <a href="./login_page.html" class="<%= currentPage === 'login' ? 'active' : '' %>">Login</a>
-                    <a href="./sign_up_page.html" class="signup-btn <%= currentPage === 'signup' ? 'active' : '' %>">Sign Up</a>
+                    <a href="/User/login" class="<%= currentPage === 'login' ? 'active' : '' %>">Login</a>
+                    <a href="/Patient/signup" class="signup-btn <%= currentPage === 'signup' ? 'active' : '' %>">Sign Up</a>
                 <% } %>
             </div>
         </div>

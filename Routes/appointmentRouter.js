@@ -1,6 +1,11 @@
 const express = require('express');
 const AppRouter = express.Router();
 const appointmentController = require('../Controllers/appointmentController');
+const { auth } = require('../middleware/authMiddleware');
+const jwt = require('jsonwebtoken');
+const User = require('../Models/userModel');
+const Department = require('../Models/departmentModel');
+const Doctor = require('../Models/doctorModel');
 
 const validateAppointment = (req, res, next) => {
   const { doctorID, patientID, date, startingHour, reason } = req.body;
@@ -60,69 +65,172 @@ const validateObjectId = (req, res, next) => {
   next();
 };
 
-AppRouter.get('/book', appointmentController.renderBookingPage);
-AppRouter.post('/', validateAppointment, appointmentController.createAppointment);
-AppRouter.get('/', appointmentController.getAllAppointments);
-AppRouter.get('/today', appointmentController.getTodayAppointments);
-AppRouter.get('/date-range', appointmentController.getAppointmentsByDateRange);
-AppRouter.get('/:id', validateObjectId, appointmentController.getAppointmentById);
-AppRouter.get('/doctor/:doctorID', validateObjectId, appointmentController.getAppointmentsByDoctor);
-AppRouter.get('/patient/:patientID', validateObjectId, appointmentController.getAppointmentsByPatient);
-AppRouter.put('/:id', validateObjectId, appointmentController.updateAppointment);
-AppRouter.patch('/:id/status', validateObjectId, appointmentController.updateAppointmentStatus);
-AppRouter.delete('/:id', validateObjectId, appointmentController.deleteAppointment);
+// View Routes (placed before API routes)
+AppRouter.get('/', async (req, res) => {
+    try {
+        let user = null;
+        try {
+            const token = req.cookies?.token;
+            if (token) {
+                const decoded = jwt.verify(token, process.env.JWT_SECRET);
+                user = await User.findById(decoded.id).select('-Password');
+            }
+        } catch (error) {
+            console.log('Token verification failed:', error.message);
+        }
+
+        // Fetch doctors for the dropdown in appointmentsManagement.ejs
+        const doctors = await Doctor.find()
+            .populate('userId', 'FName LName')
+            .populate('departmentId', 'departmentName');
+
+        res.render('appointmentsManagement', { 
+            user,
+            currentPage: 'appointments',
+            siteName: 'PrimeCare',
+            stats: {
+                total: { count: 0, changeType: 'neutral', changePercent: 0 },
+                today: { count: 0 },
+                completed: { count: 0 },
+                pending: { count: 0 }
+            },
+            departments: [],
+            appointments: [],
+            todaySchedule: {
+                urgent: 0,
+                late: 0,
+                noShows: 0,
+                avgWaitTime: '0 min'
+            },
+            nextAppointments: [],
+            notifications: { count: 0 },
+            messages: { count: 0 },
+            doctors, // Pass the fetched doctors to the template
+            appointmentTypes: ['Scheduled', 'Confirmed', 'Completed', 'Cancelled', 'No Show'] // Added missing appointmentTypes
+        });
+    } catch (error) {
+        console.error("Error rendering appointments page:", error);
+        res.status(500).send("Error loading appointments page.");
+    }
+});
+
+AppRouter.get('/book', async (req, res) => {
+    try {
+        const doctorId = req.query.doctor; 
+        let selectedDoctor = null;
+        if (doctorId) {
+            selectedDoctor = await Doctor.findById(doctorId)
+                .populate('userId', 'FName LName')
+                .populate('departmentId', 'departmentName');
+        }
+
+        // Fetch all doctors for the dropdown
+        const doctors = await Doctor.find()
+            .populate('userId', 'FName LName')
+            .populate('departmentId', 'departmentName');
+
+        const departments = await Department.find();
+
+        let user = null;
+        try {
+            const token = req.cookies?.token;
+            if (token) {
+                const decoded = jwt.verify(token, process.env.JWT_SECRET);
+                user = await User.findById(decoded.id).select('-Password');
+            }
+        } catch (error) {
+            console.log('Token verification failed:', error.message);
+        }
+
+        res.render('bookAppointment', {
+            departments,
+            user,
+            selectedDoctor,
+            doctors,
+            currentPage: 'book',
+            siteName: 'PrimeCare'
+        });
+    } catch (error) {
+        console.error("Error rendering book appointment page:", error);
+        res.status(500).send("Error loading booking page.");
+    }
+});
+
+AppRouter.post('/book', auth, async (req, res) => {
+    try {
+        console.log('Received body in /appointments/book POST:', req.body);
+        const { doctor, date, startingHour, reason } = req.body;
+        const patientID = req.user.id; // Get from auth middleware
+
+        // Validate required fields
+        if (!doctor || !date || !startingHour || !reason) {
+            return res.status(400).json({
+                success: false,
+                message: 'All fields are required'
+            });
+        }
+
+        // Create appointment
+        const appointment = await appointmentController.createAppointment(req, res);
+
+        // If successful, send JSON response back to client instead of redirecting
+        if (appointment.success) {
+            return res.status(201).json({
+                success: true,
+                message: appointment.message || 'Appointment booked successfully!'
+            });
+        } else {
+            // If not successful, send the error message back to the client
+            return res.status(400).json({
+                success: false,
+                message: appointment.message || 'Failed to book appointment'
+            });
+        }
+    } catch (error) {
+        console.error('Error booking appointment:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to book appointment',
+            error: error.message
+        });
+    }
+});
+
+AppRouter.get('/quick-appointment', async (req, res) => {
+    try {
+        const departments = await Department.find();
+        let user = null;
+        try {
+            const token = req.cookies?.token;
+            if (token) {
+                const decoded = jwt.verify(token, process.env.JWT_SECRET);
+                user = await User.findById(decoded.id).select('-Password');
+            }
+        } catch (error) {
+            console.log('Token verification failed:', error.message);
+        }
+        res.render('quickAppointment', { 
+            departments, 
+            user, 
+            currentPage: 'appointments',
+            siteName: 'PrimeCare'
+        });
+    } catch (error) {
+        console.error("Error rendering quick appointment page:", error);
+        res.status(500).send("Error loading quick appointment page.");
+    }
+});
+
+// API Routes
+AppRouter.post('/', auth, validateAppointment, appointmentController.createAppointment);
+AppRouter.get('/api', auth, appointmentController.getAllAppointments);
+AppRouter.get('/api/today', auth, appointmentController.getTodayAppointments);
+AppRouter.get('/api/date-range', auth, appointmentController.getAppointmentsByDateRange);
+AppRouter.get('/api/:id', auth, validateObjectId, appointmentController.getAppointmentById);
+AppRouter.get('/api/doctor/:doctorID', auth, validateObjectId, appointmentController.getAppointmentsByDoctor);
+AppRouter.get('/api/patient/:patientID', auth, validateObjectId, appointmentController.getAppointmentsByPatient);
+AppRouter.put('/api/:id', auth, validateObjectId, appointmentController.updateAppointment);
+AppRouter.patch('/api/:id/status', auth, validateObjectId, appointmentController.updateAppointmentStatus);
+AppRouter.delete('/api/:id', auth, validateObjectId, appointmentController.deleteAppointment);
 
 module.exports = AppRouter;
-
-// ============================================
-// API ENDPOINTS SUMMARY
-// ============================================
-
-/*
-Available Endpoints:
-
-POST   /api/appointments                    - Create new appointment
-GET    /api/appointments                    - Get all appointments (with pagination)
-GET    /api/appointments/today              - Get today's appointments
-GET    /api/appointments/date-range         - Get appointments by date range
-GET    /api/appointments/:id                - Get appointment by ID
-GET    /api/appointments/doctor/:doctorID   - Get doctor's appointments
-GET    /api/appointments/patient/:patientID - Get patient's appointments
-PUT    /api/appointments/:id                - Update appointment
-PATCH  /api/appointments/:id/status         - Update appointment status only
-DELETE /api/appointments/:id                - Delete appointment
-
-Query Parameters:
-- page: Page number for pagination (default: 1)
-- limit: Items per page (default: 10)
-- status: Filter by appointment status
-- date: Filter by specific date
-- startDate & endDate: For date range queries
-
-Example Requests:
-
-1. Create Appointment:
-POST /api/appointments
-{
-  "doctorID": "60d5ec49f1b2c8b1f8e4c1a1",
-  "patientID": "60d5ec49f1b2c8b1f8e4c1a2",
-  "date": "2024-12-15",
-  "startingHour": "10:30",
-  "reason": "Regular checkup"
-}
-
-2. Get All Appointments (with pagination):
-GET /api/appointments?page=1&limit=10&status=scheduled
-
-3. Get Doctor's Appointments:
-GET /api/appointments/doctor/60d5ec49f1b2c8b1f8e4c1a1?date=2024-12-15
-
-4. Update Appointment Status:
-PATCH /api/appointments/60d5ec49f1b2c8b1f8e4c1a3/status
-{
-  "status": "completed"
-}
-
-5. Get Appointments by Date Range:
-GET /api/appointments/date-range?startDate=2024-12-01&endDate=2024-12-31
-*/

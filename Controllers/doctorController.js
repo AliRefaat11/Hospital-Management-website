@@ -71,7 +71,7 @@ const getById = async (req, res) => {
 
 const create = async (req, res) => {
     try {
-        const { FName, LName, Email, Password, PhoneNumber, Gender, Age, departmentId, specialization, rating } = req.body;
+        const { FName, LName, Email, Password, PhoneNumber, Gender, Age, departmentId, specialization, rating, experience, profileImage, weeklySchedule } = req.body;
 
         // Create user
         const hashedPassword = await bcrypt.hash(Password, 12);
@@ -102,7 +102,10 @@ const create = async (req, res) => {
             departmentId,
             specialization,
             rating,
-            departmentName: department.name
+            departmentName: department.name,
+            experience,
+            profileImage,
+            weeklySchedule: weeklySchedule || [] // Save weeklySchedule
         });
 
         res.status(201).json({
@@ -124,7 +127,7 @@ const update = async (req, res) => {
     try {
         const doctor = await Doctor.findByIdAndUpdate(
             req.params.id,
-            req.body,
+            { ...req.body, weeklySchedule: req.body.weeklySchedule || [] }, // Update weeklySchedule
             {
                 new: true,
                 runValidators: true
@@ -136,6 +139,20 @@ const update = async (req, res) => {
                 message: 'No doctor found with that ID'
             });
         }
+
+        // Update associated user data if provided (e.g., FName, LName, Email, PhoneNumber)
+        if (req.body.FName || req.body.LName || req.body.Email || req.body.PhoneNumber || req.body.Gender || req.body.Age) {
+            const userUpdateData = {};
+            if (req.body.FName) userUpdateData.FName = req.body.FName;
+            if (req.body.LName) userUpdateData.LName = req.body.LName;
+            if (req.body.Email) userUpdateData.Email = req.body.Email;
+            if (req.body.PhoneNumber) userUpdateData.PhoneNumber = req.body.PhoneNumber;
+            if (req.body.Gender) userUpdateData.Gender = req.body.Gender;
+            if (req.body.Age) userUpdateData.Age = req.body.Age;
+
+            await User.findByIdAndUpdate(doctor.userId, userUpdateData, { new: true, runValidators: true });
+        }
+
         res.status(200).json({
             status: 'success',
             data: doctor
@@ -174,7 +191,7 @@ const deleteById = async (req, res) => {
 const getByDepartment = async (req, res) => {
     try {
         const doctors = await Doctor.find({ departmentId: req.params.departmentId })
-            .populate('userId', 'name email')
+            .populate('userId', 'FName LName email')
             .populate('departmentId', 'name');
 
         res.status(200).json({
@@ -229,7 +246,7 @@ const search = async (req, res) => {
         const socialLinks = [
             { url: '#', icon: '<i class="fab fa-facebook"></i>' },
             { url: '#', icon: '<i class="fab fa-twitter"></i>' },
-            { url: '#', icon: '<i class="fab fa-instagram"></i>' }
+            { url: '<i class="fab fa-instagram"></i>' }
         ];
 
         if (!query) {
@@ -250,55 +267,31 @@ const search = async (req, res) => {
             });
         }
 
-        const searchRegex = new RegExp(query, 'i');
-        const doctors = await Doctor.find()
-            .populate({
-                path: 'userId',
-                match: {
-                    $or: [
-                        { FName: searchRegex },
-                        { LName: searchRegex }
-                    ]
-                }
-            })
-            .populate('departmentId', 'name');
-        const filteredDoctors = doctors.filter(doctor => doctor.userId);
+        const doctors = await Doctor.find({
+            $or: [
+                { specialization: { $regex: query, $options: 'i' } },
+                { departmentName: { $regex: query, $options: 'i' } },
+                { 'userId.FName': { $regex: query, $options: 'i' } },
+                { 'userId.LName': { $regex: query, $options: 'i' } }
+            ]
+        })
+        .populate('userId', 'FName LName Email PhoneNumber Gender Age')
+        .populate('departmentId', 'name');
 
-        let finalDoctors = filteredDoctors;
-        if (filteredDoctors.length === 0) {
-            // Try searching by specialization
-            finalDoctors = await Doctor.find({ specialization: searchRegex })
-                .populate('userId', 'FName LName Email PhoneNumber Gender Age')
-                .populate('departmentId', 'name');
-        }
-
-        return res.render('doctorPage', {
+        res.render('doctorPage', {
             hospital,
             user,
             currentPage,
             pageContent,
             footerLinks,
             socialLinks,
-            doctors: finalDoctors,
+            doctors,
             searchQuery: query,
-            noResults: finalDoctors.length === 0
+            noResults: doctors.length === 0
         });
     } catch (error) {
-        return res.status(500).render('doctorPage', {
-            hospital: req.hospital || { name: 'PrimeCare', address: '', phone: '', email: '' },
-            user: req.user || null,
-            currentPage: 'doctors',
-            pageContent: {
-                heroTitle: 'Meet Our Expert Doctors',
-                heroSubtitle: 'Our team of highly skilled and compassionate doctors is here to provide you with the best care possible.'
-            },
-            footerLinks: [],
-            socialLinks: [],
-            doctors: [],
-            searchQuery: req.query.query || '',
-            noResults: true,
-            error: 'An error occurred while searching for doctors.'
-        });
+        console.error("Error during doctor search:", error);
+        res.status(500).send("Error performing search.");
     }
 };
 

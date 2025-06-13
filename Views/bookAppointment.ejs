@@ -7,23 +7,34 @@
   <link rel="stylesheet" href="/css/book_appointment.css"/>
   <link rel="stylesheet" href="/css/common_footer.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 <body>
   <nav>
     <div class="navbar-container">
       <a href="/" class="site-name">Prime Care</a>
       <div class="navbar-links">
-        <a href="/home">HOME</a>
-        <a href="/about">ABOUT US</a>
-        <a href="/departments">DEPARTMENTS</a>
-        <a href="/doctors">DOCTORS</a>
-        <a href="/quick-appointment" class="active">BOOK NOW</a>
+        <a href="/" class="<%= currentPage === 'home' ? 'active' : '' %>">HOME</a>
+        <a href="/User/about" class="<%= currentPage === 'about' ? 'active' : '' %>">ABOUT US</a>
+        <a href="/Department/view" class="<%= currentPage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
+        <a href="/doctors" class="<%= currentPage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
+        <a href="/appointments/quick-appointment" class="active">BOOK NOW</a>
         <% if (user) { %>
-          <a href="/profile"><%= user.name %></a>
-          <a href="/logout" class="signup-btn">Logout</a>
+          <div class="user-menu">
+            <a href="/User/profile" class="profile-link">
+              <i class="fas fa-user-circle"></i>
+              <%= user.FName %> <%= user.LName %>
+            </a>
+            <div class="dropdown-menu">
+              <a href="/User/profile">My Profile</a>
+              <a href="/appointments">My Appointments</a>
+              <a href="/User/settings">Settings</a>
+              <a href="/User/logout" class="logout-btn">Logout</a>
+            </div>
+          </div>
         <% } else { %>
-          <a href="/login">Login</a>
-          <a href="/patient/signup" class="signup-btn">Sign Up</a>
+          <a href="/User/login" class="<%= currentPage === 'login' ? 'active' : '' %>">Login</a>
+          <a href="/Patient/signup" class="signup-btn">Sign Up</a>
         <% } %>
       </div>
     </div>
@@ -63,6 +74,10 @@
           <input type="email" id="patientEmail" name="email" value="<%= user ? user.email : '' %>" placeholder="your.email@example.com" required />
         </div>
 
+        <% if (user) { %>
+          <input type="hidden" name="patientID" value="<%= user._id %>" />
+        <% } %>
+
         <div class="form-row">
           <div class="form-group half">
             <label for="patientGender" id="labelGender">Gender</label>
@@ -81,42 +96,32 @@
 
         <h2 class="section-title">Appointment Details</h2>
 
-        <div class="form-row">
-          <div class="form-group half">
-            <label for="appointmentDate" id="labelDate">Appointment Date</label>
-            <input type="date" id="appointmentDate" name="date" min="<%= new Date().toISOString().split('T')[0] %>" required />
-          </div>
-          
-          <div class="form-group half">
-            <label for="appointmentTime" id="labelTime">Preferred Time</label>
-            <select id="appointmentTime" name="time" required>
-              <option value="" disabled selected>Select Preferred Time</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="departmentSelect" id="labelDepartment">Department</label>
-          <select id="departmentSelect" name="department" required>
-            <option value="" disabled selected>Select Department</option>
-            <% departments.forEach(dept => { %>
-              <option value="<%= dept._id %>" <%= selectedDoctor && selectedDoctor.departmentId && selectedDoctor.departmentId._id.toString() === dept._id.toString() ? 'selected' : '' %>>
-                <%= dept.name %>
-              </option>
-            <% }); %>
-          </select>
-        </div>
-
         <div class="form-group">
           <label for="doctorSelect" id="labelDoctor">Doctor</label>
           <select id="doctorSelect" name="doctor" required>
             <option value="" disabled selected>Select Doctor</option>
             <% doctors.forEach(doctor => { %>
-              <option value="<%= doctor._id %>" <%= selectedDoctor && selectedDoctor._id.toString() === doctor._id.toString() ? 'selected' : '' %>>
+              <option value="<%= doctor._id %>" 
+                      data-weekly-schedule="<%= JSON.stringify(doctor.weeklySchedule) %>" 
+                      <%= selectedDoctor && selectedDoctor._id.toString() === doctor._id.toString() ? 'selected' : '' %>>
                 Dr. <%= doctor.userId.FName %> <%= doctor.userId.LName %> - <%= doctor.specialization %>
               </option>
             <% }); %>
           </select>
+        </div>
+
+        <div class="form-group">
+          <label for="availableDates" id="labelAvailableDates">Available Dates</label>
+          <input type="text" id="availableDates" name="date" placeholder="Select an available date" readonly required />
+          <small class="help-text">Dates will appear after selecting a doctor.</small>
+        </div>
+
+        <div class="form-group">
+          <label for="availableTimes" id="labelAvailableTimes">Available Times</label>
+          <select id="availableTimes" name="startingHour" required>
+            <option value="" disabled selected>Select Time</option>
+          </select>
+          <small class="help-text">Times will appear after selecting a date.</small>
         </div>
 
         <div class="form-group">
@@ -179,6 +184,12 @@
     </div>
   </footer>
 
-  <script src="/javascript/book_appointment.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script>
+    // Log selectedDoctor when the page loads
+    const selectedDoctorData = JSON.parse(decodeURIComponent(`<%= encodeURIComponent(JSON.stringify(selectedDoctor || null)) %>`));
+    console.log('Selected Doctor (from EJS): ', selectedDoctorData);
+  </script>
+  <script src="/javascript/book_appointment.js?v=<%= Date.now() %>"></script>
 </body>
 </html>
