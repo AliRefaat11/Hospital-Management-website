@@ -19,7 +19,7 @@
                 <a href="/User/about" class="<%= currentPage === 'about' ? 'active' : '' %>">ABOUT US</a>
                 <a href="/Department/view" class="<%= currentPage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
                 <a href="/doctors" class="<%= currentPage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
-                <a href="/appointments/quick-appointment" class="<%= currentPage === 'book' ? 'active' : '' %>">BOOK NOW</a>
+                <a href="/appointments/book" class="<%= currentPage === 'book' ? 'active' : '' %>">BOOK NOW</a>
                 <% if (typeof user !== 'undefined' && user) { %>
                     <a href="/User/profile" class="<%= currentPage === 'profile' ? 'active' : '' %>">Profile</a>
                     <a href="/User/logout" class="logout-btn">Logout</a>

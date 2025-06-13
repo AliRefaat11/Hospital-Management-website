@@ -113,31 +113,6 @@ AppRouter.get('/book', async (req, res) => {
     }
 });
 
-AppRouter.get('/quick-appointment', async (req, res) => {
-    try {
-        const departments = await Department.find();
-        // Fetch all doctors for the dropdown
-        const doctors = await Doctor.find()
-            .populate('userId', 'FName LName')
-            .populate('departmentId', 'departmentName');
-
-        let user = null;
-        try {
-            const token = req.cookies?.token;
-            if (token) {
-                const decoded = jwt.verify(token, process.env.JWT_SECRET);
-                user = await User.findById(decoded.id).select('-Password');
-            }
-        } catch (error) {
-            console.log('Token verification failed:', error.message);
-        }
-        res.render('quickAppointment', { departments, user, doctors, currentPage: 'appointments' });
-    } catch (error) {
-        console.error("Error rendering quick appointment page:", error);
-        res.status(500).send("Error loading quick appointment page.");
-    }
-});
-
 // API Routes (dynamic ID routes come after specific view routes)
 AppRouter.get('/:id', validateObjectId, appointmentController.getAppointmentById);
 AppRouter.get('/doctor/:doctorID', validateObjectId, appointmentController.getAppointmentsByDoctor);
