@@ -41,6 +41,10 @@
             <div class="chart-wrapper">
                 <canvas id="userComparisonChart"></canvas>
             </div>
+            <div class="chart-wrapper">
+                <h2>Patient Statistics</h2>
+                <canvas id="patientChart"></canvas>
+            </div>
         </div>
     </div>
 
@@ -123,6 +127,31 @@
                 }
             }
         });
+
+        // Patient Statistics Chart
+        const patientData = {
+            labels: ['Total Patients', 'First Time', 'Old'],
+            datasets: [{
+                label: 'Patients',
+                data: [<%= patientsCount %>, <%= firstTimePatients %>, <%= oldPatients %>],
+                backgroundColor: ['#3498db', '#2ecc71', '#e74c3c']
+            }]
+        };
+        const patientConfig = {
+            type: 'bar',
+            data: patientData,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    title: {
+                        display: true,
+                        text: 'Patient Statistics'
+                    }
+                }
+            }
+        };
+        new Chart(document.getElementById('patientChart'), patientConfig);
     </script>
 </body>
 </html> 

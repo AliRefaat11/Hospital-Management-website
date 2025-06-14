@@ -16,12 +16,19 @@ router.get('/statistics', async (req, res) => {
         const adminsCount = await User.countDocuments({ role: 'admin' });
         const staffCount = await User.countDocuments({ role: 'staff' });
 
+        // Get first-time and old patients
+        // Assuming first-time patients are those who have no previous appointments
+        const firstTimePatients = await Patient.countDocuments({ isFirstTime: true });
+        const oldPatients = await Patient.countDocuments({ isFirstTime: false });
+
         res.render('dashboard', {
             usersCount,
             patientsCount,
             doctorsCount,
             adminsCount,
-            staffCount
+            staffCount,
+            firstTimePatients,
+            oldPatients
         });
     } catch (error) {
         console.error('Error fetching dashboard statistics:', error);
