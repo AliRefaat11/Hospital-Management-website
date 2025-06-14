@@ -133,7 +133,7 @@ AppRouter.get('/', async (req, res) => {
     }
 });
 
-AppRouter.get('/book', async (req, res) => {
+AppRouter.get('/book', auth, async (req, res) => {
     console.log('GET /appointments/book route hit');
     try {
         const doctorId = req.query.doctor; 

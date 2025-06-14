@@ -43,7 +43,7 @@ const getById = async (req, res) => {
     }
 };
 
-const create = async (req, res) => {
+const signup = async (req, res) => {
     const {FName,LName,Email,Password,PhoneNumber,Gender,Age,role}= req.body;
     try {
         const existingUser = await User.findOne({ 
@@ -120,6 +120,7 @@ const login = asyncHandler(async (req, res, next) => {
 });
 
 const update = async (req, res) => {
+    console.log('Received profile update request body:', req.body);
     try {
         if (req.body.Password) {
             delete req.body.Password;
@@ -247,13 +248,41 @@ const getProfile = asyncHandler(async (req, res, next) => {
     }
 });
 
+const logout = (req, res) => {
+    res.clearCookie('token');
+    res.redirect('/User/login'); // Redirect to login page after logout
+};
+
+const forgotPasswordPage = (req, res) => {
+    res.render('forgotPasswordPage', { currentPage: 'forgotPassword' });
+};
+
+const forgotPassword = asyncHandler(async (req, res, next) => {
+    // Implement forgot password logic here
+    res.status(200).json({ status: 'success', message: 'Forgot password functionality not yet implemented.' });
+});
+
+const resetPasswordPage = (req, res) => {
+    res.render('resetPasswordPage', { currentPage: 'resetPassword' });
+};
+
+const resetPassword = asyncHandler(async (req, res, next) => {
+    // Implement reset password logic here
+    res.status(200).json({ status: 'success', message: 'Reset password functionality not yet implemented.' });
+});
+
 module.exports = {
     getAll,
     getById,
-    create,
+    signup,
     login,
     update,
     updatePassword,
     deleteById,
-    getProfile
+    getProfile,
+    logout,
+    forgotPasswordPage,
+    forgotPassword,
+    resetPasswordPage,
+    resetPassword
 };

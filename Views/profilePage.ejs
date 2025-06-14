@@ -26,7 +26,6 @@
           </a>
           <div class="dropdown-menu">
             <a href="/User/profile">My Profile</a>
-            <a href="/appointments">My Appointments</a>
             <a href="/User/settings">Settings</a>
             <a href="/User/logout" class="logout-btn">Logout</a>
           </div>
@@ -65,7 +64,7 @@
           <ul>
             <% patient.appointments.forEach(function(appointment) { %>
               <li>
-                Appointment with Dr. <%= appointment.doctorID.FName %> <%= appointment.doctorID.LName %> on <%= appointment.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %> at <%= appointment.startingHour %>
+                Appointment with Dr. <%= appointment.doctorID.userId.FName %> <%= appointment.doctorID.userId.LName %> on <%= appointment.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %> at <%= appointment.startingHour %>
               </li>
             <% }); %>
           </ul>

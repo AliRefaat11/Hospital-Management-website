@@ -79,11 +79,6 @@ app.get('/', async (req, res) => {
                 description: "24/7 emergency medical services"
             },
             {
-                name: "Outpatient Services",
-                icon: "/images/istockphoto-1330046035-612x612.jpg",
-                description: "Comprehensive outpatient care"
-            },
-            {
                 name: "Radiology",
                 icon: "/images/Neurology_Icon.jpg",
                 description: "Advanced imaging services"
@@ -103,22 +98,6 @@ app.get('/', async (req, res) => {
             "Comfortable Patient Rooms",
             "Easy Appointment Booking",
             "Online Medical Records"
-        ];
-
-        // Add testimonials data
-        const testimonials = [
-            {
-                content: "The care I received at PrimeCare was exceptional. The staff was professional and caring.",
-                author: "John Smith"
-            },
-            {
-                content: "Modern facilities and excellent doctors. Highly recommended!",
-                author: "Sarah Johnson"
-            },
-            {
-                content: "Quick service and great medical attention. Thank you PrimeCare!",
-                author: "Michael Brown"
-            }
         ];
 
         // Add CTA data
@@ -194,7 +173,6 @@ app.get('/', async (req, res) => {
             pageContent,
             services,
             features,
-            testimonials,
             cta,
             footerLinks,
             socialLinks,
@@ -262,7 +240,7 @@ app.get('/test-admin-doctors', async (req, res) => {
 // Mount Routers
 app.use('/doctors', DrRouter);
 app.use('/User', UserRouter);
-app.use('/patients', PatRouter);
+app.use('/Patient', PatRouter);
 app.use('/documents', DocRouter);
 app.use('/Department', DepRouter);
 app.use('/appointments', AppRouter);
@@ -351,7 +329,10 @@ app.use((err, req, res, next) => {
 
     // Check if the request expects JSON or HTML
     if (req.accepts('html')) {
-        // Render an error page for HTML requests
+        if (err.statusCode === 401) {
+            return res.redirect('/User/login'); // Redirect to login page for unauthorized access
+        }
+        // Render an error page for other HTML errors
         res.status(err.statusCode).render('errorPage', { // Assuming you have an errorPage.ejs
             statusCode: err.statusCode,
             message: err.message,
