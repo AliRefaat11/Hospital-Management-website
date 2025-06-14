@@ -114,18 +114,7 @@ const login = asyncHandler(async (req, res, next) => {
     if (user.role === 'Admin') {
         return res.redirect('/User/adminProfile'); // Corrected redirect for admin to /User/adminProfile
     } else {
-        res.status(200).json({
-            status: "success",
-            token,
-            data: {
-                user: {
-                    id: user._id,
-                    role: user.role,
-                    email: user.Email,
-                    name: `${user.FName} ${user.LName}`
-                }
-            }
-        });
+        return res.redirect('/User/profile');
     }
 });
 

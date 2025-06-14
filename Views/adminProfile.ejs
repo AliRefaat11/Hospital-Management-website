@@ -126,23 +126,29 @@
                         <i class="fas fa-user-md"></i>
                     </div>
                     <div class="stat-info">
-                        <h3>Active Doctors</h3>
-                        <p class="stat-value"><%= stats.activeDoctors %></p>
-                        <p class="stat-change <%= stats.doctorsChange >= 0 ? 'positive' : 'negative' %>">
-                            <%= stats.doctorsChange >= 0 ? '+' : '' %><%= stats.doctorsChange %> this month
-                        </p>
+                        <h3>Total Doctors</h3>
+                        <p class="stat-value"><%= stats.totalDoctors %></p>
+                        <p class="stat-change">All registered doctors</p>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon">
-                        <i class="fas fa-calendar-check"></i>
+                        <i class="fas fa-users"></i>
                     </div>
                     <div class="stat-info">
-                        <h3>Today's Appointments</h3>
-                        <p class="stat-value"><%= stats.todayAppointments %></p>
-                        <p class="stat-change <%= stats.appointmentsChange >= 0 ? 'positive' : 'negative' %>">
-                            <%= stats.appointmentsChange >= 0 ? '+' : '' %><%= stats.appointmentsChange %> from yesterday
-                        </p>
+                        <h3>Total Patients</h3>
+                        <p class="stat-value"><%= stats.totalPatients %></p>
+                        <p class="stat-change">All registered patients</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total Appointments</h3>
+                        <p class="stat-value"><%= stats.totalAppointments %></p>
+                        <p class="stat-change">All scheduled appointments</p>
                     </div>
                 </div>
                 <div class="stat-card">
@@ -179,12 +185,54 @@
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon">
-                        <i class="fas fa-briefcase-medical"></i>
+                        <i class="fas fa-tint"></i>
                     </div>
                     <div class="stat-info">
-                        <h3>Available Slots</h3>
-                        <p class="stat-value"><%= stats.availableSlots %></p>
-                        <p class="stat-change">Next 7 Days</p>
+                        <h3>Patients by Blood Type</h3>
+                        <ul>
+                            <% stats.patientsByBloodType.forEach(function(bloodType) { %>
+                                <li><%= bloodType.bloodType || 'Unknown' %>: <%= bloodType.count %></li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-hospital"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Doctors by Department</h3>
+                        <ul>
+                            <% stats.doctorsByDepartment.forEach(function(department) { %>
+                                <li><%= department.departmentName || 'Unknown' %>: <%= department.count %></li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Appointments by Status</h3>
+                        <ul>
+                            <% stats.appointmentsByStatus.forEach(function(status) { %>
+                                <li><%= status.status || 'Unknown' %>: <%= status.count %></li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Monthly Appointments</h3>
+                        <ul>
+                            <% stats.monthlyAppointments.forEach(function(month) { %>
+                                <li><%= month.month || 'Unknown' %>: <%= month.count %></li>
+                            <% }); %>
+                        </ul>
                     </div>
                 </div>
             </section>
@@ -342,6 +390,20 @@
                             </p>
                         </div>
                     </div>
+                </div>
+            </section>
+
+            <!-- Doctor Appointment Counts Section -->
+            <section class="content-card doctor-appointments-overview">
+                <div class="section-header">
+                    <h2>Doctor Appointment Counts</h2>
+                </div>
+                <div class="card-body">
+                    <ul class="doctor-appointment-list">
+                        <% stats.doctorAppointmentCounts.forEach(function(doctor) { %>
+                            <li><strong><%= doctor.doctorName || 'Unknown Doctor' %>:</strong> <%= doctor.count %> appointments</li>
+                        <% }); %>
+                    </ul>
                 </div>
             </section>
         </div>

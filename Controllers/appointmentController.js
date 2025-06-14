@@ -3,11 +3,12 @@ const Doctor = require('../Models/doctorModel');
 const Department = require('../Models/departmentModel');
 const User = require('../Models/userModel');
 const jwt = require('jsonwebtoken');
+const { ApiError } = require('../middleware/authMiddleware');
 
 const appointmentController = {
 
   // CREATE - Add new appointment
-  createAppointment: async (req, res) => {
+  createAppointment: async (req) => {
     try {
       const { doctor, patientID, date, startingHour, status, reason } = req.body;
       console.log('Received doctor in createAppointment (now as doctor):', doctor);
@@ -15,13 +16,13 @@ const appointmentController = {
       // Validate doctor exists
       const doctorFound = await Doctor.findById(doctor);
       if (!doctorFound) {
-        return { success: false, message: 'Doctor not found' };
+        throw new ApiError('Doctor not found', 404);
       }
 
       // Validate patient exists
       const patient = await User.findById(patientID);
       if (!patient) {
-        return { success: false, message: 'Patient not found' };
+        throw new ApiError('Patient not found', 404);
       }
 
       // Check for conflicting appointments
@@ -33,19 +34,7 @@ const appointmentController = {
       });
 
       if (existingAppointment) {
-        return { success: false, message: 'Time slot is already booked' };
-      }
-
-      const existing = await Appointment.findOne({
-        doctorID,
-        date: new Date(date),
-        startingHour
-      });
-      if (existing) {
-        return res.status(409).json({
-          success: false,
-          message: 'This doctor already has an appointment at this time.'
-        });
+        throw new ApiError('Time slot is already booked', 409);
       }
 
       // Create new appointment
@@ -65,11 +54,15 @@ const appointmentController = {
       await savedAppointment.populate('doctorID', 'name specialization');
       await savedAppointment.populate('patientID', 'FName LName email');
 
-      return { success: true, message: 'Appointment created successfully', data: savedAppointment };
+      return savedAppointment;
 
     } catch (error) {
       console.error('Create appointment error:', error);
-      return { success: false, message: 'Failed to create appointment', error: error.message };
+      if (error instanceof ApiError) {
+        throw error;
+      } else {
+        throw new ApiError('Failed to create appointment', 500);
+      }
     }
   },
 
@@ -473,7 +466,7 @@ const appointmentController = {
               specialization: selectedDoctor.specialization,
               rating: selectedDoctor.rating,
               departmentName: selectedDoctor.departmentName,
-              weeklySchedule: selectedDoctor.weeklySchedule || [] // Ensure weeklySchedule is passed for selectedDoctor
+              weeklySchedule: selectedDoctor.weeklySchedule || []
           } : null,
           doctors: doctors.map(doc => ({
               _id: doc._id,
