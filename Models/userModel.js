@@ -49,6 +49,25 @@ const userSchema = new mongoose.Schema(
             type: Number,
             trim:true,
             required:[true,"Age is required"],
+        },
+        dateOfBirth: {
+            type: Date,
+        },
+        address: {
+            type: String,
+            trim: true,
+        },
+        primaryDoctor: {
+            type: String, // Or ObjectId if linking to Doctor model
+            trim: true,
+        },
+        insuranceProvider: {
+            type: String,
+            trim: true,
+        },
+        insuranceID: {
+            type: String,
+            trim: true,
         }
     }
 );

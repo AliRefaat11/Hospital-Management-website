@@ -267,12 +267,22 @@ const search = async (req, res) => {
             });
         }
 
+        // Step 1: Find matching user IDs based on FName or LName
+        const matchingUsers = await User.find({
+            $or: [
+                { FName: { $regex: query, $options: 'i' } },
+                { LName: { $regex: query, $options: 'i' } }
+            ]
+        }).select('_id'); // Only retrieve _id
+
+        const matchingUserIds = matchingUsers.map(user => user._id);
+
+        // Step 2: Search doctors based on specialization, departmentName, or matching user IDs
         const doctors = await Doctor.find({
             $or: [
                 { specialization: { $regex: query, $options: 'i' } },
                 { departmentName: { $regex: query, $options: 'i' } },
-                { 'userId.FName': { $regex: query, $options: 'i' } },
-                { 'userId.LName': { $regex: query, $options: 'i' } }
+                { userId: { $in: matchingUserIds } } // Search by user IDs
             ]
         })
         .populate('userId', 'FName LName Email PhoneNumber Gender Age')

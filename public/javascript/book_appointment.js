@@ -581,7 +581,8 @@ function validateForm() {
   return isFormValid;
 }
 
-function showConfirmationModal() {
+function showConfirmationModal() {33320
+  
   confirmationModal.style.display = 'flex';
 }
 

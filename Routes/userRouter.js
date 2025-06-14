@@ -135,6 +135,10 @@ UserRouter.get('/profile', async (req, res, next) => {
                     };
                 })
             );
+
+            console.log('User object passed to EJS:', user); // Debugging log for user data
+            console.log('Patient object from DB:', patient); // Debugging log for patient data
+
             res.render('userProfile', {
                 user,
                 patient,

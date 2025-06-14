@@ -1,0 +1,296 @@
+/* public/css/styles.css - Global Styles */
+
+/* Base Typography & Colors */
+:root {
+    --primary-blue: #3c7bb6;
+    --primary-blue-dark: #2d5f7c;
+    --primary-blue-light: #e3f2fd;
+    --accent-green: #28a745;
+    --text-dark: #333;
+    --text-medium: #666;
+    --text-light: #999;
+    --background-light: #f4f7f6;
+    --card-background: #ffffff;
+    --border-light: #eee;
+    --shadow-subtle: 0 2px 4px rgba(0, 0, 0, 0.05);
+    --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --border-radius-sm: 4px;
+    --border-radius-md: 8px;
+    --border-radius-lg: 12px;
+    --transition-speed: 0.3s ease;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    color: var(--text-dark);
+    background-color: var(--background-light);
+    margin: 0;
+    padding: 0;
+}
+
+/* Navbar Styles */
+nav {
+    background-color: var(--primary-blue-dark); /* Darker blue for navbar */
+    color: white;
+    padding: 15px 0;
+    box-shadow: var(--shadow-medium);
+}
+
+.navbar-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.site-name {
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.site-name i {
+    color: white; /* Ensure icon is white */
+    font-size: 28px;
+}
+
+.navbar-links a {
+    color: white;
+    text-decoration: none;
+    margin-left: 25px;
+    font-weight: 500;
+    padding: 5px 0;
+    transition: border-bottom var(--transition-speed);
+}
+
+.navbar-links a.active {
+    border-bottom: 2px solid white;
+}
+
+.navbar-links a:hover {
+    border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+/* User Menu Dropdown */
+.user-menu {
+    position: relative;
+    margin-left: 25px;
+}
+
+.profile-link {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.profile-link i {
+    font-size: 20px;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: var(--card-background);
+    box-shadow: var(--shadow-subtle);
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+    min-width: 160px;
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: opacity var(--transition-speed), transform var(--transition-speed), visibility var(--transition-speed);
+}
+
+.dropdown-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 10px 15px;
+    color: var(--text-dark);
+    text-decoration: none;
+    font-weight: normal;
+    margin-left: 0;
+    border-bottom: 1px solid var(--border-light);
+    transition: background-color 0.2s;
+}
+
+.dropdown-menu a:last-child {
+    border-bottom: none;
+}
+
+.dropdown-menu a:hover {
+    background-color: var(--background-light);
+    border-bottom: 1px solid var(--border-light);
+}
+
+.dropdown-menu .logout-btn {
+    color: var(--primary-blue); /* Style logout button distinctly */
+    font-weight: 600;
+}
+
+.dropdown-menu .logout-btn:hover {
+    background-color: var(--primary-blue-light);
+}
+
+
+/* General Button Styles (for common buttons not specific to user profile) */
+.btn {
+    padding: 10px 18px;
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all var(--transition-speed);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+    border: none; /* Reset default button border */
+}
+
+.btn-primary {
+    background-color: var(--primary-blue);
+    color: white;
+    border: 1px solid var(--primary-blue);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-blue-dark);
+    border-color: var(--primary-blue-dark);
+}
+
+.btn-outline {
+    background-color: transparent;
+    color: var(--primary-blue);
+    border: 1px solid var(--primary-blue);
+}
+
+.btn-outline:hover {
+    background-color: var(--primary-blue-light);
+}
+
+.btn-sm {
+    padding: 8px 12px;
+    font-size: 13px;
+    border-radius: var(--border-radius-sm);
+}
+
+.btn-danger {
+    background-color: #dc3545; /* Red for danger actions like cancel */
+    color: white;
+    border: 1px solid #dc3545;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+
+/* Footer Styles */
+.footer {
+    background-color: var(--primary-blue-dark);
+    color: white;
+    padding: 25px 0;
+    text-align: center;
+    margin-top: 50px; /* Space above footer */
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.footer-logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.footer-links a {
+    color: white;
+    text-decoration: none;
+    margin: 0 12px;
+    transition: opacity var(--transition-speed);
+}
+
+.footer-links a:hover {
+    opacity: 0.8;
+}
+
+.footer-socials a {
+    color: white;
+    font-size: 20px;
+    margin: 0 10px;
+    transition: opacity var(--transition-speed);
+}
+
+.footer-socials a:hover {
+    opacity: 0.8;
+}
+
+.footer-copyright {
+    font-size: 14px;
+    margin-top: 15px;
+    opacity: 0.9;
+}
+
+/* Responsive Adjustments (General) */
+@media (max-width: 768px) {
+    .navbar-links {
+        display: none; /* Hide for mobile menu toggle */
+    }
+
+    .navbar-container {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .site-name {
+        margin-bottom: 10px;
+    }
+
+    .user-menu {
+        margin-left: 0;
+    }
+
+    .dropdown-menu {
+        left: 50%;
+        transform: translateX(-50%) translateY(10px);
+        min-width: 100%;
+    }
+
+    .footer-content {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .footer-links, .footer-socials {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+} 
