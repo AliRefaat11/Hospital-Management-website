@@ -217,11 +217,10 @@ window.addEventListener('DOMContentLoaded', async () => {
     if (preSelectedOption) {
       // Set the doctorSelect value to trigger the change event listeners
       doctorSelect.value = preSelectedDoctorId;
-      // Manually trigger the change event if it's not already triggering handleDoctorSelection
+      // Manually trigger the change event to populate dates/times
       doctorSelect.dispatchEvent(new Event('change'));
     }
   }
-
 });
 
 // Function to handle doctor selection
@@ -236,8 +235,8 @@ function handleDoctorSelection() {
   availableTimesSelect.innerHTML = '<option value="" disabled selected>Select Time</option>';
 
   if (weeklySchedule.length > 0) {
-    // Extract available days from the weekly schedule
-    const availableDays = weeklySchedule.map(schedule => schedule.dayOfWeek);
+    // Extract available days from the weekly schedule, converting to lowercase for consistency
+    const availableDays = weeklySchedule.map(s => s.dayOfWeek.toLowerCase());
     initFlatpickr(availableDays, weeklySchedule); // Pass weeklySchedule to Flatpickr for time slot filtering
   } else {
     // Disable date input if no weekly schedule
@@ -249,44 +248,60 @@ function handleDoctorSelection() {
   }
 }
 
-let flatpickrInstance = null;
+let flatpickrInstance; // Define globally or ensure it's accessible
 
 // Function to initialize Flatpickr
 function initFlatpickr(availableDays = [], weeklySchedule = []) {
   if (flatpickrInstance) {
-    flatpickrInstance.destroy(); // Destroy existing instance
+    flatpickrInstance.destroy(); // Destroy existing instance if any
   }
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0); // Reset time to compare dates only
-
-  flatpickrInstance = flatpickr(availableDatesInput, {
-    dateFormat: "Y-m-d",
-    minDate: "today",
-    enable: [function(date) {
-        const dayOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][date.getDay()];
-        console.log('Inside flatpickr enable function: availableDays is', availableDays, 'Type:', typeof availableDays, 'Is Array:', Array.isArray(availableDays));
-        // Only enable dates that are in availableDays and are not in the past
-        return availableDays.includes(dayOfWeek) && date.getTime() >= today.getTime();
-    }],
-    onChange: function(selectedDates, dateStr, instance) {
-      if (selectedDates.length > 0) {
-        const selectedDayOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][selectedDates[0].getDay()];
-        populateAvailableTimes(selectedDayOfWeek, weeklySchedule); // Populate times based on selected date's day of week
-      }
-    }
-  });
   availableDatesInput.disabled = false;
   availableDatesInput.placeholder = "Select an available date";
+
+  flatpickrInstance = flatpickr(availableDatesInput, {
+    enable: [function(date) {
+      const dayOfWeek = date.getDay(); // Sunday - Saturday : 0 - 6
+      const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+      const dayName = dayNames[dayOfWeek];
+      return availableDays.includes(dayName); // Enable only available days
+    }],
+    dateFormat: "Y-m-d",
+    minDate: "today",
+    onChange: function(selectedDates, dateStr, instance) {
+      if (selectedDates.length > 0) {
+        const selectedDate = selectedDates[0];
+        const dayOfWeek = selectedDate.getDay();
+        const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+        const selectedDayName = dayNames[dayOfWeek];
+        populateAvailableTimes(selectedDayName, weeklySchedule); // Pass weeklySchedule
+      } else {
+        availableTimesSelect.innerHTML = '<option value="" disabled selected>Select Time</option>';
+      }
+    },
+  });
 }
 
 // Function to populate available time slots
 function populateAvailableTimes(selectedDayOfWeek, weeklySchedule) {
   availableTimesSelect.innerHTML = '<option value="" disabled selected>Select Time</option>';
-  const daySchedule = weeklySchedule.find(schedule => schedule.dayOfWeek === selectedDayOfWeek);
+  const today = new Date();
+  const selectedDate = flatpickrInstance.selectedDates[0];
+  const isToday = selectedDate.toDateString() === today.toDateString();
 
-  if (daySchedule && daySchedule.timeSlots.length > 0) {
+  // Find the schedule for the selected day, converting day name to lowercase for consistency
+  const daySchedule = weeklySchedule.find(s => s.dayOfWeek.toLowerCase() === selectedDayOfWeek);
+
+  if (daySchedule && daySchedule.timeSlots && daySchedule.timeSlots.length > 0) {
     daySchedule.timeSlots.sort().forEach(time => {
+      const [hour, minute] = time.split(':').map(Number);
+      const currentTime = today.getHours() * 60 + today.getMinutes();
+      const slotTime = hour * 60 + minute;
+
+      if (isToday && slotTime <= currentTime) {
+        // Skip past times for today
+        return;
+      }
       const option = document.createElement('option');
       option.value = time;
       option.textContent = time;

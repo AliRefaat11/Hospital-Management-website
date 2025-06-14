@@ -1,6 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@700&display=swap");
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css");
 
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Prevents horizontal scroll if content overflows */
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -16,7 +22,6 @@ a:hover {
   text-decoration: none;
 }
 
-/* Navigation Bar */
 nav {
   background: linear-gradient(135deg, #2c3e50, #3498db);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
@@ -34,6 +39,7 @@ nav {
   max-width: 1200px;
   margin: 0 auto;
 }
+
 .site-name {
   font-size: 1.8rem;
   font-weight: bold;
@@ -51,6 +57,8 @@ nav {
   display: flex;
   gap: 15px;
   align-items: center;
+  flex-grow: 0;
+  justify-content: center;
 }
 .navbar-links a {
   color: white;
@@ -181,27 +189,76 @@ header p {
 }
 
 .user-menu:hover .dropdown-menu {
-  display: block;
+  display: block; /* Display as a block when hovered */
 }
 
 .dropdown-menu {
-  display: none;
+  display: none; /* Initially hidden */
   position: absolute;
+  top: 100%;
   right: 0;
   background-color: white;
   border: 1px solid #ddd;
+  border-radius: 5px;
   z-index: 1000;
   min-width: 160px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  padding: 5px 0;
+  /* Remove flex-direction, as we are using display: block for children */
 }
 
 .dropdown-menu a {
-  display: block;
-  padding: 10px;
-  color: #333;
+  display: block; /* Ensure each link takes its own line */
+  padding: 10px 15px;
+  color: #333; /* Ensuring the text color is visible */
   text-decoration: none;
+  margin: 0; /* Remove any horizontal margins */
 }
 
 .dropdown-menu a:hover {
   background-color: #f5f5f5;
+}
+
+.dropdown-menu a.logout-btn {
+  background-color: transparent !important; /* Ensure no button background */
+  border: none !important; /* Remove any button borders */
+  color: #333 !important; /* Force text color to be consistent */
+  font-weight: normal !important; /* Reset font-weight */
+  padding: 10px 15px !important; /* Ensure consistent padding */
+  border-radius: 0 !important; /* Remove any border-radius from button styles */
+}
+
+/* Ensure the dropdown menu itself aligns with the user's name */
+.navbar-links .user-menu {
+  margin-left: 15px; /* Adjust spacing if needed */
+}
+
+@media (max-width: 900px) {
+  .navbar-container {
+    padding: 1rem 1rem;
+  }
+  .site-name {
+    font-size: 1.3rem;
+  }
+  .navbar-links {
+    gap: 10px;
+  }
+  .navbar-links a {
+    padding: 8px 10px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .navbar-container {
+    padding: 0.5rem 0.5rem;
+  }
+  .site-name {
+    font-size: 1.1rem;
+  }
+  .navbar-links {
+    gap: 6px;
+    font-size: 0.95rem;
+    padding-bottom: 4px;
+  }
 }

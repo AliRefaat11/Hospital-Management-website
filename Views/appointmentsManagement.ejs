@@ -4,26 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Appointment Management - PrimeCare</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="../css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/appointments_management.css">
+    <link rel="stylesheet" href="css/appointments_management.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 <div class="sidebar" id="sidebarNav">
     <div class="sidebar-header">
-        <a href="/" class="site-name">Prime Care</a>
+        <a href="admin_profile.html" class="site-name">Prime Care</a>
         <button class="sidebar-toggle" id="sidebarToggle">
             <i class="fas fa-bars"></i>
         </button>
     </div>
+    <div class="container">
+  <div class="row">
+    <div class="col-md-6 col-12">
+      <!-- Content here -->
+    </div>
+    <div class="col-md-6 col-12">
+      <!-- Content here -->
+    </div>
+  </div>
+</div>
     <div class="admin-profile">
         <div class="admin-avatar">
-            <img id="adminProfileImage" src="<%= user?.profileImage || '/images/admin-avatar.png' %>" alt="<%= user?.FName %>">
+            <img id="adminProfileImage" src="<%= admin.profileImage || '../images/admin-avatar.png' %>" alt="<%= admin.name %>">
         </div>
         <div class="admin-info">
-            <h3 id="adminName"><%= user?.FName %> <%= user?.LName %></h3>
-            <span class="admin-role"><%= user?.role %></span>
+            <h3 id="adminName"><%= admin.name %></h3>
+            <span class="admin-role"><%= admin.role %></span>
         </div>
     </div>
     <div class="sidebar-content">
@@ -123,14 +134,12 @@
                 <select id="departmentFilter" class="filter-select">
                     <option value="">All Departments</option>
                     <% departments.forEach(department => { %>
-                    <option value="<%= department._id %>"><%= department.departmentName %></option>
+                    <option value="<%= department.name %>"><%= department.name %></option>
                     <% }); %>
                 </select>
                 <select id="statusFilter" class="filter-select">
                     <option value="">All Statuses</option>
                     <option value="scheduled">Scheduled</option>
-                    <option value="confirmed">Confirmed</option>
-                    <option value="in-progress">In Progress</option>
                     <option value="completed">Completed</option>
                     <option value="cancelled">Cancelled</option>
                     <option value="no-show">No Show</option>
@@ -148,23 +157,25 @@
                         <th>Date</th>
                         <th>Time</th>
                         <th>Department</th>
+                        <th>Type</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="appointmentTableBody">
                     <% appointments.forEach(appointment => { %>
-                    <tr data-appointment-id="<%= appointment._id %>">
-                        <td><%= appointment._id %></td>
-                        <td><%= appointment.patientID.FName %> <%= appointment.patientID.LName %></td>
-                        <td>Dr. <%= appointment.doctorID.userId.FName %> <%= appointment.doctorID.userId.LName %></td>
+                    <tr data-appointment-id="<%= appointment.id %>">
+                        <td><%= appointment.id %></td>
+                        <td><%= appointment.patient.name %></td>
+                        <td><%= appointment.doctor.name %></td>
                         <td><%= new Date(appointment.date).toLocaleDateString('en-US', { 
                             year: 'numeric', 
                             month: 'short', 
                             day: 'numeric' 
                         }) %></td>
-                        <td><%= appointment.startingHour %></td>
-                        <td><%= appointment.doctorID.departmentId.departmentName %></td>
+                        <td><%= appointment.time %></td>
+                        <td><%= appointment.department %></td>
+                        <td><%= appointment.type %></td>
                         <td>
                             <span class="status-badge <%= appointment.status.toLowerCase().replace(' ', '-') %>">
                                 <%= appointment.status %>
@@ -172,13 +183,13 @@
                         </td>
                         <td>
                             <div class="action-buttons">
-                                <button class="btn-action view" title="View Details" onclick="viewAppointment('<%= appointment._id %>')">
+                                <button class="btn-action view" title="View Details" onclick="viewAppointment('<%= appointment.id %>')">
                                     <i class="fas fa-eye"></i>
                                 </button>
-                                <button class="btn-action edit" title="Edit" onclick="editAppointment('<%= appointment._id %>')">
+                                <button class="btn-action edit" title="Edit" onclick="editAppointment('<%= appointment.id %>')">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button class="btn-action delete" title="Cancel" onclick="cancelAppointment('<%= appointment._id %>')">
+                                <button class="btn-action delete" title="Cancel" onclick="cancelAppointment('<%= appointment.id %>')">
                                     <i class="fas fa-times"></i>
                                 </button>
                             </div>
@@ -241,17 +252,24 @@
                     <% nextAppointments.slice(0, 3).forEach(appointment => { %>
                     <div class="next-item">
                         <div class="next-time">
-                            <span class="time"><%= appointment.startingHour %></span>
-                            <span class="department"><%= appointment.doctorID.departmentId.departmentName %></span>
+                            <span class="time"><%= appointment.time %></span>
+                            <span class="department"><%= appointment.department %></span>
                         </div>
                         <div class="next-info">
-                            <span class="patient-name"><%= appointment.patientID.FName %> <%= appointment.patientID.LName %></span>
-                            <span class="doctor-name">Dr. <%= appointment.doctorID.userId.FName %> <%= appointment.doctorID.userId.LName %></span>
+                            <span class="patient-name"><%= appointment.patient.name %></span>
+                            <span class="doctor-name"><%= appointment.doctor.name %></span>
+                        </div>
+                        <div class="next-status">
+                            <span class="status-badge <%= appointment.status.toLowerCase().replace(' ', '-') %>">
+                                <%= appointment.status %>
+                            </span>
                         </div>
                     </div>
                     <% }); %>
                 <% } else { %>
-                    <p class="no-appointments">No upcoming appointments</p>
+                    <div class="no-appointments">
+                        <p>No upcoming appointments scheduled.</p>
+                    </div>
                 <% } %>
             </div>
         </div>
@@ -270,16 +288,17 @@
                     </div>
                     <div class="form-group">
                         <label for="patientName">Patient Name *</label>
-                        <input type="text" id="patientName" required>
-                        <span class="validation-message">Please enter the patient's name</span>
+                        <select id="patientName" required data-fetch-type="patients">
+                            <option value="">Select Patient</option>
+                            <!-- Patients will be loaded here by JavaScript -->
+                        </select>
+                        <span class="validation-message">Please select a patient</span>
                     </div>
                     <div class="form-group">
                         <label for="doctorName">Doctor *</label>
-                        <select id="doctorName" required>
+                        <select id="doctorName" required data-fetch-type="doctors">
                             <option value="">Select Doctor</option>
-                            <% doctors.forEach(doctor => { %>
-                            <option value="<%= doctor.name %>"><%= doctor.name %> - <%= doctor.specialty %></option>
-                            <% }); %>
+                            <!-- Doctors will be loaded here by JavaScript -->
                         </select>
                         <span class="validation-message">Please select a doctor</span>
                     </div>
@@ -295,11 +314,9 @@
                     </div>
                     <div class="form-group">
                         <label for="appointmentDepartment">Department *</label>
-                        <select id="appointmentDepartment" required>
+                        <select id="appointmentDepartment" required data-fetch-type="departments">
                             <option value="">Select Department</option>
-                            <% departments.forEach(department => { %>
-                            <option value="<%= department._id %>"><%= department.departmentName %></option>
-                            <% }); %>
+                            <!-- Departments will be loaded here by JavaScript -->
                         </select>
                         <span class="validation-message">Please select a department</span>
                     </div>
@@ -388,6 +405,6 @@
 
 </div>
 
-<script src="/javascript/appointments_management.js"></script>
+<script src="../public/javascript/appointments_managment.js"></script>
 </body>
 </html>

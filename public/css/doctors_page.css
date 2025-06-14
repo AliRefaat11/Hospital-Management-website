@@ -20,7 +20,6 @@ body {
   margin: 0;
   padding: 0;
   background-color: #ffffff;
-  color: #333;
 }
 
 header {
@@ -39,11 +38,10 @@ header {
 .hero {
   width: 100%;
   padding: 60px 20px;
-  background: #FDFCFA;
-  text-align: center;
   background: 
     linear-gradient(rgba(255,255,255,0.60), rgba(255,255,255,0.60)),
     url('../images/doctor_cover.jpg') center center/cover no-repeat;
+  text-align: center;
 }
 
 .hero h1 {
@@ -57,6 +55,9 @@ header {
   font-size: 25px;
   margin-bottom: 15px;
   color: #23282e;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 700px;
 }
 
 /* Remove conflicting global styles */
@@ -195,6 +196,18 @@ form, input, .fa {
   background: #005BB5;
 }
 
+.no-results-message {
+  font-size: 1.2rem;
+  color: #777;
+  margin-top: 30px;
+  text-align: center;
+}
+
+.no-results-message i {
+  color: #999;
+  margin-right: 10px;
+}
+
 /* Removed conflicting global footer styles */
 
 .footer-container {
@@ -223,63 +236,42 @@ form, input, .fa {
 }
 
 .footer-column ul li {
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .footer-column ul li a {
+  color: #F2F2F0;
   text-decoration: none;
-  color: #FDFCFA;
-  transition: color 0.3s ease;
+  font-size: 14px;
 }
 
 .footer-column ul li a:hover {
-  color: #A5D7FC;
+  text-decoration: underline;
 }
 
 .social-icons a {
+  color: #F2F2F0;
   margin-right: 10px;
-  color: white;
-  font-size: 18px;
-  text-decoration: none;
+  font-size: 20px;
 }
 
 .bottom-bar {
   text-align: center;
-  padding-top: 10px;
-  font-size: 12px;
-  border-top: 1px solid #00bfff;
-  margin-top: 15px;
+  padding: 10px 0;
+  font-size: 14px;
+  color: #F2F2F0;
 }
 
 @media (max-width: 600px) {
   .search-form {
-    max-width: 98%;
-    padding: 0.15rem 0.2rem;
+    width: 90%;
   }
+
   .search-form input[type="search"] {
-    padding: 0.7rem 2.2rem 0.7rem 1rem;
-    font-size: 0.98rem;
+    width: 75%;
   }
+
   .search-form button {
-    font-size: 1.1rem;
+    width: 20%;
   }
-}
-
-.no-results-message {
-    text-align: center;
-    padding: 2rem;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    margin: 2rem auto;
-    max-width: 600px;
-    color: #666;
-    font-size: 1.1rem;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.no-results-message i {
-    font-size: 2rem;
-    color: #4CAF50;
-    margin-bottom: 1rem;
-    display: block;
 }

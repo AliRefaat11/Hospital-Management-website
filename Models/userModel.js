@@ -45,29 +45,14 @@ const userSchema = new mongoose.Schema(
             required: [true, "gender number is required"],
             enum: ["Male","Female"]
         },
-        Age: {
-            type: Number,
-            trim:true,
-            required:[true,"Age is required"],
-        },
-        dateOfBirth: {
+        DateOfBirth: {
             type: Date,
+            required: [true, "Date of Birth is required"],
         },
-        address: {
+        Address: {
             type: String,
             trim: true,
-        },
-        primaryDoctor: {
-            type: String, // Or ObjectId if linking to Doctor model
-            trim: true,
-        },
-        insuranceProvider: {
-            type: String,
-            trim: true,
-        },
-        insuranceID: {
-            type: String,
-            trim: true,
+            required: [true, "Address is required"],
         }
     }
 );

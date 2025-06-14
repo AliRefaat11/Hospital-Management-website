@@ -1,155 +1,73 @@
-// Select the toggle button and nav links
-const navToggle = document.getElementById('nav-toggle');
-const navLinks = document.getElementById('nav-links');
+document.addEventListener("DOMContentLoaded", async function() {
+    // Select the toggle button and nav links
+    const navToggle = document.getElementById('nav-toggle');
+    const navLinks = document.getElementById('nav-links');
 
-// Add click event listener to toggle button
-navToggle.addEventListener('click', () => {
-  navLinks.classList.toggle('show'); // Toggle the "show" class
-});
-
-const navLinksContainer = document.querySelector('.nav-links');
-
-navLinksContainer.addEventListener('click', (event) => {
-  if (event.target.tagName === 'A') {
-    navLinksContainer.classList.remove('active');
-  }
-});
-
-const sections = document.querySelectorAll('section');
-
-const revealSection = () => {
-  sections.forEach((section) => {
-    const sectionTop = section.getBoundingClientRect().top;
-    const windowHeight = window.innerHeight;
-
-    if (sectionTop < windowHeight - 100) {
-      section.classList.add('visible');
-    } else {
-      section.classList.remove('visible');
+    // Add click event listener to toggle button
+    if (navToggle && navLinks) {
+        navToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('show'); // Toggle the "show" class
+        });
     }
-  });
-};
 
-window.addEventListener('scroll', revealSection);
+    const navLinksContainer = document.querySelector('.nav-links');
 
-revealSection();
+    if (navLinksContainer) {
+        navLinksContainer.addEventListener('click', (event) => {
+            if (event.target.tagName === 'A') {
+                navLinksContainer.classList.remove('active');
+            }
+        });
+    }
 
-const navLinksElements = document.querySelectorAll('.nav-links a');
+    const sections = document.querySelectorAll('section');
 
-navLinksElements.forEach(link => {
-  link.addEventListener('click', () => {
-    navLinksElements.forEach(nav => nav.classList.remove('active'));
-    link.classList.add('active');
-  });
-});
+    const revealSection = () => {
+        sections.forEach((section) => {
+            const sectionTop = section.getBoundingClientRect().top;
+            const windowHeight = window.innerHeight;
 
-const currentPath = window.location.href;
-navLinksElements.forEach(link => {
-  if (link.href === currentPath) {
-    link.classList.add('active');
-  }
-});
+            if (sectionTop < windowHeight - 100) {
+                section.classList.add('visible');
+            } else {
+                section.classList.remove('visible');
+            }
+        });
+    };
 
-const logo = document.querySelector('.logo');
+    window.addEventListener('scroll', revealSection);
 
-logo.addEventListener('click', () => {
-  document.body.classList.toggle('dark-mode');
-});
+    revealSection();
 
-document.addEventListener("DOMContentLoaded", () => {
-  console.log("Footer loaded successfully.");
-});
+    const navLinksElements = document.querySelectorAll('.nav-links a');
 
-document.addEventListener('DOMContentLoaded', function() {
+    navLinksElements.forEach(link => {
+        link.addEventListener('click', () => {
+            navLinksElements.forEach(nav => nav.classList.remove('active'));
+            link.classList.add('active');
+        });
+    });
+
+    const currentPath = window.location.href;
+    navLinksElements.forEach(link => {
+        if (link.href === currentPath) {
+            link.classList.add('active');
+        }
+    });
+
+    const logo = document.querySelector('.logo');
+
+    if (logo) {
+        logo.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+        });
+    }
+
     const searchForm = document.querySelector('.search-form');
     const searchInput = document.querySelector('#search');
     const doctorList = document.querySelector('#doctor-list');
-    const doctorCards = document.querySelectorAll('.doctor-card');
 
-    // Function to filter doctors
-    function filterDoctors(query) {
-        query = query.toLowerCase();
-        
-        doctorCards.forEach(card => {
-            const doctorName = card.dataset.name.toLowerCase();
-            const specialization = card.dataset.specialization.toLowerCase();
-            
-            if (doctorName.includes(query) || specialization.includes(query)) {
-                card.style.display = '';
-            } else {
-                card.style.display = 'none';
-            }
-        });
-
-        // Show/hide "no results" message
-        const visibleCards = Array.from(doctorCards).filter(card => card.style.display !== 'none');
-        const noResultsMessage = document.querySelector('.no-results-message');
-        
-        if (visibleCards.length === 0) {
-            if (!noResultsMessage) {
-                const message = document.createElement('div');
-                message.className = 'no-results-message';
-                message.textContent = 'No doctors found matching your search.';
-                doctorList.appendChild(message);
-            }
-        } else {
-            if (noResultsMessage) {
-                noResultsMessage.remove();
-            }
-        }
-    }
-
-    // Handle search input
-    searchInput.addEventListener('input', function() {
-        filterDoctors(this.value);
-    });
-
-    // Handle form submission
-    searchForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const query = searchInput.value.trim();
-        
-        if (!query) {
-            // If search is empty, show all doctors
-            doctorCards.forEach(card => card.style.display = '');
-            const noResultsMessage = document.querySelector('.no-results-message');
-            if (noResultsMessage) {
-                noResultsMessage.remove();
-            }
-            return;
-        }
-
-        try {
-            const response = await fetch(`/doctors/search?query=${encodeURIComponent(query)}`);
-            const data = await response.json();
-
-            if (data.status === 'success') {
-                // Update the URL with the search query
-                const url = new URL(window.location);
-                url.searchParams.set('query', query);
-                window.history.pushState({}, '', url);
-
-                // Update the doctor list with search results
-                doctorList.innerHTML = '';
-                
-                if (data.data.length === 0) {
-                    const message = document.createElement('div');
-                    message.className = 'no-results-message';
-                    message.textContent = 'No doctors found matching your search.';
-                    doctorList.appendChild(message);
-                } else {
-                    data.data.forEach(doctor => {
-                        const card = createDoctorCard(doctor);
-                        doctorList.appendChild(card);
-                    });
-                }
-            }
-        } catch (error) {
-            console.error('Error searching doctors:', error);
-        }
-    });
-
-    // Function to create doctor card
+    // Function to create a doctor card HTML element
     function createDoctorCard(doctor) {
         const card = document.createElement('div');
         card.className = 'doctor-card';
@@ -159,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function() {
         card.innerHTML = `
             <div class="doctor-img-container">
                 <img src="${doctor.profileImage || '/images/account-icon-33.png'}" 
-                     alt="${doctor.userId.FName} ${doctor.userId.LName}" 
+                     alt="Dr. ${doctor.userId.FName} ${doctor.userId.LName}" 
                      class="doctor-img">
             </div>
             <h3>
@@ -175,7 +93,64 @@ document.addEventListener('DOMContentLoaded', function() {
                 <a class="btn book-btn" href="/appointments/book?doctor=${doctor._id}">Book Appointment</a>
             </div>
         `;
-
         return card;
     }
+
+    // Function to fetch and display doctors based on a query
+    async function fetchAndDisplayDoctors(query = '') {
+        try {
+            const url = query ? `/doctors/search?query=${encodeURIComponent(query)}` : '/api/doctors';
+            const response = await fetch(url);
+            const data = await response.json();
+
+            console.log('Fetched doctor data:', data);
+
+            doctorList.innerHTML = ''; // Clear previous results
+
+            if (data.status === 'success' && data.data.length > 0) {
+                data.data.forEach(doctor => {
+                    const card = createDoctorCard(doctor);
+                    doctorList.appendChild(card);
+                });
+            } else {
+                const message = document.createElement('div');
+                message.className = 'no-results-message';
+                message.innerHTML = `<i class="fa fa-search"></i> No doctors found for "${query}".`;
+                doctorList.appendChild(message);
+            }
+            
+            // Update URL without reloading page
+            const newUrl = new URL(window.location.origin + window.location.pathname);
+            if (query) {
+                newUrl.searchParams.set('query', query);
+            } else {
+                newUrl.searchParams.delete('query');
+            }
+            window.history.pushState({}, '', newUrl);
+
+        } catch (error) {
+            console.error('Error fetching doctors:', error);
+            doctorList.innerHTML = '<div class="no-results-message"><i class="fa fa-exclamation-circle"></i> Error loading doctors. Please try again later.</div>';
+        }
+    }
+
+    // Initial fetch of doctors when the page loads
+    // Check if there's a query in the URL on page load
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialQuery = urlParams.get('query');
+    searchInput.value = initialQuery || ''; // Set search input value if query exists
+    fetchAndDisplayDoctors(initialQuery || '');
+
+
+    // Implement live search on input
+    searchInput.addEventListener('input', function() {
+        fetchAndDisplayDoctors(this.value.trim());
+    });
+
+    // Handle form submission (prevents default and uses live search logic)
+    searchForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        fetchAndDisplayDoctors(searchInput.value.trim());
+        return false; // Explicitly prevent default form submission
+    });
 });

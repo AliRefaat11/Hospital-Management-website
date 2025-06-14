@@ -121,13 +121,22 @@ AppRouter.get('/book', async (req, res) => {
         if (doctorId) {
             selectedDoctor = await Doctor.findById(doctorId)
                 .populate('userId', 'FName LName')
-                .populate('departmentId', 'departmentName');
+                .populate('departmentId', 'departmentName')
+                .select('+weeklySchedule') // Explicitly include weeklySchedule
+                .lean(); 
+            if (selectedDoctor) {
+                // Ensure weeklySchedule is explicitly included for selectedDoctor
+                const fullSelectedDoctor = await Doctor.findById(selectedDoctor._id).select('+weeklySchedule').lean();
+                selectedDoctor.weeklySchedule = fullSelectedDoctor.weeklySchedule; // Assign the weeklySchedule from the full fetch
+            }
         }
 
         // Fetch all doctors for the dropdown
         const doctors = await Doctor.find()
             .populate('userId', 'FName LName')
-            .populate('departmentId', 'departmentName');
+            .populate('departmentId', 'departmentName')
+            .select('+weeklySchedule') // Explicitly include weeklySchedule for all doctors
+            .lean();
 
         const departments = await Department.find();
 
@@ -141,6 +150,9 @@ AppRouter.get('/book', async (req, res) => {
         } catch (error) {
             console.log('Token verification failed:', error.message);
         }
+
+        console.log('Selected Doctor being sent to EJS:', selectedDoctor);
+        console.log('Doctors list being sent to EJS:', doctors);
 
         res.render('bookAppointment', {
             departments,

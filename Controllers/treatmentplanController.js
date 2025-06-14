@@ -46,14 +46,15 @@ exports.getTreatmentPlansByAppointment = async (req, res) => {
 exports.createTreatmentPlan = async (req, res) => {
     try {
         const { appointmentId, patientId, startDate, endDate, description } = req.body;
-        const newTreatmentPlan = await TreatmentPlan.create({
+        const newTreatmentPlan = new TreatmentPlan({
             appointmentId,
             patientId,
             startDate,
             endDate,
-            description,
+            description
         });
-        res.status(201).json(newTreatmentPlan);
+        await newTreatmentPlan.save();
+        res.status(201).json({ message: 'Treatment plan created successfully', treatmentPlan: newTreatmentPlan });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -76,13 +77,14 @@ exports.updateTreatmentPlan = async (req, res) => {
 };
 
 exports.deleteTreatmentPlan = async (req, res) => {
+    const { id } = req.params;
     try {
-        const deletedTreatmentPlan = await TreatmentPlan.findByIdAndDelete(req.params.id);
+        const deletedTreatmentPlan = await TreatmentPlan.findByIdAndDelete(id);
         if (!deletedTreatmentPlan) {
-            return res.status(404).json({ message: 'Treatment plan not found' });
+            return res.status(404).json({ message: "Treatment plan not found" });
         }
-        res.status(200).json({ message: 'Treatment plan deleted successfully' });
+        res.status(200).json({ message: "Treatment plan deleted successfully", deletedTreatmentPlan });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ error: error.message });
     }
 };

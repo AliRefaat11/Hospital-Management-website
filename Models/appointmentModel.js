@@ -9,7 +9,7 @@ const appointmentSchema = new mongoose.Schema({
   },
   patientID: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User', 
+    ref: 'Patient', 
     required: [true, 'Patient ID is required'],
     index: true
   },
@@ -44,21 +44,9 @@ const appointmentSchema = new mongoose.Schema({
     minlength: [5, 'Reason must be at least 5 characters'],
     maxlength: [500, 'Reason cannot exceed 500 characters']
   },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now
-  }
 });
 
-// Update the updatedAt timestamp before saving
-appointmentSchema.pre('save', function(next) {
-  this.updatedAt = Date.now();
-  next();
-});
+appointmentSchema.index({ doctorID: 1, date: 1, startingHour: 1 }, { unique: true });
 
-const Appointment = mongoose.model("Appointment", appointmentSchema);
+const Appointment = mongoose.model("Appointment",appointmentSchema);
 module.exports = Appointment;
