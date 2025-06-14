@@ -7,7 +7,8 @@ const Doctor = require('../Models/doctorModel');
 
 // Public routes (no auth needed)
 exports.signup = asyncHandler(async (req, res, next) => {
-    const {FName, LName, Email, Password, Age, PhoneNumber, Gender, bloodType, medicalNo} = req.body;
+    console.log('Received signup request body:', req.body);
+    const {FName, LName, Email, Password, Age, PhoneNumber, Gender, DateOfBirth, Address, bloodType, medicalNo} = req.body;
     
     // Check if user already exists
     const existingUser = await User.findOne({ Email });
@@ -47,6 +48,8 @@ exports.signup = asyncHandler(async (req, res, next) => {
             Age,
             PhoneNumber,
             Gender,
+            DateOfBirth,
+            Address,
             role: "Patient"
         });
         const savedUser = await newUser.save();

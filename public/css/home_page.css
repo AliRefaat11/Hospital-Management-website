@@ -1,4 +1,5 @@
-
+/* Navbar styles (usually defined in navbar.css, keeping here for reference if needed) */
+/*
 .site-name {
   font-size: 1.8rem;
   font-weight: bold;
@@ -12,7 +13,6 @@
   margin-right: 10px;
   font-size: 1.5rem;
 }
-/* Responsive Navbar: Horizontal scroll on mobile */
 .navbar-container {
   display: flex;
   align-items: center;
@@ -21,15 +21,6 @@
   max-width: 1200px;
   margin: 0 auto;
   background: linear-gradient(135deg, #2c3e50, #3498db);
-}
-
-.site-name {
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: white;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
 }
 
 .navbar-links {
@@ -67,7 +58,6 @@
   margin-left: 10px;
 }
 
-/* Responsive adjustments */
 @media (max-width: 900px) {
   .navbar-container {
     padding: 1rem 1rem;
@@ -97,6 +87,8 @@
     padding-bottom: 4px;
   }
 }
+*/
+
 /* Header Styling */
 header {
   background: linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9)), 
@@ -192,6 +184,8 @@ header p {
   vertical-align: middle;
 }
 
+/* The following rules for .user-menu and .dropdown-menu are duplicates of navbar.css and will be removed. */
+/*
 .user-menu {
   position: relative;
   display: inline-block;
@@ -222,6 +216,7 @@ header p {
 .dropdown-menu a:hover {
   background-color: #f5f5f5;
 }
+*/
 
 section {
   padding: 50px 50px;
@@ -538,6 +533,11 @@ section p {
   background-color: #406181;
   color: #80ccff;
   transform: translateY(-10px);
+}
+
+/* Ensure logout button is always block in dropdown on homepage */
+.dropdown-menu .logout-btn {
+  display: block !important;
 }
 
 /* Doctor Grid */
