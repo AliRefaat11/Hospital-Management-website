@@ -26,6 +26,7 @@ const InsurRouter = require('./Routes/insuranceRouter');
 const MedRouter = require('./Routes/medicalreportRouter');
 const TreatRouter = require('./Routes/treatmentplanRouter');
 const AdminRouter = require('./Routes/adminRoutes');
+const DashboardRouter = require('./Routes/dashboardRouter');
 const TreatmentPlan = require('./Models/treatmentplanModel');
 const MedicalReport = require('./Models/medicalreportModel');
 const User = require('./Models/userModel');
@@ -259,17 +260,18 @@ app.get('/test-admin-doctors', async (req, res) => {
 });
 
 // Mount your routers - these should come AFTER specific API routes if there's any overlap
-app.use('/doctors', DrRouter); // This handles view routes like /doctors and /doctors/:id
+app.use('/Doctor', DrRouter);
+app.use('/TestDoctor', TestDrRouter);
 app.use('/User', UserRouter);
 app.use('/Patient', PatRouter);
 app.use('/Document', DocRouter);
 app.use('/Department', DepRouter);
-app.use('/appointments', AppRouter);
-app.use('/insurance', InsurRouter);
-app.use('/medicalreports', MedRouter);
-app.use('/treatmentplans', TreatRouter);
-app.use('/admin', AdminRouter);
-app.use('/test-doctors', TestDrRouter); // Mount the test router here
+app.use('/Appointment', AppRouter);
+app.use('/Insurance', InsurRouter);
+app.use('/MedicalReport', MedRouter);
+app.use('/TreatmentPlan', TreatRouter);
+app.use('/Admin', AdminRouter);
+app.use('/Dashboard', DashboardRouter);
 
 // Admin Dashboard Page Route
 app.get('/admin/dashboard', async (req, res) => {

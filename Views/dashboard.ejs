@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Dashboard</title>
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <h1>Hospital Statistics Dashboard</h1>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Users</h3>
+                <p class="stat-number"><%= usersCount %></p>
+            </div>
+            <div class="stat-card">
+                <h3>Total Patients</h3>
+                <p class="stat-number"><%= patientsCount %></p>
+            </div>
+            <div class="stat-card">
+                <h3>Total Doctors</h3>
+                <p class="stat-number"><%= doctorsCount %></p>
+            </div>
+            <div class="stat-card">
+                <h3>Total Admins</h3>
+                <p class="stat-number"><%= adminsCount %></p>
+            </div>
+            <div class="stat-card">
+                <h3>Total Staff</h3>
+                <p class="stat-number"><%= staffCount %></p>
+            </div>
+        </div>
+
+        <div class="charts-container">
+            <div class="chart-wrapper">
+                <canvas id="userDistributionChart"></canvas>
+            </div>
+            <div class="chart-wrapper">
+                <canvas id="userComparisonChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data from the server
+        const data = {
+            usersCount: <%= usersCount %>,
+            patientsCount: <%= patientsCount %>,
+            doctorsCount: <%= doctorsCount %>,
+            adminsCount: <%= adminsCount %>,
+            staffCount: <%= staffCount %>
+        };
+
+        // User Distribution Chart (Pie Chart)
+        const distributionCtx = document.getElementById('userDistributionChart').getContext('2d');
+        new Chart(distributionCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Patients', 'Doctors', 'Admins', 'Staff'],
+                datasets: [{
+                    data: [
+                        data.patientsCount,
+                        data.doctorsCount,
+                        data.adminsCount,
+                        data.staffCount
+                    ],
+                    backgroundColor: [
+                        '#FF6384',
+                        '#36A2EB',
+                        '#FFCE56',
+                        '#4BC0C0'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'User Distribution'
+                    }
+                }
+            }
+        });
+
+        // User Comparison Chart (Bar Chart)
+        const comparisonCtx = document.getElementById('userComparisonChart').getContext('2d');
+        new Chart(comparisonCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Patients', 'Doctors', 'Admins', 'Staff'],
+                datasets: [{
+                    label: 'Number of Users',
+                    data: [
+                        data.patientsCount,
+                        data.doctorsCount,
+                        data.adminsCount,
+                        data.staffCount
+                    ],
+                    backgroundColor: [
+                        '#FF6384',
+                        '#36A2EB',
+                        '#FFCE56',
+                        '#4BC0C0'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'User Comparison'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html> 
