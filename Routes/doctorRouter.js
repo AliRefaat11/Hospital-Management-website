@@ -9,10 +9,13 @@ const Department = require('../Models/departmentModel');
 
 // View Routes (prioritized for root /doctors)
 DrRouter.get('/', async (req, res) => {
+    console.log('Accessing /doctors route.');
     try {
         const doctors = await Doctor.find()
             .populate('userId', 'FName LName Email PhoneNumber Gender Age')
-            .populate('departmentId', 'name');
+            .populate('departmentId', 'departmentName');
+
+        console.log('Doctors fetched from DB:', doctors.map(doc => ({ _id: doc._id, departmentId: doc.departmentId })));
 
         let user = null;
         try {
@@ -24,6 +27,15 @@ DrRouter.get('/', async (req, res) => {
         } catch (error) {
             console.log('Token verification failed:', error.message);
         }
+
+        // --- ADDED DEBUG LOG ---
+        // Log the populated doctors data to see the structure of departmentId
+        if (doctors.length > 0) {
+            console.log('Debug: First doctor departmentId data:', doctors[0].departmentId);
+        } else {
+            console.log('Debug: No doctors found in the database.');
+        }
+        // --- END DEBUG LOG ---
 
         const hospital = {
             name: "PrimeCare",

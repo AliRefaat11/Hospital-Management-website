@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= user.FName %> <%= user.LName %> - Patient Profile - PrimeCare</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <title><%= user.name %> - Patient Profile - PrimeCare</title>
+    <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../public/css/user_profile.css">
     <link rel="stylesheet" href="../public/css/book_appointment.css" />
@@ -56,18 +56,16 @@
             <section class="profile-card">
                 <div class="profile-header">
                     <div class="profile-image">
-                        <img src="<%= user.profileImage || '/images/account-icon-33.png' %>" alt="<%= user.FName %> <%= user.LName %> Profile" id="profileImage">
+                        <img src="<%= user.profileImage || '../images/account-icon-33.png' %>" alt="<%= user.name %> Profile" id="profileImage">
                     </div>
                     <div class="profile-info">
-                        <h1 class="profile-name" id="userName"><%= user.FName %> <%= user.LName %></h1>
+                        <h1 class="profile-name" id="userName"><%= user.name %></h1>
                         <div class="profile-email">
                             <i class="fas fa-envelope"></i>
                             <span id="userEmail"><%= user.email %></span>
                         </div>
                         <div class="profile-status">
-                            <% if (user.status) { %>
                             <span class="status-badge <%= user.status.toLowerCase().replace(' ', '-') %>"><%= user.status %></span>
-                            <% } %>
                         </div>
                     </div>
                 </div>
@@ -103,8 +101,8 @@
                         <div class="appointment-item">
                             <div class="appointment-info">
                                 <div class="appointment-doctor">
-                                    <strong><%= appointment.doctor ? appointment.doctor.userId.FName + ' ' + appointment.doctor.userId.LName : 'N/A' %></strong>
-                                    <span class="appointment-specialty"><%= appointment.doctor ? appointment.doctor.specialization : 'N/A' %></span>
+                                    <strong><%= appointment.doctor %></strong>
+                                    <span class="appointment-specialty"><%= appointment.specialty %></span>
                                 </div>
                                 <div class="appointment-details">
                                     <div class="appointment-date">
@@ -158,62 +156,48 @@
                         <div class="info-item">
                             <div class="info-label">Date of Birth</div>
                             <div class="info-value" id="userDob">
-                                <% if (user.dateOfBirth) { %>
-                                    <%= new Date(user.dateOfBirth).toLocaleDateString('en-US', { 
-                                        year: 'numeric', 
-                                        month: 'long', 
-                                        day: 'numeric' 
-                                    }) %>
-                                <% } else { %>
-                                    N/A
-                                <% } %>
+                                <%= new Date(user.dateOfBirth).toLocaleDateString('en-US', { 
+                                    year: 'numeric', 
+                                    month: 'long', 
+                                    day: 'numeric' 
+                                }) %>
                             </div>
                         </div>
                         <div class="info-item">
                             <div class="info-label">Gender</div>
-                            <div class="info-value" id="userGender"><%= user.Gender || 'N/A' %></div>
+                            <div class="info-value" id="userGender"><%= user.gender %></div>
                         </div>
                         <div class="info-item">
                             <div class="info-label">Phone</div>
                             <div class="info-value">
                                 <i class="fas fa-phone"></i>
-                                <span id="userPhone"><%= user.PhoneNumber || 'N/A' %></span>
+                                <span id="userPhone"><%= user.phone %></span>
                             </div>
                         </div>
                         <div class="info-item">
                             <div class="info-label">Address</div>
                             <div class="info-value">
                                 <i class="fas fa-map-marker-alt"></i>
-                                <span id="userAddress"><%= user.address || 'N/A' %></span>
+                                <span id="userAddress"><%= user.address %></span>
                             </div>
                         </div>
                         <div class="info-item">
                             <div class="info-label">Primary Doctor</div>
                             <div class="info-value" id="userDoctor">
-                                <% if (user.primaryDoctor && user.primaryDoctor.userId) { %>
-                                    <%= user.primaryDoctor.userId.FName %> <%= user.primaryDoctor.userId.LName %>
+                                <% if (user.primaryDoctor) { %>
+                                    <%= user.primaryDoctor %>
                                 <% } else { %>
                                     <span class="text-muted">Not assigned</span>
                                 <% } %>
                             </div>
                         </div>
                         <div class="info-item">
-                            <div class="info-label">Insurance Provider</div>
+                            <div class="info-label">Insurance</div>
                             <div class="info-value" id="userInsurance">
-                                <% if (user.insuranceProvider) { %>
-                                    <%= user.insuranceProvider %>
+                                <% if (user.insurance) { %>
+                                    <%= user.insurance %>
                                 <% } else { %>
                                     <span class="text-muted">No insurance on file</span>
-                                <% } %>
-                            </div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Insurance ID</div>
-                            <div class="info-value" id="userInsuranceId">
-                                <% if (user.insuranceID) { %>
-                                    <%= user.insuranceID %>
-                                <% } else { %>
-                                    <span class="text-muted">N/A</span>
                                 <% } %>
                             </div>
                         </div>
@@ -258,9 +242,6 @@
                         <% } else { %>
                             <div class="no-records">
                                 <p>No medical records available.</p>
-                                <button class="btn btn-primary" onclick="window.location.href='/medical-records/upload'">
-                                    Upload New Record
-                                </button>
                             </div>
                         <% } %>
                     </div>
@@ -269,28 +250,18 @@
         </div>
     </main>
 
+    <!-- Footer -->
     <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-logo">PrimeCare</div>
-            <div class="footer-links">
-                <a href="/">Home</a>
-                <a href="/User/about">About Us</a>
-                <a href="/Department/view">Departments</a>
-                <a href="/doctors">Doctors</a>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">PrimeCare</div>
+                <div class="footer-copyright">
+                    &copy; <%= new Date().getFullYear() %> PrimeCare Health Services. All rights reserved.
+                </div>
             </div>
-            <div class="footer-socials">
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-linkedin-in"></i></a>
-            </div>
-        </div>
-        <div class="footer-copyright">
-            &copy; 2023 PrimeCare. All rights reserved.
         </div>
     </footer>
 
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-    <script src="/javascript/user_profile.js"></script>
+    <script src="javascript/user_profile.js"></script>
 </body>
 </html>

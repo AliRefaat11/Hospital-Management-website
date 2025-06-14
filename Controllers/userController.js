@@ -112,20 +112,9 @@ const login = asyncHandler(async (req, res, next) => {
     console.log('Login successful, token created and cookie set.');
     
     if (user.role === 'Admin') {
-        return res.redirect('/User/adminProfile'); // Corrected redirect for admin to /User/adminProfile
+        return res.redirect('/admin/dashboard'); // Redirect admin to the new dashboard page
     } else {
-        res.status(200).json({
-            status: "success",
-            token,
-            data: {
-                user: {
-                    id: user._id,
-                    role: user.role,
-                    email: user.Email,
-                    name: `${user.FName} ${user.LName}`
-                }
-            }
-        });
+        res.redirect('/');
     }
 });
 
@@ -137,7 +126,12 @@ const update = async (req, res) => {
 
         const user = await User.findByIdAndUpdate(
             req.params.id,
-            req.body,
+            {
+                ...req.body,
+                emailNotifications: req.body.emailNotifications,
+                smsNotifications: req.body.smsNotifications,
+                privateProfile: req.body.privateProfile
+            },
             {
                 new: true,
                 runValidators: true
@@ -153,7 +147,8 @@ const update = async (req, res) => {
 
         res.status(200).json({
             status: 'success',
-            data: user
+            data: user,
+            message: 'Settings updated successfully!'
         });
     } catch (error) {
         res.status(400).json({
@@ -230,21 +225,25 @@ const deleteById = async (req, res) => {
 };
 
 // Get user profile (protected route)
-const getProfile = async (req, res) => {
+const getProfile = asyncHandler(async (req, res, next) => {
     try {
+        // Fetch the profile of the currently authenticated user
         const user = await User.findById(req.user.id).select('-Password');
-        
+
+        if (!user) {
+            return next(new ApiError("User not found", 404));
+        }
+
         res.status(200).json({
             status: 'success',
             data: user
         });
     } catch (error) {
-        res.status(400).json({
-            status: 'fail',
-            message: error.message
-        });
+        console.error('Error fetching user profile:', error);
+        next(new ApiError("Failed to fetch user profile", 500));
     }
-};
+});
+
 module.exports = {
     getAll,
     getById,

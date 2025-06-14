@@ -1,46 +1,56 @@
-const Doctor = require('../Models/doctorModel');
-const Patient = require('../Models/patientModel');
-const User = require('../Models/userModel');
 const Appointment = require('../Models/appointmentModel');
+
 const Department = require('../Models/departmentModel');
-const MedicalReport = require('../Models/medicalreportModel');
-const Insurance = require('../Models/insuranceModel');
+const Doctor = require('../Models/doctorModel');
+
 const Document = require('../Models/documentModel');
+const Insurance = require('../Models/insuranceModel');
+const MedicalReport = require('../Models/medicalreportModel');
+const Patient = require('../Models/patientModel');
+const TreatmentPlan = require('../Models/treatmentplanModel');
+const User = require('../Models/userModel');
 
-const getDashboardStats = async () => {
+const getUsersAndRolesCounts = async () => {
+    const usersCount = await User.countDocuments();
+    const patientsCount = await Patient.countDocuments();
+    const doctorsCount = await Doctor.countDocuments();
+    const appointmentsCount = await Appointment.countDocuments(); 
+    const adminsCount = await User.countDocuments({ role: 'Admin' });
+
+    return {
+        usersCount,
+        patientsCount,
+        doctorsCount,
+        adminsCount,
+        appointmentsCount,
+    };
+};
+
+const getDashboardData = async (req, res, next) => {
     try {
-        const totalDoctors = await Doctor.countDocuments();
-        const totalPatients = await Patient.countDocuments();
-        const totalUsers = await User.countDocuments();
-        const totalAppointments = await Appointment.countDocuments();
-        const totalDepartments = await Department.countDocuments();
-        const totalMedicalReports = await MedicalReport.countDocuments();
-        const totalInsuranceRecords = await Insurance.countDocuments();
-        const totalDocuments = await Document.countDocuments();
+        const usersCount = await User.countDocuments();
+        const patientsCount = await Patient.countDocuments();
+        const doctorsCount = await Doctor.countDocuments();
+        const appointmentsCount = await Appointment.countDocuments();
+        const departmentsCount = await Department.countDocuments();
+        const adminsCount = await User.countDocuments({ role: 'Admin' });
 
-        return {
-            success: true,
-            data: {
-                totalDoctors,
-                totalPatients,
-                totalUsers,
-                totalAppointments,
-                totalDepartments,
-                totalMedicalReports,
-                totalInsuranceRecords,
-                totalDocuments,
-            },
-        };
+        res.render('dashboard', {
+            usersCount,
+            patientsCount,
+            doctorsCount,
+            appointmentsCount,
+            departmentsCount,
+            adminsCount,
+            currentPage: 'dashboard'
+        });
     } catch (error) {
-        console.error('Error fetching dashboard stats:', error);
-        return {
-            success: false,
-            message: 'Error fetching dashboard stats',
-            error: error.message,
-        };
+        console.error("Error fetching dashboard data:", error);
+        next(error);
     }
 };
 
 module.exports = {
-    getDashboardStats,
+    getUsersAndRolesCounts,
+    getDashboardData
 };

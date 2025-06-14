@@ -52,15 +52,13 @@
     </div>
 
     <div class="profile-actions">
-      <button class="action-button active"><i class="fas fa-calendar-alt"></i> Appointments</button>
-      <button class="action-button"><i class="fas fa-user-edit"></i> Edit Profile</button>
-      <button class="action-button"><i class="fas fa-cog"></i> Settings</button>
+      <a href="/User/settings" class="action-button"><i class="fas fa-cog"></i> Settings</a>
     </div>
 
     <section class="profile-section card">
       <div class="section-header">
         <h3>Upcoming Appointments</h3>
-        <button class="add-appointment-btn"><i class="fas fa-plus"></i> New Appointment</button>
+        <button class="add-appointment-btn" onclick="window.location.href='/appointments/book'"><i class="fas fa-plus"></i> New Appointment</button>
       </div>
       <div class="section-content">
         <% if (patient.appointments && patient.appointments.length > 0) { %>
@@ -80,7 +78,7 @@
     <section class="profile-section card">
       <div class="section-header">
         <h3>Profile Information</h3>
-        <button class="edit-btn"><i class="fas fa-edit"></i> Edit</button>
+        <button class="edit-btn" onclick="window.location.href='/User/edit-profile'"><i class="fas fa-edit"></i> Edit</button>
       </div>
       <div class="section-content profile-details-grid">
         <div class="detail-item">

@@ -53,6 +53,18 @@ const userSchema = new mongoose.Schema(
             type: String,
             trim: true,
             required: [true, "Address is required"],
+        },
+        emailNotifications: {
+            type: Boolean,
+            default: true
+        },
+        smsNotifications: {
+            type: Boolean,
+            default: false
+        },
+        privateProfile: {
+            type: Boolean,
+            default: false
         }
     }
 );
