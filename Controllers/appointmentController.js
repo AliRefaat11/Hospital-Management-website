@@ -3,6 +3,7 @@ const Doctor = require('../Models/doctorModel');
 const Department = require('../Models/departmentModel');
 const User = require('../Models/userModel');
 const jwt = require('jsonwebtoken');
+const Patient = require('../Models/patientModel');
 
 const appointmentController = {
 
@@ -21,30 +22,21 @@ const appointmentController = {
       // Validate patient exists
       const patient = await User.findById(patientID);
       if (!patient) {
-        return { success: false, message: 'Patient not found' };
+        return res.status(404).json({ success: false, message: 'Patient not found' });
       }
 
-      // Check for conflicting appointments
+      // Check for conflicting appointments (scheduled appointments)
       const existingAppointment = await Appointment.findOne({
         doctorID: doctor,
-        date,
+        date: new Date(date),
         startingHour,
-        status: { $nin: ['cancelled', 'no-show'] }
+        status: { $nin: ['cancelled', 'no-show'] } // Exclude cancelled or no-show appointments
       });
 
       if (existingAppointment) {
-        return { success: false, message: 'Time slot is already booked' };
-      }
-
-      const existing = await Appointment.findOne({
-        doctorID,
-        date: new Date(date),
-        startingHour
-      });
-      if (existing) {
         return res.status(409).json({
           success: false,
-          message: 'This doctor already has an appointment at this time.'
+          message: 'This time slot is already booked for this doctor.'
         });
       }
 
@@ -61,15 +53,22 @@ const appointmentController = {
       // Save to database
       const savedAppointment = await appointment.save();
 
-      // Populate doctor and patient info
-      await savedAppointment.populate('doctorID', 'name specialization');
-      await savedAppointment.populate('patientID', 'FName LName email');
+      // Add the new appointment to the patient's appointments array
+      const patientDoc = await Patient.findOne({ userId: patientID });
+      if (patientDoc) {
+        patientDoc.appointments.push(savedAppointment._id);
+        await patientDoc.save();
+      }
 
-      return { success: true, message: 'Appointment created successfully', data: savedAppointment };
+      // Populate doctor and patient info
+      await savedAppointment.populate('doctorID', 'FName LName specialization');
+      await savedAppointment.populate('patientID', 'FName LName Email');
+
+      res.status(201).json({ success: true, message: 'Appointment created successfully', data: savedAppointment });
 
     } catch (error) {
       console.error('Create appointment error:', error);
-      return { success: false, message: 'Failed to create appointment', error: error.message };
+      res.status(500).json({ success: false, message: 'Failed to create appointment', error: error.message });
     }
   },
 

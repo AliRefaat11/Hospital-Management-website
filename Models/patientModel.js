@@ -26,7 +26,13 @@ const patientSchema = new mongoose.Schema(
     },
     primaryDoctor: {
       type: String,
-    }
+    },
+    appointments: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "Appointment",
+      },
+    ],
   }
 );
 

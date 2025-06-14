@@ -59,8 +59,8 @@
               <a href="/doctors/<%= doctor._id %>">Dr. <%= doctor.userId.FName %> <%= doctor.userId.LName %></a>
             </h3>
             <p><%= doctor.specialization %></p>
-            <% if (doctor.departmentId) { %>
-              <p class="department"><%= doctor.departmentId.name %></p>
+            <% if (doctor.departmentId && doctor.departmentId.departmentName) { %>
+              <p class="department"><%= doctor.departmentId.departmentName %></p>
             <% } %>
             <div class="doctor-info">
               <p><i class="fas fa-phone"></i> <%= doctor.userId.PhoneNumber %></p>

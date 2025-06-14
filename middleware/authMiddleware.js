@@ -46,7 +46,9 @@ exports.auth = asyncHandler(async (req, res, next) => {
 
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      const user = await User.findById(decoded.id);
+      // Explicitly select all user fields to ensure they are available
+      const user = await User.findById(decoded.id).select(
+        'FName LName Email role PhoneNumber Gender Age dateOfBirth address primaryDoctor insuranceProvider insuranceID');
       if (!user) {
         return next(new ApiError("User not found", 401));
       }
@@ -71,6 +73,9 @@ exports.auth = asyncHandler(async (req, res, next) => {
   
 exports.allowedTo = (...roles) =>
     asyncHandler(async (req, res, next) => {
+      console.log('Debug: Accessing allowedTo middleware.');
+      console.log('Debug: User Role:', req.user ? req.user.role : 'User not found in req.user');
+      console.log('Debug: Allowed Roles:', roles);
       if (!roles.includes(req.user.role)) {
         return next(
           new ApiError("You are not allowed to access this route", 403)

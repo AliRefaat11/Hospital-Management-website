@@ -4,6 +4,7 @@ const Department = require("../Models/departmentModel");
 const bcrypt = require('bcryptjs');
 const { createToken } = require("../middleware/authMiddleware");
 const jwt = require('jsonwebtoken');
+const Appointment = require("../Models/appointmentModel");
 
 const getAll = async (req, res) => {
     try {

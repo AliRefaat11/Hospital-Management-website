@@ -24,13 +24,16 @@
         <a href="/appointments/book" class="<%= currentPage === 'book' ? 'active' : '' %>">BOOK NOW</a>
         <% if (user) { %>
           <div class="user-menu">
-            <a href="/User/profile" class="profile-link">
+            <a href="<% if (user.role === 'Admin') { %>/admin/dashboard<% } else { %>/User/profile<% } %>" class="profile-link">
               <i class="fas fa-user-circle"></i>
               <%= user.FName %> <%= user.LName %>
             </a>
             <div class="dropdown-menu">
+              <% if (user.role === 'Admin') { %>
+              <a href="/admin/dashboard">Dashboard</a>
+              <% } else { %>
               <a href="/User/profile">My Profile</a>
-              <a href="/appointments">My Appointments</a>
+              <% } %>
               <a href="/User/settings">Settings</a>
               <a href="/User/logout" class="logout-btn">Logout</a>
             </div>

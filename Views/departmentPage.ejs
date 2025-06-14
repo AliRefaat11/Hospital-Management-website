@@ -29,11 +29,14 @@
             </a>
             <div class="dropdown-menu">
               <a href="/User/profile">My Profile</a>
-              <a href="/appointments">My Appointments</a>
               <a href="/User/settings">Settings</a>
               <a href="/User/logout" class="logout-btn">Logout</a>
             </div>
           </div>
+          <script>
+            console.log('User object in departmentPage.ejs:', <%- JSON.stringify(user) %>);
+            console.log('User role in departmentPage.ejs:', <%- JSON.stringify(user.role) %>);
+          </script>
         <% } else { %>
           <a href="/User/login" class="<%= activePage === 'login' ? 'active' : '' %>">Login</a>
           <a href="/Patient/signup" class="signup-btn <%= activePage === 'signup' ? 'active' : '' %>">Sign Up</a>

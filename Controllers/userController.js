@@ -43,7 +43,7 @@ const getById = async (req, res) => {
     }
 };
 
-const create = async (req, res) => {
+const signup = async (req, res) => {
     const {FName,LName,Email,Password,PhoneNumber,Gender,Age,role}= req.body;
     try {
         const existingUser = await User.findOne({ 
@@ -88,6 +88,7 @@ const login = asyncHandler(async (req, res, next) => {
 
     const user = await User.findOne({ Email: Email });
     console.log('User found:', user ? user.Email : 'None');
+    console.log('User role from database:', user ? user.role : 'N/A');
 
     if (!user) {
         console.log('No user found for the provided email.');
@@ -112,32 +113,29 @@ const login = asyncHandler(async (req, res, next) => {
     console.log('Login successful, token created and cookie set.');
     
     if (user.role === 'Admin') {
-        return res.redirect('/User/adminProfile'); // Corrected redirect for admin to /User/adminProfile
+        return res.redirect('/admin/dashboard'); // Redirect admin to the new dashboard page
     } else {
-        res.status(200).json({
-            status: "success",
-            token,
-            data: {
-                user: {
-                    id: user._id,
-                    role: user.role,
-                    email: user.Email,
-                    name: `${user.FName} ${user.LName}`
-                }
-            }
-        });
+        res.redirect('/');
     }
 });
 
 const update = async (req, res) => {
+    console.log('Received profile update request body:', req.body);
     try {
         if (req.body.Password) {
             delete req.body.Password;
         }
 
         const user = await User.findByIdAndUpdate(
-            req.params.id,
-            req.body,
+            req.user.id,
+            {
+                ...req.body,
+                // Assuming emailNotifications, smsNotifications, privateProfile are boolean and may not always be present in req.body
+                // Spreading req.body handles direct updates to these if they are sent.
+                // If you need to explicitly ensure these are set to false when not present,
+                // you would need additional logic here (e.g., emailNotifications: req.body.emailNotifications || false).
+                // For now, we'll rely on ...req.body to pass any present fields.
+            },
             {
                 new: true,
                 runValidators: true
@@ -153,7 +151,8 @@ const update = async (req, res) => {
 
         res.status(200).json({
             status: 'success',
-            data: user
+            data: user,
+            message: 'Settings updated successfully!'
         });
     } catch (error) {
         res.status(400).json({
@@ -230,28 +229,60 @@ const deleteById = async (req, res) => {
 };
 
 // Get user profile (protected route)
-const getProfile = async (req, res) => {
+const getProfile = asyncHandler(async (req, res, next) => {
     try {
+        // Fetch the profile of the currently authenticated user
         const user = await User.findById(req.user.id).select('-Password');
-        
+
+        if (!user) {
+            return next(new ApiError("User not found", 404));
+        }
+
         res.status(200).json({
             status: 'success',
             data: user
         });
     } catch (error) {
-        res.status(400).json({
-            status: 'fail',
-            message: error.message
-        });
+        console.error('Error fetching user profile:', error);
+        next(new ApiError("Failed to fetch user profile", 500));
     }
+});
+
+const logout = (req, res) => {
+    res.clearCookie('token');
+    res.redirect('/User/login'); // Redirect to login page after logout
 };
+
+const forgotPasswordPage = (req, res) => {
+    res.render('forgotPasswordPage', { currentPage: 'forgotPassword' });
+};
+
+const forgotPassword = asyncHandler(async (req, res, next) => {
+    // Implement forgot password logic here
+    res.status(200).json({ status: 'success', message: 'Forgot password functionality not yet implemented.' });
+});
+
+const resetPasswordPage = (req, res) => {
+    res.render('resetPasswordPage', { currentPage: 'resetPassword' });
+};
+
+const resetPassword = asyncHandler(async (req, res, next) => {
+    // Implement reset password logic here
+    res.status(200).json({ status: 'success', message: 'Reset password functionality not yet implemented.' });
+});
+
 module.exports = {
     getAll,
     getById,
-    create,
+    signup,
     login,
     update,
     updatePassword,
     deleteById,
-    getProfile
+    getProfile,
+    logout,
+    forgotPasswordPage,
+    forgotPassword,
+    resetPasswordPage,
+    resetPassword
 };

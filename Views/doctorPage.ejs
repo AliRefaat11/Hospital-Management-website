@@ -30,7 +30,6 @@
             </a>
             <div class="dropdown-menu">
               <a href="/User/profile">My Profile</a>
-              <a href="/appointments">My Appointments</a>
               <a href="/User/settings">Settings</a>
               <a href="/User/logout" class="logout-btn">Logout</a>
             </div>
@@ -83,8 +82,8 @@
             <a href="/doctors/<%= doctor._id %>">Dr. <%= doctor.userId.FName %> <%= doctor.userId.LName %></a>
           </h3>
           <p><%= doctor.specialization %></p>
-          <% if (doctor.departmentId) { %>
-            <p class="department"><%= doctor.departmentId.name %></p>
+          <% if (doctor.departmentId && doctor.departmentId.departmentName && doctor.departmentId.departmentName !== doctor.specialization) { %>
+            <p class="department"><%= doctor.departmentId.departmentName %></p>
           <% } %>
           <div class="doctor-info">
             <p><i class="fas fa-phone"></i> <%= doctor.userId.PhoneNumber %></p>
