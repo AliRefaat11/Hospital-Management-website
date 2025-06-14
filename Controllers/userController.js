@@ -88,6 +88,7 @@ const login = asyncHandler(async (req, res, next) => {
 
     const user = await User.findOne({ Email: Email });
     console.log('User found:', user ? user.Email : 'None');
+    console.log('User role from database:', user ? user.role : 'N/A');
 
     if (!user) {
         console.log('No user found for the provided email.');
@@ -125,12 +126,14 @@ const update = async (req, res) => {
         }
 
         const user = await User.findByIdAndUpdate(
-            req.params.id,
+            req.user.id,
             {
                 ...req.body,
-                emailNotifications: req.body.emailNotifications,
-                smsNotifications: req.body.smsNotifications,
-                privateProfile: req.body.privateProfile
+                // Assuming emailNotifications, smsNotifications, privateProfile are boolean and may not always be present in req.body
+                // Spreading req.body handles direct updates to these if they are sent.
+                // If you need to explicitly ensure these are set to false when not present,
+                // you would need additional logic here (e.g., emailNotifications: req.body.emailNotifications || false).
+                // For now, we'll rely on ...req.body to pass any present fields.
             },
             {
                 new: true,

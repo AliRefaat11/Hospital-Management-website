@@ -74,6 +74,15 @@ document.addEventListener("DOMContentLoaded", async function() {
         card.dataset.name = `${doctor.userId.FName} ${doctor.userId.LName}`;
         card.dataset.specialization = doctor.specialization;
 
+        // Determine department display
+        let departmentHtml = '';
+        if (doctor.departmentId && doctor.departmentId.departmentName) {
+            // Only display department if it's different from specialization
+            if (doctor.departmentId.departmentName.toLowerCase() !== doctor.specialization.toLowerCase()) {
+                departmentHtml = `<p class="department">${doctor.departmentId.departmentName}</p>`;
+            }
+        }
+
         card.innerHTML = `
             <div class="doctor-img-container">
                 <img src="${doctor.profileImage || '/images/account-icon-33.png'}" 
@@ -84,7 +93,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 <a href="/doctors/${doctor._id}">Dr. ${doctor.userId.FName} ${doctor.userId.LName}</a>
             </h3>
             <p>${doctor.specialization}</p>
-            ${doctor.departmentId ? `<p class="department">${doctor.departmentId.name}</p>` : ''}
+            ${departmentHtml}
             <div class="doctor-info">
                 <p><i class="fas fa-phone"></i> ${doctor.userId.PhoneNumber}</p>
                 <p><i class="fas fa-envelope"></i> ${doctor.userId.Email}</p>

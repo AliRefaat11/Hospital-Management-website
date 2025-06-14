@@ -183,17 +183,24 @@ form, input, .fa {
 }
 
 .book-btn {
-  padding: 10px 20px;
-  background: #0076CE;
+  padding: 12px 25px;
+  background: #3498db;
   color: #FFFFFF;
-  border-radius: 15px;
-  display: inline-block;
+  border: none;
+  border-radius: 8px;
+  display: inline-flex;
   text-align: center;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  width: auto;
+  min-width: 150px;
+  font-weight: 600;
+  align-items: center;
+  justify-content: center;
 }
 
 .book-btn:hover {
-  background: #005BB5;
+  background: #2980b9;
+  transform: translateY(-2px);
 }
 
 .no-results-message {

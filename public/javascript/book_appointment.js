@@ -596,64 +596,60 @@ function validateForm() {
   return isFormValid;
 }
 
-function showConfirmationModal() {33320
-  
+function showConfirmationModal() {
   confirmationModal.style.display = 'flex';
 }
 
 // Form Submission
 async function handleFormSubmit(event) {
-    console.log('handleFormSubmit called.');
-    event.preventDefault();
+  console.log('handleFormSubmit called.');
+  event.preventDefault();
 
-    // Validate all fields
-    const isValid = validateForm();
-    if (!isValid) return;
+  // Validate all fields
+  const isValid = validateForm();
+  if (!isValid) return;
 
-    // Show loading state
-    submitBtn.disabled = true;
-    submitLoader.style.display = 'block';
-    submitBtn.querySelector('span').textContent = translations[currentLanguage].processing;
+  // Show loading state
+  submitBtn.disabled = true;
+  submitLoader.style.display = 'block';
+  submitBtn.querySelector('span').textContent = translations[currentLanguage].processing;
 
-    try {
-        const formData = new FormData(appointmentForm);
-        const data = Object.fromEntries(formData.entries());
-
-        // Adjust keys to match backend expected keys
-        data.doctorID = data.doctor; // Rename 'doctor' to 'doctorID'
-        data.date = data.date; // Use the value from availableDatesInput
-        data.startingHour = data.startingHour; // Use the value from availableTimesSelect
-        data.reason = data.reason;
-
-        const response = await fetch(appointmentForm.action, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            console.log('Server error response data:', errorData); // Added for debugging
-            showErrorModal(translations[currentLanguage].errorTitle, errorData.message || 'Failed to book appointment');
-            return; // Stop execution after showing error
-        }
-
-        // Show success modal
-        showConfirmationModal();
-        
-        // Reset form
-        appointmentForm.reset();
-    } catch (error) {
-        // This catch block will now primarily handle network errors or issues before response parsing
-        showErrorModal(translations[currentLanguage].errorTitle, error.message || 'An unexpected error occurred.');
-    } finally {
-        // Reset button state
-        submitBtn.disabled = false;
-        submitLoader.style.display = 'none';
-        submitBtn.querySelector('span').textContent = translations[currentLanguage].submitBtn;
+  try {
+    const formData = new FormData(appointmentForm);
+    const data = {};
+    for (let [key, value] of formData.entries()) {
+      data[key] = value;
     }
+
+    // Ensure the keys match backend expectations
+    // The backend createAppointment expects 'doctor', 'patientID', 'date', 'startingHour', 'status', 'reason'
+    // The form inputs should already have these names. If not, adjust here.
+    
+    const response = await fetch(appointmentForm.action, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      showConfirmationModal();
+      appointmentForm.reset();
+      // Optionally, redirect or update UI as needed
+    } else {
+      showErrorModal('Booking Error', result.message || 'An unknown error occurred.');
+    }
+
+  } catch (error) {
+    console.error('Error booking appointment:', error);
+    showErrorModal('Network Error', 'Could not connect to the server. Please try again.');
+  } finally {
+    submitBtn.disabled = false;
+    submitLoader.style.display = 'none';
+  }
 }
 
 // Function to dynamically load doctors from the backend
@@ -719,13 +715,16 @@ function validateDateAndTime() {
   
   // Only validate if both date and time have been selected
   if (dateValue && timeValue) {
-    const selectedDateTime = new Date(`${dateValue}T${timeValue}`);
     const now = new Date();
-    
-    if (selectedDateTime < now) {
+    now.setSeconds(0);
+    now.setMilliseconds(0);
+
+    const [selectedHour, selectedMinute] = timeValue.split(':').map(Number);
+    const selectedDateObj = new Date(dateValue); // This gives us YYYY-MM-DD 00:00:00 local time
+    selectedDateObj.setHours(selectedHour, selectedMinute, 0, 0);
+
+    if (selectedDateObj < now) {
       showErrorModal(translations[currentLanguage].errorTitle, translations[currentLanguage].pastTimeAlert);
-      // availableDatesInput.value = ''; // Optionally clear the date/time
-      // availableTimesSelect.value = '';
       return false;
     }
   }

@@ -43,7 +43,7 @@ document.getElementById('editProfileForm').addEventListener('submit', async func
     };
 
     try {
-        const response = await fetch('/User/profile/update', {
+        const response = await fetch('/User/profile', {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',

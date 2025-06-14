@@ -203,28 +203,18 @@ AppRouter.post('/book', auth, async (req, res) => {
         }
 
         // Create appointment
-        const appointment = await appointmentController.createAppointment(req, res);
+        await appointmentController.createAppointment(req, res);
 
-        // If successful, send JSON response back to client instead of redirecting
-        if (appointment.success) {
-            return res.status(201).json({
-                success: true,
-                message: appointment.message || 'Appointment booked successfully!'
-            });
-        } else {
-            // If not successful, send the error message back to the client
-            return res.status(400).json({
-                success: false,
-                message: appointment.message || 'Failed to book appointment'
-            });
-        }
     } catch (error) {
         console.error('Error booking appointment:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Failed to book appointment',
-            error: error.message
-        });
+        // Only send a response if one hasn't been sent by the controller already
+        if (!res.headersSent) {
+            res.status(500).json({
+                success: false,
+                message: 'Failed to book appointment',
+                error: error.message
+            });
+        }
     }
 });
 

@@ -101,7 +101,13 @@ UserRouter.get('/profile', async (req, res) => {
         const user = req.user;
 
         if (user.role === 'Patient') {
-            const patient = await Patient.findOne({ userId: user._id });
+            const patient = await Patient.findOne({ userId: user._id }).populate({
+                path: 'appointments',
+                populate: {
+                    path: 'doctorID',
+                    select: 'FName LName specialization'
+                }
+            });
             if (!patient) {
                 return res.status(404).send('Patient profile not found');
             }

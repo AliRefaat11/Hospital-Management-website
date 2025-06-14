@@ -15,7 +15,11 @@ DrRouter.get('/', async (req, res) => {
             .populate('userId', 'FName LName Email PhoneNumber Gender Age')
             .populate('departmentId', 'departmentName');
 
-        console.log('Doctors fetched from DB:', doctors.map(doc => ({ _id: doc._id, departmentId: doc.departmentId })));
+        console.log('Doctors fetched from DB (with populated departmentId):', doctors.map(doc => ({
+            _id: doc._id,
+            specialization: doc.specialization,
+            department: doc.departmentId ? doc.departmentId.departmentName : 'Department Missing' // Debugging department access
+        })));
 
         let user = null;
         try {

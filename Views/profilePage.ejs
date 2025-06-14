@@ -65,7 +65,7 @@
           <ul>
             <% patient.appointments.forEach(function(appointment) { %>
               <li>
-                Appointment with Dr. <%= appointment.doctorName %> on <%= appointment.date %> at <%= appointment.time %>
+                Appointment with Dr. <%= appointment.doctorID.FName %> <%= appointment.doctorID.LName %> on <%= appointment.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %> at <%= appointment.startingHour %>
               </li>
             <% }); %>
           </ul>
@@ -105,24 +105,6 @@
           <span class="label">Insurance</span>
           <span class="value"><%= patient.insuranceProvider || 'N/A' %></span>
         </div>
-      </div>
-    </section>
-
-    <section class="profile-section card">
-      <div class="section-header">
-        <h3>Medical Records</h3>
-        <button class="download-all-btn"><i class="fas fa-download"></i> Download All</button>
-      </div>
-      <div class="section-content">
-        <% if (patient.medicalRecords && patient.medicalRecords.length > 0) { %>
-          <ul>
-            <% patient.medicalRecords.forEach(function(record) { %>
-              <li><%= record.name %> - <%= record.date %></li>
-            <% }); %>
-          </ul>
-        <% } else { %>
-          <p>No medical records available.</p>
-        <% } %>
       </div>
     </section>
   </div>
