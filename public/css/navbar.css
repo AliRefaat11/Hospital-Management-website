@@ -1,6 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@700&display=swap");
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css");
 
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Prevents horizontal scroll if content overflows */
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -33,6 +39,7 @@ nav {
   max-width: 1200px;
   margin: 0 auto;
 }
+
 .site-name {
   font-size: 1.8rem;
   font-weight: bold;
@@ -50,6 +57,8 @@ nav {
   display: flex;
   gap: 15px;
   align-items: center;
+  flex-grow: 0;
+  justify-content: center;
 }
 .navbar-links a {
   color: white;

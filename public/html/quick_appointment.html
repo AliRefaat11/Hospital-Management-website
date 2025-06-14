@@ -4,41 +4,25 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Prime Care - Quick Appointment</title>
-  <link rel="stylesheet" href="/css/navbar.css">
-  <link rel="stylesheet" href="/css/common_footer.css">
-  <link rel="stylesheet" href="/css/quick_appointment.css">
+  <link rel="stylesheet" href="../css/quick_appointment.css">
 </head>
 <body>
 
   <nav>
-    <div class="navbar-container">
-      <a href="/" class="site-name">Prime Care</a>
-      <div class="navbar-links">
-        <a href="/" class="<%= currentPage === 'home' ? 'active' : '' %>">HOME</a>
-        <a href="/User/about" class="<%= currentPage === 'about' ? 'active' : '' %>">ABOUT US</a>
-        <a href="/Department/view" class="<%= currentPage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
-        <a href="/doctors" class="<%= currentPage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
-        <a href="/appointments/quick-appointment" class="<%= currentPage === 'book' ? 'active' : '' %>">BOOK NOW</a>
-        <% if (user) { %>
-          <a href="/User/profile" class="<%= currentPage === 'profile' ? 'active' : '' %>">My Profile</a>
-          <a href="/User/logout" class="logout-btn">Logout</a>
-        <% } else { %>
-          <a href="/User/login" class="<%= currentPage === 'login' ? 'active' : '' %>">Login</a>
-          <a href="/Patient/signup" class="signup-btn <%= currentPage === 'signup' ? 'active' : '' %>">Sign Up</a>
-        <% } %>
-      </div>
-    </div>
-  </nav>
-<div class="container">
-  <div class="row">
-    <div class="col-md-6 col-12">
-      <!-- Content here -->
-    </div>
-    <div class="col-md-6 col-12">
-      <!-- Content here -->
+  <div class="navbar-container">
+    <a href="#" class="site-name">Prime Care</a>
+    <div class="navbar-links">
+      <a href="./home_page.html">HOME</a>
+      <a href="./about_us_page.html">ABOUT US</a>
+      <a href="./department_page.html">DEPARTMENTS</a>
+      <a href="./doctors_page.html">DOCTORS</a>
+      <a href="./quick_appointment.html" class="active">BOOK NOW</a>
+      <a href="./login_page.html">Login</a>
+      <a href="./sign_up_page.html" class="signup-btn">Sign Up</a>
     </div>
   </div>
-</div>
+</nav>
+
   <!-- Header -->
   <header>
     <h1 id="formTitle">Quick Appointment</h1>
@@ -51,33 +35,33 @@
   </div>
 
   <main>
-    <form id="quickAppointmentForm" action="/appointments/quick-book" method="POST">
+    <form id="quickAppointmentForm">
       <div class="form-section-title" id="personalInfoTitle">Personal Information</div>
       
       <!-- Modified: Separate first and last name fields -->
       <div class="name-row">
         <div class="form-group">
           <label id="labelFirstName" for="quickFirstName">First Name</label>
-          <input type="text" id="quickFirstName" name="firstName" value="<%= user ? user.firstName : '' %>" placeholder="Enter your first name" required />
+          <input type="text" id="quickFirstName" placeholder="Enter your first name" required />
           <div class="error-message" id="firstNameError">Please enter your first name</div>
         </div>
 
         <div class="form-group">
           <label id="labelLastName" for="quickLastName">Last Name</label>
-          <input type="text" id="quickLastName" name="lastName" value="<%= user ? user.lastName : '' %>" placeholder="Enter your last name" required />
+          <input type="text" id="quickLastName" placeholder="Enter your last name" required />
           <div class="error-message" id="lastNameError">Please enter your last name</div>
         </div>
       </div>
 
       <div class="form-group">
         <label id="labelPhone" for="quickPhone">Phone Number</label>
-        <input type="tel" id="quickPhone" name="phone" value="<%= user ? user.phone : '' %>" placeholder="11-digit phone number" required maxlength="11" />
+        <input type="tel" id="quickPhone" placeholder="11-digit phone number" required maxlength="11" />
         <div class="error-message" id="phoneError">Phone number must be exactly 11 digits</div>
       </div>
 
       <div class="form-group">
         <label id="labelEmail" for="quickEmail">Email Address</label>
-        <input type="email" id="quickEmail" name="email" value="<%= user ? user.email : '' %>" placeholder="your.email@example.com" required />
+        <input type="email" id="quickEmail" placeholder="your.email@example.com" required />
         <div class="error-message" id="emailError">Please enter a valid email address</div>
       </div>
 
@@ -85,30 +69,33 @@
       
       <div class="form-group">
         <label id="labelDepartment" for="quickDepartment">Select Department</label>
-        <select id="quickDepartment" name="department" required>
+        <select id="quickDepartment" required>
           <option value="" disabled selected>Choose medical department</option>
-          <% departments.forEach(dept => { %>
-            <option value="<%= dept.id %>"><%= dept.name %></option>
-          <% }); %>
+          <option value="cardiology">Cardiology</option>
+          <option value="dermatology">Dermatology</option>
+          <option value="pediatrics">Pediatrics</option>
+          <option value="neurology">Neurology</option>
+          <option value="orthopedics">Orthopedics</option>
+          <option value="dentistry">Dentistry</option>
         </select>
         <div class="error-message" id="departmentError">Please select a department</div>
       </div>
 
       <div class="form-group">
         <label id="labelDate" for="quickDate">Appointment Date</label>
-        <input type="date" id="quickDate" name="date" min="<%= new Date().toISOString().split('T')[0] %>" required />
+        <input type="date" id="quickDate" required />
         <div class="error-message" id="dateError">Please select a future date</div>
       </div>
 
       <div class="form-group">
         <label id="labelTime" for="quickTime">Preferred Time</label>
-        <input type="time" id="quickTime" name="time" required />
+        <input type="time" id="quickTime" required />
         <div class="error-message" id="timeError">Please select a time between 9:00 AM and 5:00 PM</div>
       </div>
 
       <div class="form-group">
         <label id="labelNotes" for="quickNotes">Notes or Symptoms (optional)</label>
-        <textarea id="quickNotes" name="notes" placeholder="Briefly describe your symptoms or any specific concerns" rows="3"></textarea>
+        <textarea id="quickNotes" placeholder="Briefly describe your symptoms or any specific concerns" rows="3"></textarea>
       </div>
 
       <button type="submit" id="submitBtn">Request Appointment</button>
@@ -125,6 +112,6 @@
     </div>
   </main>
 
-  <script src="javascript/quick_appointment.js"></script>
+  <script src="../javascript/quick_appointment.js"></script>
 </body>
 </html>

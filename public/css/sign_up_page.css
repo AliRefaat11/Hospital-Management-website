@@ -41,15 +41,6 @@ header p {
   color: #4ecdc4;
 }
 
-.nav-links a {
-  color: #e6e6e6;
-  text-decoration: none;
-  padding: 7px 15px;
-  font-size: 15px;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  border-radius: 20px;
-}
 
 /* Search Functionality */
 .search-container {
@@ -279,6 +270,7 @@ header p {
   margin-top: 10px;
   text-align: center;
   font-weight: 600;
+<<<<<<< HEAD
 }
 
 .error-message.server-error {
@@ -331,3 +323,27 @@ header p {
     padding: 5px 10px;
   }
 }
+=======
+}
+
+.error-message.server-error {
+  background-color: #fdeded;
+  border: 1px solid #fbc2c2;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+.success-message {
+    color: #27ae60;
+    font-size: 14px;
+    margin-top: 10px;
+    text-align: center;
+    font-weight: 600;
+    background-color: #e6f7ee;
+    border: 1px solid #b2dfdb;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+>>>>>>> 99de3df2183c3bdf5d283e3f000943eea2e2ee8a

@@ -1,4 +1,10 @@
 /* Header Styling */
+html, body {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  overflow-x: hidden; /* Ensure no horizontal scroll from this reset */
+}
+
 header {
   background: linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9)), 
     url('https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80') center/cover;
@@ -47,6 +53,7 @@ main {
   color: #2c3e50;
   text-align: center;
   margin-bottom: 0.5rem;
+  margin-top: 0; /* Remove default top margin from the title */
 }
 
 .subtitle {
@@ -354,16 +361,6 @@ body.rtl .insurance-section::before {
     gap: 0;
   }
   
-  .navbar-container {
-    flex-direction: column;
-    padding: 1rem;
-  }
-  
-  .navbar-links {
-    margin-top: 1rem;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
   
   .site-name {
     margin-bottom: 0.5rem;

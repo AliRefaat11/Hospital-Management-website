@@ -28,30 +28,6 @@ header p {
   color: #555;
 }
 
-.logo {
-  font-size: 24px;
-  font-weight: bold;
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.logo i {
-  color: #4ecdc4;
-}
-
-.nav-links a {
-  color: #e6e6e6;
-  text-decoration: none;
-  padding: 7px 15px;
-  font-size: 15px;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  border-radius: 20px;
-}
-
-
 .page-header {
   text-align: center;
   padding: 3rem 1rem 1rem;
