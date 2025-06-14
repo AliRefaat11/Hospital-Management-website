@@ -137,6 +137,32 @@ UserRouter.get('/profile', async (req, res) => {
     }
 });
 
+UserRouter.get('/edit-profile', async (req, res, next) => {
+    try {
+        const user = req.user;
+        res.render('editprofilePage', {
+            currentPage: 'edit-profile',
+            user: user
+        });
+    } catch (err) {
+        console.error('Error loading edit profile page:', err);
+        next(err);
+    }
+});
+
+UserRouter.get('/settings', async (req, res, next) => {
+    try {
+        const user = req.user;
+        res.render('settingsProfile', {
+            currentPage: 'settings',
+            user: user
+        });
+    } catch (err) {
+        console.error('Error loading settings page:', err);
+        next(err);
+    }
+});
+
 // API Routes
 UserRouter.get("/profile", UserController.getProfile);
 UserRouter.patch("/profile", UserController.update);
