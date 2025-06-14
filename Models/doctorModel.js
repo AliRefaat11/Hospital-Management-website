@@ -25,10 +25,6 @@ const doctorSchema = new mongoose.Schema(
             max:5,
             required: true
         },
-        departmentName: {
-            type: String,
-            trim: true
-        },
         availableDays: [
             {
                 type: String,

@@ -3,7 +3,7 @@ const Doctor = require('../Models/doctorModel');
 const Department = require('../Models/departmentModel');
 const User = require('../Models/userModel');
 const jwt = require('jsonwebtoken');
-const { ApiError } = require('../middleware/authMiddleware');
+const Patient = require('../Models/patientModel');
 
 const appointmentController = {
 
@@ -22,19 +22,22 @@ const appointmentController = {
       // Validate patient exists
       const patient = await User.findById(patientID);
       if (!patient) {
-        throw new ApiError('Patient not found', 404);
+        return res.status(404).json({ success: false, message: 'Patient not found' });
       }
 
-      // Check for conflicting appointments
+      // Check for conflicting appointments (scheduled appointments)
       const existingAppointment = await Appointment.findOne({
         doctorID: doctor,
-        date,
+        date: new Date(date),
         startingHour,
-        status: { $nin: ['cancelled', 'no-show'] }
+        status: { $nin: ['cancelled', 'no-show'] } // Exclude cancelled or no-show appointments
       });
 
       if (existingAppointment) {
-        throw new ApiError('Time slot is already booked', 409);
+        return res.status(409).json({
+          success: false,
+          message: 'This time slot is already booked for this doctor.'
+        });
       }
 
       // Create new appointment
@@ -50,19 +53,22 @@ const appointmentController = {
       // Save to database
       const savedAppointment = await appointment.save();
 
-      // Populate doctor and patient info
-      await savedAppointment.populate('doctorID', 'name specialization');
-      await savedAppointment.populate('patientID', 'FName LName email');
+      // Add the new appointment to the patient's appointments array
+      const patientDoc = await Patient.findOne({ userId: patientID });
+      if (patientDoc) {
+        patientDoc.appointments.push(savedAppointment._id);
+        await patientDoc.save();
+      }
 
-      return savedAppointment;
+      // Populate doctor and patient info
+      await savedAppointment.populate('doctorID', 'FName LName specialization');
+      await savedAppointment.populate('patientID', 'FName LName Email');
+
+      res.status(201).json({ success: true, message: 'Appointment created successfully', data: savedAppointment });
 
     } catch (error) {
       console.error('Create appointment error:', error);
-      if (error instanceof ApiError) {
-        throw error;
-      } else {
-        throw new ApiError('Failed to create appointment', 500);
-      }
+      res.status(500).json({ success: false, message: 'Failed to create appointment', error: error.message });
     }
   },
 

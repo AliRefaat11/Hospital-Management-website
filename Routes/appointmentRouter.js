@@ -79,35 +79,54 @@ AppRouter.get('/', async (req, res) => {
             console.log('Token verification failed:', error.message);
         }
 
-        // Fetch doctors for the dropdown in appointmentsManagement.ejs
-        const doctors = await Doctor.find()
-            .populate('userId', 'FName LName')
-            .populate('departmentId', 'departmentName');
+        if (!user) {
+            // If no user is logged in, redirect to login page
+            return res.redirect('/User/login');
+        }
 
-        res.render('appointmentsManagement', { 
-            user,
-            currentPage: 'appointments',
-            siteName: 'PrimeCare',
-            stats: {
-                total: { count: 0, changeType: 'neutral', changePercent: 0 },
-                today: { count: 0 },
-                completed: { count: 0 },
-                pending: { count: 0 }
-            },
-            departments: [],
-            appointments: [],
-            todaySchedule: {
-                urgent: 0,
-                late: 0,
-                noShows: 0,
-                avgWaitTime: '0 min'
-            },
-            nextAppointments: [],
-            notifications: { count: 0 },
-            messages: { count: 0 },
-            doctors, // Pass the fetched doctors to the template
-            appointmentTypes: ['Scheduled', 'Confirmed', 'Completed', 'Cancelled', 'No Show'] // Added missing appointmentTypes
-        });
+        if (user.role === 'Patient') {
+            // If it's a patient, redirect them to their profile page which shows appointments
+            return res.redirect('/User/profile');
+        } else if (user.role === 'Admin') {
+            // If it's an admin, proceed to render appointmentsManagement
+            // You need to fetch admin data here for the appointmentsManagement.ejs
+            const admin = user; // Assuming user object contains admin details or you fetch them here
+            
+            // Fetch doctors for the dropdown in appointmentsManagement.ejs
+            const doctors = await Doctor.find()
+                .populate('userId', 'FName LName')
+                .populate('departmentId', 'departmentName');
+
+            // Placeholder data for stats, departments, etc. You should fetch real data here.
+            res.render('appointmentsManagement', {
+                user,
+                admin, // Pass admin object for admin view
+                currentPage: 'appointments',
+                siteName: 'PrimeCare',
+                stats: {
+                    total: { count: 0, changeType: 'neutral', changePercent: 0 },
+                    today: { count: 0 },
+                    completed: { count: 0 },
+                    pending: { count: 0 }
+                },
+                departments: [], // Fetch real departments
+                appointments: [], // Fetch real appointments for admin view
+                todaySchedule: {
+                    urgent: 0,
+                    late: 0,
+                    noShows: 0,
+                    avgWaitTime: '0 min'
+                },
+                nextAppointments: [],
+                notifications: { count: 0 },
+                messages: { count: 0 },
+                doctors, // Pass the fetched doctors to the template
+                appointmentTypes: ['Scheduled', 'Confirmed', 'Completed', 'Cancelled', 'No Show']
+            });
+        } else {
+            // For other roles, redirect to home or an appropriate page
+            return res.redirect('/');
+        }
     } catch (error) {
         console.error("Error rendering appointments page:", error);
         res.status(500).send("Error loading appointments page.");
@@ -115,45 +134,46 @@ AppRouter.get('/', async (req, res) => {
 });
 
 AppRouter.get('/book', async (req, res) => {
+    console.log('GET /appointments/book route hit');
     try {
         const doctorId = req.query.doctor; 
+        console.log('Doctor ID from query:', doctorId);
+        
         let selectedDoctor = null;
         if (doctorId) {
             selectedDoctor = await Doctor.findById(doctorId)
                 .populate('userId', 'FName LName')
                 .populate('departmentId', 'departmentName')
-                .select('+weeklySchedule') // Explicitly include weeklySchedule
+                .select('+weeklySchedule')
                 .lean(); 
-            if (selectedDoctor) {
-                // Ensure weeklySchedule is explicitly included for selectedDoctor
-                const fullSelectedDoctor = await Doctor.findById(selectedDoctor._id).select('+weeklySchedule').lean();
-                selectedDoctor.weeklySchedule = fullSelectedDoctor.weeklySchedule; // Assign the weeklySchedule from the full fetch
-            }
+            console.log('Selected doctor:', selectedDoctor);
         }
 
         // Fetch all doctors for the dropdown
         const doctors = await Doctor.find()
             .populate('userId', 'FName LName')
             .populate('departmentId', 'departmentName')
-            .select('+weeklySchedule') // Explicitly include weeklySchedule for all doctors
+            .select('+weeklySchedule')
             .lean();
+        console.log('Number of doctors fetched:', doctors.length);
 
         const departments = await Department.find();
+        console.log('Number of departments fetched:', departments.length);
 
         let user = null;
         try {
             const token = req.cookies?.token;
+            console.log('Token from cookies:', token ? 'Present' : 'Not present');
             if (token) {
                 const decoded = jwt.verify(token, process.env.JWT_SECRET);
                 user = await User.findById(decoded.id).select('-Password');
+                console.log('User found:', user ? 'Yes' : 'No');
             }
         } catch (error) {
             console.log('Token verification failed:', error.message);
         }
 
-        console.log('Selected Doctor being sent to EJS:', selectedDoctor);
-        console.log('Doctors list being sent to EJS:', doctors);
-
+        console.log('Rendering bookAppointment.ejs');
         res.render('bookAppointment', {
             departments,
             user,
@@ -180,17 +200,18 @@ AppRouter.post('/book', auth, async (req, res, next) => {
         }
 
         // Create appointment
-        const appointment = await appointmentController.createAppointment(req); // Pass req only
+        await appointmentController.createAppointment(req, res);
 
-        // If successful, send JSON response back to client
-        res.status(201).json({
-            success: true,
-            message: 'Appointment booked successfully!',
-            data: appointment
-        });
     } catch (error) {
-        console.error('Appointment booking error:', error);
-        next(error); // Pass the error to the global error handler
+        console.error('Error booking appointment:', error);
+        // Only send a response if one hasn't been sent by the controller already
+        if (!res.headersSent) {
+            res.status(500).json({
+                success: false,
+                message: 'Failed to book appointment',
+                error: error.message
+            });
+        }
     }
 });
 

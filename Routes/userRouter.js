@@ -7,6 +7,7 @@ const User = require('../Models/userModel');
 const Patient = require('../Models/patientModel');
 const Doctor = require('../Models/doctorModel');
 const Department = require('../Models/departmentModel');
+const Appointment = require('../Models/appointmentModel');
 
 UserRouter.post("/signup", UserController.create);
 UserRouter.post("/login", UserController.login);
@@ -23,6 +24,30 @@ UserRouter.get('/login', async (req, res) => {
         currentPage: 'login',
         siteName: 'PrimeCare'
     });
+});
+
+// Protected routes (require authentication)
+UserRouter.use(auth);
+
+// View Routes (Protected)
+UserRouter.get('/edit-profile', async (req, res, next) => {
+    try {
+        const user = req.user;
+        let patient = null;
+
+        if (user.role === 'Patient') {
+            patient = await Patient.findOne({ userId: user._id });
+        }
+
+        res.render('editprofilePage', {
+            currentPage: 'edit-profile',
+            user: user,
+            patient: patient
+        });
+    } catch (err) {
+        console.error('Error loading edit profile page:', err);
+        next(err);
+    }
 });
 
 UserRouter.get('/about', async (req, res) => {
@@ -71,16 +96,18 @@ UserRouter.get('/about', async (req, res) => {
     }
 });
 
-// Protected routes (require authentication)
-UserRouter.use(auth);
-
-// View Routes (Protected)
 UserRouter.get('/profile', async (req, res) => {
     try {
         const user = req.user;
 
         if (user.role === 'Patient') {
-            const patient = await Patient.findOne({ userId: user._id });
+            const patient = await Patient.findOne({ userId: user._id }).populate({
+                path: 'appointments',
+                populate: {
+                    path: 'doctorID',
+                    select: 'FName LName specialization'
+                }
+            });
             if (!patient) {
                 return res.status(404).send('Patient profile not found');
             }
@@ -137,25 +164,14 @@ UserRouter.get('/profile', async (req, res) => {
     }
 });
 
-UserRouter.get('/edit-profile', async (req, res, next) => {
-    try {
-        const user = req.user;
-        res.render('editprofilePage', {
-            currentPage: 'edit-profile',
-            user: user
-        });
-    } catch (err) {
-        console.error('Error loading edit profile page:', err);
-        next(err);
-    }
-});
-
 UserRouter.get('/settings', async (req, res, next) => {
     try {
         const user = req.user;
         res.render('settingsProfile', {
             currentPage: 'settings',
-            user: user
+            user: user,
+            title: 'Settings',
+            pageTitle: 'Settings'
         });
     } catch (err) {
         console.error('Error loading settings page:', err);
@@ -169,8 +185,7 @@ UserRouter.patch("/profile", UserController.update);
 UserRouter.patch("/profile/password", UserController.updatePassword);
 
 // Admin only routes
-UserRouter.use(allowedTo('Admin'));
-UserRouter.get('/adminProfile', async (req, res, next) => {
+UserRouter.get('/adminProfile', allowedTo('Admin'), async (req, res, next) => {
     try {
         const admin = req.user;
 

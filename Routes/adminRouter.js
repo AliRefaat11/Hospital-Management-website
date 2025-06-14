@@ -1,6 +1,7 @@
 const express = require('express');
 const adminController = require('../Controllers/adminController');
 const adminRouter = express.Router();
+const { auth, allowedTo } = require('../middleware/authMiddleware');
 
 adminRouter.get('/stats/users-roles-counts', async (req, res, next) => {
     try {
@@ -18,5 +19,8 @@ adminRouter.get('/stats/users-roles-counts', async (req, res, next) => {
         next(error);
     }
 });
+
+// Admin Dashboard Route
+adminRouter.get('/dashboard', auth, allowedTo('Admin'), adminController.getDashboardData);
 
 module.exports = adminRouter;

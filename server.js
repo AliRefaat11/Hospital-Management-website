@@ -7,6 +7,7 @@ dbconnection();
 const path = require('path');
 const { auth } = require('./middleware/authMiddleware');
 const jwt = require('jsonwebtoken');
+const appointmentController = require('./Controllers/appointmentController');
 const cookieParser = require('cookie-parser');
 const adminController = require('./Controllers/adminController'); // Import the adminController
 const doctorController = require('./Controllers/doctorController'); // Corrected: Ensure this import is correct
@@ -25,7 +26,7 @@ const AppRouter = require('./Routes/appointmentRouter');
 const InsurRouter = require('./Routes/insuranceRouter');
 const MedRouter = require('./Routes/medicalreportRouter');
 const TreatRouter = require('./Routes/treatmentplanRouter');
-const AdminRouter = require('./Routes/adminRoutes'); // Import the new StatsRouter
+const AdminRouter = require('./Routes/adminRouter');
 const TreatmentPlan = require('./Models/treatmentplanModel');
 const MedicalReport = require('./Models/medicalreportModel');
 const User = require('./Models/userModel');
@@ -36,12 +37,12 @@ const Department = require('./Models/departmentModel');
 app.set('views', path.join(__dirname, 'Views'));
 app.set('view engine', 'ejs');
 
-// Middleware
-app.use(express.static('public'));
+// Middleware - Place express.static at the very beginning to serve static files
+app.use(express.static(path.join(__dirname, 'public')));
+
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
 
 // Request logging middleware
 app.use((req, res, next) => {
@@ -258,18 +259,18 @@ app.get('/test-admin-doctors', async (req, res) => {
     }
 });
 
-// Mount your routers - these should come AFTER specific API routes if there's any overlap
-app.use('/doctors', DrRouter); // This handles view routes like /doctors and /doctors/:id
+// Mount Routers
+app.use('/doctors', DrRouter);
 app.use('/User', UserRouter);
-app.use('/Patient', PatRouter);
-app.use('/Document', DocRouter);
+app.use('/patients', PatRouter);
+app.use('/documents', DocRouter);
 app.use('/Department', DepRouter);
 app.use('/appointments', AppRouter);
 app.use('/insurance', InsurRouter);
-app.use('/medicalreports', MedRouter);
-app.use('/treatmentplans', TreatRouter);
+app.use('/medical-reports', MedRouter);
+app.use('/treatment-plans', TreatRouter);
 app.use('/admin', AdminRouter);
-app.use('/test-doctors', TestDrRouter); // Mount the test router here
+app.use('/test-doctors', TestDrRouter);
 
 // Admin Dashboard Page Route
 app.get('/admin/dashboard', async (req, res) => {
