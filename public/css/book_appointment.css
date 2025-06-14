@@ -1,110 +1,10 @@
-@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@700&display=swap");
-@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css");
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Quicksand', sans-serif;
-}
-
-a {
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: none;
-}
-
-body {
-  background-color: #f5f7fa;
-  color: #333;
-  line-height: 1.6;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  transition: all 0.3s ease;
-}
-
-body.rtl {
-  direction: rtl;
-  text-align: right;
-}
-
-body.ltr {
-  direction: ltr;
-  text-align: left;
-}
-
-/* Navigation Bar */
-nav {
-  background: linear-gradient(135deg, #2c3e50, #3498db);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  z-index: 100;
-}
-
-.navbar-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.site-name {
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: white;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-}
-
-.site-name::before {
-  content: "💉";
-  margin-right: 10px;
-  font-size: 1.5rem;
-}
-
-.navbar-links {
-  display: flex;
-  gap: 15px;
-  align-items: center;
-}
-
-.navbar-links a {
-  color: white;
-  text-decoration: none;
-  padding: 8px 15px;
-  font-size: 1rem;
-  transition: all 0.3s ease;
-  border-radius: 30px;
-}
-
-.navbar-links a:hover {
-  background-color: rgba(255, 255, 255, 0.15);
-  transform: translateY(-2px);
-}
-
-.navbar-links a.active {
-  background-color: rgba(255, 255, 255, 0.15);
-}
-
-.navbar-links a:nth-last-child(2) {
-  border: 1px solid white;
-  border-radius: 30px;
-}
-
-.navbar-links a.signup-btn {
-  background-color: #2ecc71;
-  color: white;
-  font-weight: 600;
-  border-radius: 30px;
-}
-
 /* Header Styling */
+html, body {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  overflow-x: hidden; /* Ensure no horizontal scroll from this reset */
+}
+
 header {
   background: linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9)), 
     url('https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80') center/cover;
@@ -153,6 +53,7 @@ main {
   color: #2c3e50;
   text-align: center;
   margin-bottom: 0.5rem;
+  margin-top: 0; /* Remove default top margin from the title */
 }
 
 .subtitle {
@@ -460,16 +361,6 @@ body.rtl .insurance-section::before {
     gap: 0;
   }
   
-  .navbar-container {
-    flex-direction: column;
-    padding: 1rem;
-  }
-  
-  .navbar-links {
-    margin-top: 1rem;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
   
   .site-name {
     margin-bottom: 0.5rem;

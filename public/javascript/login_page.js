@@ -81,15 +81,32 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem('token', data.token);
                 console.log('Login successful, redirecting...');
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> nasr
                 // Redirect based on user role
                 const userRole = data.data.user.role;
                 if (userRole === 'Patient') {
                     window.location.href = '/User/profile'; // Redirect Patient to their profile
                 } else if(userRole === 'Doctor') {
                     window.location.href = '/'; 
+<<<<<<< HEAD
+                } else if (userRole === 'Admin') {
+                    window.location.href = '/User/adminProfile'; // Redirect Admin to their profile
+                } else{
+                    // Default redirection or show a generic message for other roles
+                    window.location.href = '/';
+                }
+=======
                 } else{
 
                 }
+=======
+                // Redirect to home page or dashboard
+                window.location.href = '/';
+>>>>>>> 99de3df2183c3bdf5d283e3f000943eea2e2ee8a
+>>>>>>> nasr
             } else {
                 // Show error message from server
                 showError(data.message || 'Login failed. Please try again.');

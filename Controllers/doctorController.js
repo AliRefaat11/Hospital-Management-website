@@ -27,24 +27,39 @@ const getById = async (req, res) => {
     try {
         const doctor = await Doctor.findById(req.params.id)
             .populate('userId', 'FName LName Email PhoneNumber Gender Age')
-            .populate('departmentId', 'departmentName');
+            .populate('departmentId', 'name');
         
         if (!doctor) {
-            return res.status(404).json({
-                status: 'fail',
-                message: 'Doctor not found'
-            });
+            return res.status(404).render('errorPage', { message: 'Doctor not found' });
         }
 
-        res.status(200).json({
-            status: 'success',
-            data: doctor
+        let user = null;
+        try {
+            const token = req.cookies?.token;
+            if (token) {
+                const decoded = jwt.verify(token, process.env.JWT_SECRET);
+                user = await User.findById(decoded.id).select('-Password');
+            }
+        } catch (error) {
+            console.log('Token verification failed:', error.message);
+        }
+
+        const hospital = {
+            name: "PrimeCare",
+            address: "123 Health St, Wellness City",
+            phone: "+1234567890",
+            email: "info@primecare.com"
+        };
+
+        res.render('doctorProfile', {
+            doctor,
+            user,
+            hospital,
+            currentPage: 'doctors'
         });
     } catch (error) {
-        res.status(400).json({
-            status: 'fail',
-            message: error.message
-        });
+        console.error("Error rendering doctor profile page:", error);
+        res.status(500).render('errorPage', { message: "Error loading doctor profile." });
     }
 };
 
@@ -205,7 +220,19 @@ const getBySpecialization = async (req, res) => {
 
 const search = async (req, res) => {
     try {
-        const searchQuery = req.query.q;
+        const searchQuery = req.query.query;
+        
+        if (!searchQuery) {
+            // If no search query, return all doctors
+            const doctors = await Doctor.find()
+                .populate('userId', 'FName LName Email PhoneNumber Gender Age')
+                .populate('departmentId', 'departmentName');
+            
+            return res.status(200).json({
+                status: 'success',
+                data: doctors
+            });
+        }
         
         const doctors = await Doctor.find()
             .populate({
@@ -228,9 +255,10 @@ const search = async (req, res) => {
             data: filteredDoctors
         });
     } catch (error) {
-        res.status(400).json({
-            status: 'fail',
-            message: error.message
+        console.error("Error searching doctors:", error);
+        res.status(500).json({
+            status: 'error',
+            message: "Error searching for doctors."
         });
     }
 };

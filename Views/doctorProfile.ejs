@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dr. <%= doctor.userId.FName %> <%= doctor.userId.LName %> - <%= hospital.name %></title>
-    <link rel="stylesheet" href="/css/doctor_profile.css">
+    <link rel="stylesheet" href="/css/navbar.css">
     <link rel="stylesheet" href="/css/common_footer.css">
+    <link rel="stylesheet" href="/css/doctor_profile.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -19,8 +20,18 @@
                 <a href="/doctors" class="<%= currentPage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
                 <a href="/appointments/book" class="<%= currentPage === 'book' ? 'active' : '' %>">BOOK NOW</a>
                 <% if (user) { %>
-                    <a href="/User/profile"><%= user.FName %> <%= user.LName %></a>
-                    <a href="/User/logout" class="signup-btn">Logout</a>
+                    <div class="user-menu">
+                        <a href="/User/profile" class="profile-link">
+                            <i class="fas fa-user-circle"></i>
+                            <%= user.FName %> <%= user.LName %>
+                        </a>
+                        <div class="dropdown-menu">
+                            <a href="/User/profile">My Profile</a>
+                            <a href="/appointments">My Appointments</a>
+                            <a href="/User/settings">Settings</a>
+                            <a href="/User/logout" class="logout-btn">Logout</a>
+                        </div>
+                    </div>
                 <% } else { %>
                     <a href="/User/login" class="<%= currentPage === 'login' ? 'active' : '' %>">Login</a>
                     <a href="/Patient/signup" class="signup-btn">Sign Up</a>
@@ -43,10 +54,10 @@
 
             <div class="availability contact-info">
                 <h3 class="section-title">Availability</h3>
-                <% if (doctor.schedule && Array.isArray(doctor.schedule) && doctor.schedule.length > 0) { %>
+                <% if (doctor.weeklySchedule && Array.isArray(doctor.weeklySchedule) && doctor.weeklySchedule.length > 0) { %>
                 <ul>
-                    <% doctor.schedule.forEach(slot => { %>
-                    <li><%= slot.day %>: <%= slot.startTime %> - <%= slot.endTime %></li>
+                    <% doctor.weeklySchedule.forEach(daySchedule => { %>
+                    <li><%= daySchedule.dayOfWeek %>: <%= daySchedule.timeSlots.join(', ') %></li>
                     <% }); %>
                 </ul>
                 <% } else { %>

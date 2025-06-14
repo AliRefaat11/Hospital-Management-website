@@ -14,10 +14,10 @@ const doctorSchema = new mongoose.Schema(
             required:[true,"Department id is required"]
         },
         specialization: {
-            type: String,  
-            trim:true,
-            required:[true,"speciality is required"],
-            enum:["cardiology","dermatology","orthopedics","pediatrics","Neurology"]
+            type: String,
+            trim: true,
+            required: [true, "speciality is required"],
+            enum: ["cardiology", "dermatology", "orthopedics", "pediatrics", "Neurology"]
         },
         rating: {
             type: Number,
@@ -25,24 +25,35 @@ const doctorSchema = new mongoose.Schema(
             max:5,
             required: true
         },
-        status: {
-            type: String,
-            enum: ['active', 'inactive', 'on-leave'],
-            default: 'active'
-        },
-        schedule: [
-            {
-                day: { type: String, enum: ["saturday","sunday","monday","tuesday","wednesday","thursday"], required: true },
-                startTime: { type: String, required: true }, // e.g., "09:00"
-                endTime: { type: String, required: true }    // e.g., "17:00"
-            }
-        ],
         departmentName: {
             type: String,
             trim: true
-        }
+        },
+        availableDays: [
+            {
+                type: String,
+                enum: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+            }
+        ],
+        weeklySchedule: [
+            {
+                dayOfWeek: {
+                    type: String,
+                    enum: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+                    required: true
+                },
+                timeSlots: [
+                    {
+                        type: String, // e.g., "09:00", "14:30"
+                        match: /^[0-9]{2}:[0-9]{2}$/ // HH:MM format
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        timestamps: true
     }
 );
 
-const Doctor = mongoose.model("Doctor",doctorSchema);
-module.exports = Doctor;
+module.exports = mongoose.model('Doctor', doctorSchema);

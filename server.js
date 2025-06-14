@@ -1,13 +1,16 @@
 const dotenv = require('dotenv');
-dotenv.config({path:"config.env"});
-const dbconnection = require('./config/database');
-dbconnection(); // Call the database connection function
+dotenv.config({ path: "config.env" });
+
 const express = require('express');
+const dbconnection = require('./config/database');
+dbconnection();
 const path = require('path');
 const { auth } = require('./middleware/authMiddleware');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const adminController = require('./Controllers/adminController'); // Import the adminController
+const doctorController = require('./Controllers/doctorController'); // Corrected: Ensure this import is correct
+const DocController = require('./Controllers/documentController'); // Import the DocController
 
 const app = express();
 
@@ -49,10 +52,6 @@ app.use((req, res, next) => {
     next();
 });
 
-// Removed global auth middleware - auth should be applied within specific routers
-// app.use(auth); // THIS LINE WAS POTENTIALLY CAUSING ISSUES, REMOVED
-
-// Home page route
 app.get('/', async (req, res) => {
     try {
         const hospital = {
@@ -168,6 +167,9 @@ app.get('/', async (req, res) => {
             }
         ];
 
+        // Fetch all doctors from the database
+        const doctors = await Doctor.find().populate('userId', 'FName LName').lean();
+
         let user = null;
         try {
             const token = req.cookies?.token;
@@ -190,7 +192,7 @@ app.get('/', async (req, res) => {
             cta,
             footerLinks,
             socialLinks,
-            featuredDoctors,
+            doctors,
             siteName: 'PrimeCare Hospital - Updated'
         });
     } catch (error) {
@@ -199,7 +201,10 @@ app.get('/', async (req, res) => {
     }
 });
 
-// Temporary test route for admin doctor management
+// *** IMPORTANT: Place API routes here, before any app.use() calls that mount routers ***
+app.get('/api/doctors', doctorController.getAll); // This must come before app.use('/doctors', DrRouter)
+
+// Temporary test route for admin doctor management - RESTORED
 app.get('/test-admin-doctors', async (req, res) => {
     try {
         const doctors = await Doctor.find()
@@ -208,20 +213,18 @@ app.get('/test-admin-doctors', async (req, res) => {
 
         const departments = await Department.find();
 
-        // Placeholder admin user for testing
         let admin = {
             name: "Test Admin",
             role: "System Administrator",
-            profileImage: "/images/admin-avatar.png" // Or any default image
+            profileImage: "/images/admin-avatar.png"
         };
 
-        // Placeholder stats and activities data
         const stats = {
             totalDoctors: doctors.length,
-            doctorsChange: 5, // Example value
-            activeDoctors: doctors.filter(doc => doc.status === 'active').length, // Assuming a status field exists
-            specialistDoctors: doctors.filter(doc => doc.specialization).length, // Example of specialists
-            generalDoctors: doctors.filter(doc => doc.specialization === 'General Practitioner').length // Example of general practitioners
+            doctorsChange: 5,
+            activeDoctors: doctors.filter(doc => doc.status === 'active').length,
+            specialistDoctors: doctors.filter(doc => doc.specialization).length,
+            generalDoctors: doctors.filter(doc => doc.specialization === 'General Practitioner').length
         };
 
         const activities = [
@@ -229,10 +232,9 @@ app.get('/test-admin-doctors', async (req, res) => {
             { icon: 'fa-edit', description: 'Test Doctor updated', timestamp: new Date() },
         ];
 
-        // Additional data required by doctorManagement.ejs
         const specializations = ["Cardiology", "Dermatology", "Orthopedics", "Pediatrics", "Neurology", "General Practitioner"];
         const employmentTypes = ["Full-Time", "Part-Time", "Consultant"];
-        const csrfToken = 'test-csrf-token'; // Placeholder, replace with actual CSRF token in production
+        const csrfToken = 'test-csrf-token';
 
         res.render('doctorManagement', {
             doctors,
@@ -243,7 +245,7 @@ app.get('/test-admin-doctors', async (req, res) => {
             specializations,
             employmentTypes,
             csrfToken,
-            currentPage: 'doctors-management' // Active page for sidebar highlighting
+            currentPage: 'doctors-management'
         });
     } catch (error) {
         console.error("Error rendering test admin doctor management page:", error);
@@ -251,18 +253,18 @@ app.get('/test-admin-doctors', async (req, res) => {
     }
 });
 
-// Mount routers
+// Mount your routers - these should come AFTER specific API routes if there's any overlap
+app.use('/doctors', DrRouter); // This handles view routes like /doctors and /doctors/:id
 app.use('/User', UserRouter);
-app.use('/doctors', TestDrRouter);
-app.use('/doctors', DrRouter);
 app.use('/Patient', PatRouter);
 app.use('/Document', DocRouter);
 app.use('/Department', DepRouter);
 app.use('/appointments', AppRouter);
 app.use('/insurance', InsurRouter);
-app.use('/medical-reports', MedRouter);
-app.use('/treatment-plans', TreatRouter);
+app.use('/medicalreports', MedRouter);
+app.use('/treatmentplans', TreatRouter);
 app.use('/admin', AdminRouter);
+app.use('/test-doctors', TestDrRouter); // Mount the test router here
 
 // Admin Dashboard Page Route
 app.get('/admin/dashboard', async (req, res) => {
@@ -317,6 +319,7 @@ app.get('/admin/dashboard', async (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
+    console.log(`Open http://localhost:${PORT} in your browser`);
 });
 
 // Global error handling middleware
