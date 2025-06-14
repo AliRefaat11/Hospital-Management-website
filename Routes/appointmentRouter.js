@@ -1,7 +1,7 @@
 const express = require('express');
 const AppRouter = express.Router();
 const appointmentController = require('../Controllers/appointmentController');
-const { auth } = require('../middleware/authMiddleware');
+const { auth, ApiError } = require('../middleware/authMiddleware');
 const jwt = require('jsonwebtoken');
 const User = require('../Models/userModel');
 const Department = require('../Models/departmentModel');
@@ -168,43 +168,29 @@ AppRouter.get('/book', async (req, res) => {
     }
 });
 
-AppRouter.post('/book', auth, async (req, res) => {
+AppRouter.post('/book', auth, async (req, res, next) => {
     try {
         console.log('Received body in /appointments/book POST:', req.body);
         const { doctor, date, startingHour, reason } = req.body;
         const patientID = req.user.id; // Get from auth middleware
 
-        // Validate required fields
+        // Validate required fields (moved to controller or middleware for cleaner route)
         if (!doctor || !date || !startingHour || !reason) {
-            return res.status(400).json({
-                success: false,
-                message: 'All fields are required'
-            });
+            return next(new ApiError('All fields are required', 400));
         }
 
         // Create appointment
-        const appointment = await appointmentController.createAppointment(req, res);
+        const appointment = await appointmentController.createAppointment(req); // Pass req only
 
-        // If successful, send JSON response back to client instead of redirecting
-        if (appointment.success) {
-            return res.status(201).json({
-                success: true,
-                message: appointment.message || 'Appointment booked successfully!'
-            });
-        } else {
-            // If not successful, send the error message back to the client
-            return res.status(400).json({
-                success: false,
-                message: appointment.message || 'Failed to book appointment'
-            });
-        }
-    } catch (error) {
-        console.error('Error booking appointment:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Failed to book appointment',
-            error: error.message
+        // If successful, send JSON response back to client
+        res.status(201).json({
+            success: true,
+            message: 'Appointment booked successfully!',
+            data: appointment
         });
+    } catch (error) {
+        console.error('Appointment booking error:', error);
+        next(error); // Pass the error to the global error handler
     }
 });
 

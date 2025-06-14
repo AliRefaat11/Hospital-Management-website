@@ -25,7 +25,7 @@ const AppRouter = require('./Routes/appointmentRouter');
 const InsurRouter = require('./Routes/insuranceRouter');
 const MedRouter = require('./Routes/medicalreportRouter');
 const TreatRouter = require('./Routes/treatmentplanRouter');
-const AdminRouter = require('./Routes/adminRoutes');
+const AdminRouter = require('./Routes/adminRoutes'); // Import the new StatsRouter
 const TreatmentPlan = require('./Models/treatmentplanModel');
 const MedicalReport = require('./Models/medicalreportModel');
 const User = require('./Models/userModel');
@@ -279,7 +279,11 @@ app.get('/admin/dashboard', async (req, res) => {
 
         // Construct the stats object with all expected properties for adminProfile.ejs
         const stats = {
-            activeDoctors: backendStats.totalDoctors || 0, // Using totalDoctors as activeDoctors for now
+            totalDoctors: backendStats.totalDoctors || 0,
+            totalPatients: backendStats.totalPatients || 0,
+            totalAppointments: backendStats.totalAppointments || 0,
+            // Using totalDoctors as activeDoctors for now, adjust if there's an 'isActive' field.
+            activeDoctors: backendStats.totalDoctors || 0, 
             doctorsChange: 0, // Placeholder: You can add logic to calculate this later
             todayAppointments: backendStats.totalAppointments || 0, // Using totalAppointments as todayAppointments for now
             appointmentsChange: 0, // Placeholder
@@ -290,10 +294,10 @@ app.get('/admin/dashboard', async (req, res) => {
             departmentCount: backendStats.totalDepartments || 0, // Ensuring departmentCount is available
             availableSlots: 0, // Placeholder
             availableDoctors: backendStats.totalDoctors || 0, // Placeholder for available doctors
-            totalDoctors: backendStats.totalDoctors || 0, // Ensure totalDoctors is explicitly passed
             coverageRate: 0, // Placeholder
             onTimeRate: 0, // Placeholder
-            // Add any other stats properties expected by adminProfile.ejs here
+            patientsByBloodType: backendStats.patientsByBloodType || [],
+            doctorsByDepartment: backendStats.doctorsByDepartment || [],
         };
 
         // Placeholder admin user for testing

@@ -1,0 +1,44 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f7f7f7;
+  }
+  
+  .dashboard {
+    max-width: 1200px;
+    margin: auto;
+  }
+  
+  h1 {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  
+  .totals {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+  }
+  
+  .totals div {
+    background: #fff;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    width: 180px;
+    text-align: center;
+  }
+  
+  .charts canvas {
+    background: #fff;
+    margin: 20px auto;
+    display: block;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 100%;
+  }
+
+  
