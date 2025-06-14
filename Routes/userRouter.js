@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../Models/userModel');
 const Patient = require('../Models/patientModel');
 const Doctor = require('../Models/doctorModel');
+const Appointment = require('../Models/appointmentModel');
 
 // Public routes (no auth needed)
 UserRouter.post("/signup", UserController.create);
@@ -78,7 +79,7 @@ UserRouter.get('/about', async (req, res) => {
 UserRouter.use(auth); // Apply auth middleware to all routes below
 
 // View Routes (Protected)
-UserRouter.get('/profile', async (req, res) => {
+UserRouter.get('/profile', async (req, res, next) => {
     try {
         const user = req.user;
 
@@ -87,6 +88,39 @@ UserRouter.get('/profile', async (req, res) => {
             if (!patient) {
                 return res.status(404).send('Patient profile not found');
             }
+
+            // Fetch upcoming appointments for the patient
+            const upcomingAppointments = await Appointment.find({
+                patientID: user._id,
+                date: { $gte: new Date() }, // Only future appointments
+                status: { $nin: ['completed', 'cancelled', 'no-show'] } // Exclude certain statuses
+            })
+            .populate({
+                path: 'doctorID',
+                populate: {
+                    path: 'userId',
+                    select: 'FName LName' // Select only FName and LName from User
+                }
+            })
+            .populate({
+                path: 'doctorID',
+                populate: {
+                    path: 'departmentId',
+                    select: 'departmentName' // Select only departmentName from Department
+                }
+            })
+            .sort({ date: 1, startingHour: 1 }); // Sort by date and time
+
+            // Map appointments to the structure expected by userProfile.ejs
+            const formattedAppointments = upcomingAppointments.map(app => ({
+                doctor: `Dr. ${app.doctorID.userId.FName} ${app.doctorID.userId.LName}`,
+                specialty: app.doctorID.specialization,
+                date: app.date,
+                time: app.startingHour,
+                type: app.type || 'in-person' // Assuming a default or if you have a type field
+            }));
+            console.log('Formatted Upcoming Appointments for profile:', formattedAppointments); // Debugging log
+
             // Optionally fetch doctors as in your API logic
             let doctors = await Doctor.find();
             let doctorList = await Promise.all(
@@ -101,11 +135,12 @@ UserRouter.get('/profile', async (req, res) => {
                     };
                 })
             );
-            res.render('profilePage', {
+            res.render('userProfile', {
                 user,
                 patient,
                 doctors: doctorList,
-                currentPage: 'profile'
+                currentPage: 'profile',
+                upcomingAppointments: formattedAppointments
             });
         } else if (user.role === 'Doctor') {
             const doctor = await Doctor.findOne({ userId: user._id })

@@ -1,9 +1,10 @@
 const Doctor = require("../Models/doctorModel");
 const User = require("../Models/userModel");
-const Department = require("../Models/departmentModel");
 const bcrypt = require('bcryptjs');
 const { createToken } = require("../middleware/authMiddleware");
 const jwt = require('jsonwebtoken');
+const Appointment = require("../Models/appointmentModel");
+const Department = require('../Models/departmentModel');
 
 const getAll = async (req, res) => {
     try {
@@ -36,51 +37,84 @@ const getById = async (req, res) => {
             });
         }
 
-        res.status(200).json({
-            status: 'success',
-            data: doctor
+        let user = null;
+        try {
+            const token = req.cookies?.token;
+            if (token) {
+                const decoded = jwt.verify(token, process.env.JWT_SECRET);
+                user = await User.findById(decoded.id).select('-Password');
+            }
+        } catch (error) {
+            console.log('Token verification failed in doctorController.getById:', error.message);
+        }
+
+        const hospital = {
+            name: "PrimeCare",
+            address: "123 Health St, Wellness City",
+            phone: "+1234567890",
+            email: "info@primecare.com",
+            tagline: "Your Health is Our Priority",
+            subTagline: "Providing quality healthcare services for you and your family",
+            about: "PrimeCare Hospital is committed to providing exceptional healthcare services with a focus on patient care and medical excellence."
+        };
+
+        res.render('doctorProfile', {
+            doctor,
+            user,
+            hospital,
+            currentPage: 'doctors',
+            siteName: 'PrimeCare'
         });
     } catch (error) {
-        res.status(400).json({
-            status: 'fail',
-            message: error.message
-        });
+        console.error("Error fetching doctor profile:", error);
+        res.status(500).send("Error loading doctor profile.");
     }
 };
 
 const create = async (req, res) => {
     try {
-        // First create the user
-        const userData = {
-            FName: req.body.FName,
-            LName: req.body.LName,
-            Email: req.body.Email,
-            PhoneNumber: req.body.PhoneNumber,
-            Gender: req.body.Gender,
-            Age: req.body.Age,
-            Password: 'defaultPassword123', // You should generate a secure password
-            Role: 'doctor'
-        };
+        const { FName, LName, Email, Password, PhoneNumber, Gender, Age, departmentId, specialization, rating, experience, profileImage, weeklySchedule } = req.body;
 
-        const user = await User.create(userData);
+        // Create user
+        const hashedPassword = await bcrypt.hash(Password, 12);
+        const newUser = await User.create({
+            FName,
+            LName,
+            Email,
+            Password: hashedPassword,
+            PhoneNumber,
+            Gender,
+            Age,
+            role: 'Doctor'
+        });
 
-        // Then create the doctor
-        const doctorData = {
-            userId: user._id,
-            departmentId: req.body.departmentId,
-            specialization: req.body.specialization,
-            rating: req.body.rating || 5,
-            status: 'active',
-            schedule: req.body.schedule || []
-        };
+        // Get department name
+        const department = await Department.findById(departmentId);
+        if (!department) {
+            await User.findByIdAndDelete(newUser._id);
+            return res.status(400).json({
+                status: 'fail',
+                message: 'Department not found'
+            });
+        }
 
-        const doctor = await Doctor.create(doctorData);
+        // Create doctor
+        const newDoctor = await Doctor.create({
+            userId: newUser._id,
+            departmentId,
+            specialization,
+            rating,
+            departmentName: department.name,
+            experience,
+            profileImage,
+            weeklySchedule: weeklySchedule || [] // Save weeklySchedule
+        });
 
         res.status(201).json({
             status: 'success',
             data: {
-                doctor,
-                user
+                doctor: newDoctor,
+                user: newUser
             }
         });
     } catch (error) {
@@ -93,8 +127,14 @@ const create = async (req, res) => {
 
 const update = async (req, res) => {
     try {
-        const doctor = await Doctor.findById(req.params.id);
-        
+        const doctor = await Doctor.findByIdAndUpdate(
+            req.params.id,
+            { ...req.body, weeklySchedule: req.body.weeklySchedule || [] }, // Update weeklySchedule
+            {
+                new: true,
+                runValidators: true
+            }
+        );
         if (!doctor) {
             return res.status(404).json({
                 status: 'fail',
@@ -102,33 +142,22 @@ const update = async (req, res) => {
             });
         }
 
-        // Update user information
-        if (req.body.FName || req.body.LName || req.body.Email || req.body.PhoneNumber) {
-            await User.findByIdAndUpdate(doctor.userId, {
-                FName: req.body.FName,
-                LName: req.body.LName,
-                Email: req.body.Email,
-                PhoneNumber: req.body.PhoneNumber
-            });
-        }
+        // Update associated user data if provided (e.g., FName, LName, Email, PhoneNumber)
+        if (req.body.FName || req.body.LName || req.body.Email || req.body.PhoneNumber || req.body.Gender || req.body.Age) {
+            const userUpdateData = {};
+            if (req.body.FName) userUpdateData.FName = req.body.FName;
+            if (req.body.LName) userUpdateData.LName = req.body.LName;
+            if (req.body.Email) userUpdateData.Email = req.body.Email;
+            if (req.body.PhoneNumber) userUpdateData.PhoneNumber = req.body.PhoneNumber;
+            if (req.body.Gender) userUpdateData.Gender = req.body.Gender;
+            if (req.body.Age) userUpdateData.Age = req.body.Age;
 
-        // Update doctor information
-        const updatedDoctor = await Doctor.findByIdAndUpdate(
-            req.params.id,
-            {
-                departmentId: req.body.departmentId,
-                specialization: req.body.specialization,
-                rating: req.body.rating,
-                status: req.body.status,
-                schedule: req.body.schedule
-            },
-            { new: true }
-        ).populate('userId', 'FName LName Email PhoneNumber Gender Age')
-         .populate('departmentId', 'departmentName');
+            await User.findByIdAndUpdate(doctor.userId, userUpdateData, { new: true, runValidators: true });
+        }
 
         res.status(200).json({
             status: 'success',
-            data: updatedDoctor
+            data: doctor
         });
     } catch (error) {
         res.status(400).json({
@@ -172,7 +201,7 @@ const getByDepartment = async (req, res) => {
         const doctors = await Doctor.find({ departmentId: req.params.departmentId })
             .populate('userId', 'FName LName Email PhoneNumber Gender Age')
             .populate('departmentId', 'departmentName');
-
+        
         res.status(200).json({
             status: 'success',
             data: doctors
@@ -190,7 +219,7 @@ const getBySpecialization = async (req, res) => {
         const doctors = await Doctor.find({ specialization: req.params.specialization })
             .populate('userId', 'FName LName Email PhoneNumber Gender Age')
             .populate('departmentId', 'departmentName');
-
+        
         res.status(200).json({
             status: 'success',
             data: doctors
@@ -207,25 +236,29 @@ const search = async (req, res) => {
     try {
         const searchQuery = req.query.q;
         
-        const doctors = await Doctor.find()
-            .populate({
-                path: 'userId',
-                match: {
-                    $or: [
-                        { FName: { $regex: searchQuery, $options: 'i' } },
-                        { LName: { $regex: searchQuery, $options: 'i' } },
-                        { Email: { $regex: searchQuery, $options: 'i' } }
-                    ]
-                }
-            })
-            .populate('departmentId', 'departmentName');
+        if (!searchQuery) {
+            const doctors = await Doctor.find()
+                .populate('userId', 'FName LName Email PhoneNumber Gender Age')
+                .populate('departmentId', 'departmentName');
+            return res.status(200).json({
+                status: 'success',
+                data: doctors
+            });
+        }
 
-        // Filter out doctors where userId is null (no match)
-        const filteredDoctors = doctors.filter(doctor => doctor.userId);
-
+        const doctors = await Doctor.find({
+            $or: [
+                { specialization: { $regex: searchQuery, $options: 'i' } },
+                { 'userId.FName': { $regex: searchQuery, $options: 'i' } },
+                { 'userId.LName': { $regex: searchQuery, $options: 'i' } }
+            ]
+        })
+        .populate('userId', 'FName LName Email PhoneNumber Gender Age')
+        .populate('departmentId', 'departmentName');
+        
         res.status(200).json({
             status: 'success',
-            data: filteredDoctors
+            data: doctors
         });
     } catch (error) {
         res.status(400).json({

@@ -1,5 +1,6 @@
 const Department = require('../Models/departmentModel');
 const Doctor = require("../Models/doctorModel");
+const { validationResult } = require('express-validator');
 
 const departmentController = {
 

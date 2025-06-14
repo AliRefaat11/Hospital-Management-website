@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
-const Department = require('./Models/departmentModel');
+// const Department = require('./Models/departmentModel');
 
-const dbUri = 'mongodb+srv://ali2303933:pYYylBzXhc5VYTxr@cluster0.wbqfae0.mongodb.net/';
+const dbUri = process.env.MONGODB_URI || 'mongodb+srv://ali2303933:pYYylBzXhc5VYTxr@cluster0.wbqfae0.mongodb.net/';
 
 async function createDermatologyDepartment() {
   await mongoose.connect(dbUri, { useNewUrlParser: true, useUnifiedTopology: true });

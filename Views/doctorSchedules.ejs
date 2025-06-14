@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Schedules - Hospital Management</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/doctor-schedules.css">
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <main class="schedules-container">
+        <div class="filters-section">
+            <h1>Doctor Schedules</h1>
+            <div class="search-filters">
+                <div class="form-group">
+                    <label for="departmentFilter">Department</label>
+                    <select id="departmentFilter">
+                        <option value="">All Departments</option>
+                        <% departments.forEach(dept => { %>
+                            <option value="<%= dept._id %>"><%= dept.name %></option>
+                        <% }); %>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="specializationFilter">Specialization</label>
+                    <select id="specializationFilter">
+                        <option value="">All Specializations</option>
+                        <option value="cardiology">Cardiology</option>
+                        <option value="dermatology">Dermatology</option>
+                        <option value="orthopedics">Orthopedics</option>
+                        <option value="pediatrics">Pediatrics</option>
+                        <option value="Neurology">Neurology</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="dayFilter">Day</label>
+                    <select id="dayFilter">
+                        <option value="">All Days</option>
+                        <option value="monday">Monday</option>
+                        <option value="tuesday">Tuesday</option>
+                        <option value="wednesday">Wednesday</option>
+                        <option value="thursday">Thursday</option>
+                        <option value="friday">Friday</option>
+                        <option value="saturday">Saturday</option>
+                        <option value="sunday">Sunday</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="schedules-grid" id="schedulesGrid">
+            <!-- Doctor schedules will be populated here -->
+        </div>
+
+        <!-- Doctor Schedule Modal -->
+        <div class="modal" id="scheduleModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Doctor Schedule</h2>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="doctor-profile">
+                        <img src="/images/account-icon-33.png" alt="Doctor" class="doctor-image">
+                        <div class="doctor-info">
+                            <h3 id="modalDoctorName">Dr. Name</h3>
+                            <p id="modalDoctorSpecialization">Specialization</p>
+                            <p id="modalDoctorDepartment">Department</p>
+                        </div>
+                    </div>
+                    <div class="schedule-details">
+                        <h4>Weekly Schedule</h4>
+                        <div class="schedule-timeline" id="scheduleTimeline">
+                            <!-- Schedule details will be populated here -->
+                        </div>
+                    </div>
+                    <div class="booking-info">
+                        <div class="info-item">
+                            <span class="icon">⏱️</span>
+                            <span>Appointment Duration: <span id="modalSlotDuration">30</span> minutes</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="icon">⏳</span>
+                            <span>Buffer Time: <span id="modalBufferTime">15</span> minutes</span>
+                        </div>
+                    </div>
+                    <div class="modal-actions">
+                        <button class="btn btn-primary" id="bookAppointmentBtn">Book Appointment</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+    <script src="/javascript/doctor-schedules.js"></script>
+</body>
+</html> 

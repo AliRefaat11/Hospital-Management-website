@@ -6,8 +6,12 @@ const express = require('express');
 const path = require('path');
 const { auth } = require('./middleware/authMiddleware');
 const jwt = require('jsonwebtoken');
+const appointmentController = require('./Controllers/appointmentController');
 const cookieParser = require('cookie-parser');
 const adminController = require('./Controllers/adminController'); // Import the adminController
+const Doctor = require('./Models/doctorModel'); // Single, correct declaration
+const Department = require('./Models/departmentModel'); // Single, correct declaration
+const User = require('./Models/userModel'); // Single, correct declaration
 
 const app = express();
 
@@ -25,20 +29,17 @@ const TreatRouter = require('./Routes/treatmentplanRouter');
 const AdminRouter = require('./Routes/adminRoutes');
 const TreatmentPlan = require('./Models/treatmentplanModel');
 const MedicalReport = require('./Models/medicalreportModel');
-const User = require('./Models/userModel');
-const Doctor = require('./Models/doctorModel');
-const Department = require('./Models/departmentModel');
 
 // View engine setup
 app.set('views', path.join(__dirname, 'Views'));
 app.set('view engine', 'ejs');
 
-// Middleware
-app.use(express.static('public'));
+// Middleware - Place express.static at the very beginning to serve static files
+app.use(express.static(path.join(__dirname, 'public')));
+
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
 
 // Request logging middleware
 app.use((req, res, next) => {
@@ -49,8 +50,8 @@ app.use((req, res, next) => {
     next();
 });
 
-// Removed global auth middleware - auth should be applied within specific routers
-// app.use(auth); // THIS LINE WAS POTENTIALLY CAUSING ISSUES, REMOVED
+// Models
+// const Patient = require('./Models/patientModel');
 
 // Home page route
 app.get('/', async (req, res) => {
@@ -261,100 +262,20 @@ app.use('/User', UserRouter);
 app.use('/doctors', TestDrRouter);
 app.use('/doctors', DrRouter);
 app.use('/Patient', PatRouter);
-app.use('/Document', DocRouter);
+app.use('/documents', DocRouter);
 app.use('/Department', DepRouter);
 app.use('/appointments', AppRouter);
-app.use('/insurance', InsurRouter);
-app.use('/medical-reports', MedRouter);
-app.use('/treatment-plans', TreatRouter);
-app.use('/admin', AdminRouter);
-
-// Admin Dashboard Page Route
-app.get('/admin/dashboard', async (req, res) => {
-    try {
-        const statsResponse = await adminController.getDashboardStats();
-        const backendStats = statsResponse.data; // This contains totalDoctors, totalPatients, etc.
-
-        // Construct the stats object with all expected properties for adminProfile.ejs
-        const stats = {
-            activeDoctors: backendStats.totalDoctors || 0, // Using totalDoctors as activeDoctors for now
-            doctorsChange: 0, // Placeholder: You can add logic to calculate this later
-            todayAppointments: backendStats.totalAppointments || 0, // Using totalAppointments as todayAppointments for now
-            appointmentsChange: 0, // Placeholder
-            onDutyDoctors: backendStats.totalDoctors || 0, // Placeholder: You might fetch actual on-duty doctors later
-            averageRating: 0.0, // Placeholder
-            ratingChange: 0.0, // Placeholder
-            specialists: backendStats.totalDepartments || 0, // Using totalDepartments as specialists count
-            departmentCount: backendStats.totalDepartments || 0, // Ensuring departmentCount is available
-            availableSlots: 0, // Placeholder
-            availableDoctors: backendStats.totalDoctors || 0, // Placeholder for available doctors
-            totalDoctors: backendStats.totalDoctors || 0, // Ensure totalDoctors is explicitly passed
-            coverageRate: 0, // Placeholder
-            onTimeRate: 0, // Placeholder
-            // Add any other stats properties expected by adminProfile.ejs here
-        };
-
-        // Placeholder admin user for testing
-        let admin = {
-            name: "Admin User", // Replace with actual admin name from session/DB if available
-            role: "Administrator",
-            profileImage: "/images/admin-avatar.png" // Default image
-        };
-
-        // Placeholder notifications and messages
-        const notifications = { unreadCount: 5 };
-        const messages = { unreadCount: 2 };
-
-        res.render('adminProfile', {
-            admin,
-            notifications,
-            messages,
-            stats, // Pass the constructed stats object to the EJS template
-            currentPage: 'dashboard' // Active page for sidebar highlighting
-        });
-    } catch (error) {
-        console.error("Error rendering admin dashboard:", error);
-        res.status(500).send("Error loading admin dashboard: " + error.message);
-    }
-});
+app.use('/Insurance', InsurRouter);
+app.use('/MedicalReport', MedRouter);
+app.use('/TreatmentPlan', TreatRouter);
 
 // Server setup
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+const hostname = "127.0.0.1";
+const port = 3000;
 
-// Global error handling middleware
-app.use((err, req, res, next) => {
-    console.error(err.stack); // Log the error stack for debugging
+// Connect to database
+dbconnection();
 
-    // Default values for error
-    err.statusCode = err.statusCode || 500;
-    err.status = err.status || 'error';
-    err.message = err.message || 'Something went wrong!';
-
-    if (err.name === 'JsonWebTokenError') {
-        err.statusCode = 401;
-        err.message = 'Invalid token. Please login again.';
-    }
-    if (err.name === 'TokenExpiredError') {
-        err.statusCode = 401;
-        err.message = 'Your token has expired. Please login again.';
-    }
-
-    // Check if the request expects JSON or HTML
-    if (req.accepts('html')) {
-        // Render an error page for HTML requests
-        res.status(err.statusCode).render('errorPage', { // Assuming you have an errorPage.ejs
-            statusCode: err.statusCode,
-            message: err.message,
-            title: `Error ${err.statusCode}`
-        });
-    } else {
-        // Send JSON response for API requests
-        res.status(err.statusCode).json({
-            status: err.status,
-            message: err.message
-        });
-    }
+app.listen(port, hostname, () => {
+    console.log(`Server running at http://${hostname}:${port}/`);
 });

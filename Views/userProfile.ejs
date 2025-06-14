@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= user.name %> - Patient Profile - PrimeCare</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/user_profile.css">
-    <link rel="stylesheet" href="css/book_appointment.css" />
+    <link rel="stylesheet" href="/css/book_appointment.css" />
 </head>
 <body>
     <nav>
@@ -46,7 +46,7 @@
             <section class="profile-card">
                 <div class="profile-header">
                     <div class="profile-image">
-                        <img src="<%= user.profileImage || '../images/account-icon-33.png' %>" alt="<%= user.name %> Profile" id="profileImage">
+                        <img src="<%= user.profileImage || '/images/account-icon-33.png' %>" alt="<%= user.name %> Profile" id="profileImage">
                     </div>
                     <div class="profile-info">
                         <h1 class="profile-name" id="userName"><%= user.name %></h1>
@@ -55,7 +55,9 @@
                             <span id="userEmail"><%= user.email %></span>
                         </div>
                         <div class="profile-status">
+                            <% if (user.status) { %>
                             <span class="status-badge <%= user.status.toLowerCase().replace(' ', '-') %>"><%= user.status %></span>
+                            <% } %>
                         </div>
                     </div>
                 </div>
@@ -146,11 +148,15 @@
                         <div class="info-item">
                             <div class="info-label">Date of Birth</div>
                             <div class="info-value" id="userDob">
-                                <%= new Date(user.dateOfBirth).toLocaleDateString('en-US', { 
-                                    year: 'numeric', 
-                                    month: 'long', 
-                                    day: 'numeric' 
-                                }) %>
+                                <% if (user.dateOfBirth) { %>
+                                    <%= new Date(user.dateOfBirth).toLocaleDateString('en-US', { 
+                                        year: 'numeric', 
+                                        month: 'long', 
+                                        day: 'numeric' 
+                                    }) %>
+                                <% } else { %>
+                                    N/A
+                                <% } %>
                             </div>
                         </div>
                         <div class="info-item">
@@ -252,6 +258,6 @@
         </div>
     </footer>
 
-    <script src="javascript/user_profile.js"></script>
+    <script src="/javascript/user_profile.js"></script>
 </body>
 </html>

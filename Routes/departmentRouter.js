@@ -62,6 +62,7 @@ DepRouter.get('/view', async (req, res) => {
         });
     } catch (error) {
         console.error('Error loading departments:', error);
+        console.error(error.stack);
         res.status(500).send('Error loading departments page.');
     }
 });

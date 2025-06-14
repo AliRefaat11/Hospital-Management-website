@@ -4,8 +4,9 @@ const appointmentController = require('../Controllers/appointmentController');
 const { auth } = require('../middleware/authMiddleware');
 const jwt = require('jsonwebtoken');
 const User = require('../Models/userModel');
-const Department = require('../Models/departmentModel');
 const Doctor = require('../Models/doctorModel');
+const TreatmentPlan = require('../Models/treatmentplanModel');
+const Department = require('../Models/departmentModel');
 
 const validateAppointment = (req, res, next) => {
   const { doctorID, patientID, date, startingHour, reason } = req.body;
@@ -65,13 +66,56 @@ const validateObjectId = (req, res, next) => {
   next();
 };
 
-// API Routes
-AppRouter.post('/', validateAppointment, appointmentController.createAppointment);
-AppRouter.get('/', appointmentController.getAllAppointments);
-AppRouter.get('/today', appointmentController.getTodayAppointments);
-AppRouter.get('/date-range', appointmentController.getAppointmentsByDateRange);
+// View Routes (placed before API routes)
+AppRouter.get('/', async (req, res) => {
+    try {
+        let user = null;
+        try {
+            const token = req.cookies?.token;
+            if (token) {
+                const decoded = jwt.verify(token, process.env.JWT_SECRET);
+                user = await User.findById(decoded.id).select('-Password');
+            }
+        } catch (error) {
+            console.log('Token verification failed:', error.message);
+        }
 
-// View Routes (placed before dynamic ID routes)
+        // Fetch doctors for the dropdown in appointmentsManagement.ejs
+        const doctors = await Doctor.find()
+            .populate('userId', 'FName LName')
+            .populate('departmentId', 'departmentName')
+            .populate('weeklySchedule');
+
+        res.render('appointmentsManagement', { 
+            user,
+            currentPage: 'appointments',
+            siteName: 'PrimeCare',
+            stats: {
+                total: { count: 0, changeType: 'neutral', changePercent: 0 },
+                today: { count: 0 },
+                completed: { count: 0 },
+                pending: { count: 0 }
+            },
+            departments: [],
+            appointments: [],
+            todaySchedule: {
+                urgent: 0,
+                late: 0,
+                noShows: 0,
+                avgWaitTime: '0 min'
+            },
+            nextAppointments: [],
+            notifications: { count: 0 },
+            messages: { count: 0 },
+            doctors, // Pass the fetched doctors to the template
+            appointmentTypes: ['Scheduled', 'Confirmed', 'Completed', 'Cancelled', 'No Show'] // Added missing appointmentTypes
+        });
+    } catch (error) {
+        console.error("Error rendering appointments page:", error);
+        res.status(500).send("Error loading appointments page.");
+    }
+});
+
 AppRouter.get('/book', async (req, res) => {
     try {
         const doctorId = req.query.doctor; 
@@ -79,13 +123,15 @@ AppRouter.get('/book', async (req, res) => {
         if (doctorId) {
             selectedDoctor = await Doctor.findById(doctorId)
                 .populate('userId', 'FName LName')
-                .populate('departmentId', 'departmentName');
+                .populate('departmentId', 'departmentName')
+                .populate('weeklySchedule');
         }
 
         // Fetch all doctors for the dropdown
         const doctors = await Doctor.find()
             .populate('userId', 'FName LName')
-            .populate('departmentId', 'departmentName');
+            .populate('departmentId', 'departmentName')
+            .populate('weeklySchedule');
 
         const departments = await Department.find();
 
@@ -105,7 +151,8 @@ AppRouter.get('/book', async (req, res) => {
             user,
             selectedDoctor,
             doctors,
-            currentPage: 'book'
+            currentPage: 'book',
+            siteName: 'PrimeCare'
         });
     } catch (error) {
         console.error("Error rendering book appointment page:", error);
@@ -113,17 +160,49 @@ AppRouter.get('/book', async (req, res) => {
     }
 });
 
-// API Routes (dynamic ID routes come after specific view routes)
-AppRouter.get('/:id', validateObjectId, appointmentController.getAppointmentById);
-AppRouter.get('/doctor/:doctorID', validateObjectId, appointmentController.getAppointmentsByDoctor);
-AppRouter.get('/patient/:patientID', validateObjectId, appointmentController.getAppointmentsByPatient);
-AppRouter.put('/:id', validateObjectId, appointmentController.updateAppointment);
-AppRouter.patch('/:id/status', validateObjectId, appointmentController.updateAppointmentStatus);
-AppRouter.delete('/:id', validateObjectId, appointmentController.deleteAppointment);
-
-// View Routes
-AppRouter.get('/', async (req, res) => {
+AppRouter.post('/book', auth, async (req, res) => {
     try {
+        console.log('Received body in /appointments/book POST:', req.body);
+        const { doctor, date, startingHour, reason } = req.body;
+        const patientID = req.user.id; // Get from auth middleware
+
+        // Validate required fields
+        if (!doctor || !date || !startingHour || !reason) {
+            return res.status(400).json({
+                success: false,
+                message: 'All fields are required'
+            });
+        }
+
+        // Create appointment
+        const appointment = await appointmentController.createAppointment(req, res);
+
+        // If successful, send JSON response back to client instead of redirecting
+        if (appointment.success) {
+            return res.status(201).json({
+                success: true,
+                message: appointment.message || 'Appointment booked successfully!'
+            });
+        } else {
+            // If not successful, send the error message back to the client
+            return res.status(400).json({
+                success: false,
+                message: appointment.message || 'Failed to book appointment'
+            });
+        }
+    } catch (error) {
+        console.error('Error booking appointment:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to book appointment',
+            error: error.message
+        });
+    }
+});
+
+AppRouter.get('/quick-appointment', async (req, res) => {
+    try {
+        const departments = await Department.find();
         let user = null;
         try {
             const token = req.cookies?.token;
@@ -134,11 +213,28 @@ AppRouter.get('/', async (req, res) => {
         } catch (error) {
             console.log('Token verification failed:', error.message);
         }
-        res.render('appointmentPage', { user });
+        res.render('quickAppointment', { 
+            departments, 
+            user, 
+            currentPage: 'appointments',
+            siteName: 'PrimeCare'
+        });
     } catch (error) {
-        console.error("Error rendering appointments page:", error);
-        res.status(500).send("Error loading appointments page.");
+        console.error("Error rendering quick appointment page:", error);
+        res.status(500).send("Error loading quick appointment page.");
     }
 });
+
+// API Routes
+AppRouter.post('/', auth, validateAppointment, appointmentController.createAppointment);
+AppRouter.get('/api', auth, appointmentController.getAllAppointments);
+AppRouter.get('/api/today', auth, appointmentController.getTodayAppointments);
+AppRouter.get('/api/date-range', auth, appointmentController.getAppointmentsByDateRange);
+AppRouter.get('/api/:id', auth, validateObjectId, appointmentController.getAppointmentById);
+AppRouter.get('/api/doctor/:doctorID', auth, validateObjectId, appointmentController.getAppointmentsByDoctor);
+AppRouter.get('/api/patient/:patientID', auth, validateObjectId, appointmentController.getAppointmentsByPatient);
+AppRouter.put('/api/:id', auth, validateObjectId, appointmentController.updateAppointment);
+AppRouter.patch('/api/:id/status', auth, validateObjectId, appointmentController.updateAppointmentStatus);
+AppRouter.delete('/api/:id', auth, validateObjectId, appointmentController.deleteAppointment);
 
 module.exports = AppRouter;

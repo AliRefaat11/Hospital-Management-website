@@ -16,5 +16,5 @@ const departmentSchema = new mongoose.Schema({
   }
 });
 
-const Department = mongoose.model('Department', departmentSchema);
-module.exports=Department;
+// Check if the model already exists to prevent redeclaration errors
+module.exports = mongoose.models.Department || mongoose.model('Department', departmentSchema);

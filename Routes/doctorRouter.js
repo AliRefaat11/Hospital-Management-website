@@ -5,7 +5,6 @@ const { auth } = require('../middleware/authMiddleware');
 const jwt = require('jsonwebtoken');
 const User = require('../Models/userModel');
 const Doctor = require('../Models/doctorModel');
-const Department = require('../Models/departmentModel');
 
 // View Routes (prioritized)
 DrRouter.get('/', async (req, res) => {
@@ -221,12 +220,12 @@ DrRouter.get('/test-manage', async (req, res) => {
 });
 
 // API Routes (moved after view routes)
-DrRouter.get("/", DocController.getAll);
+DrRouter.get("/api", DocController.getAll);
 DrRouter.get("/search", DocController.search);
 DrRouter.get("/:id", DocController.getById);
-DrRouter.post("/", DocController.create);
-DrRouter.patch("/:id", DocController.update);
-DrRouter.delete("/:id", DocController.deleteById);
+DrRouter.post("/", auth, DocController.create);
+DrRouter.patch("/:id", auth, DocController.update);
+DrRouter.delete("/:id", auth, DocController.deleteById);
 DrRouter.get("/department/:departmentId", DocController.getByDepartment);
 DrRouter.get("/specialization/:specialization", DocController.getBySpecialization);
 

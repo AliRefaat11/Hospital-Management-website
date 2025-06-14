@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Doctor = require('./Models/doctorModel');
-const Department = require('./Models/departmentModel');
 
 const dbUri = 'mongodb+srv://ali2303933:pYYylBzXhc5VYTxr@cluster0.wbqfae0.mongodb.net/';
 
