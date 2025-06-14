@@ -263,42 +263,64 @@ function showErrorModal() {
 }
 
 // Form submission handler
-appointmentForm.addEventListener('submit', async function(e) {
-  e.preventDefault();
+appointmentForm.addEventListener('submit', async function(event) {
+  event.preventDefault();
   
   // Validate the form including the date-time check
   if (!validateForm() || !validateDateAndTime()) {
-    return false;
+    showErrorModal(translations[currentLanguage].errorTitle || 'Validation Error', 'Please correct the errors in the form.');
+    return;
   }
-  
-  // Show loading state
-  submitBtn.style.display = 'none';
-  submitLoader.style.display = 'flex';
+
+  submitBtn.disabled = true; // Disable button to prevent double clicks
+  submitLoader.style.display = 'inline-flex'; // Show loader
+
+  const formData = new FormData(this);
+  const patientId = document.getElementById('patientID') ? document.getElementById('patientID').value : null; // Get patientID from hidden input
+
+  const appointmentData = {
+    firstName: formData.get('firstName'),
+    lastName: formData.get('lastName'),
+    phone: formData.get('phone'),
+    email: formData.get('email'),
+    gender: formData.get('gender'),
+    age: formData.get('age'),
+    department: formData.get('department'),
+    doctor: formData.get('doctor'),
+    date: formData.get('date'),
+    time: formData.get('time'),
+    reason: formData.get('reason'),
+    terms: formData.get('terms') === 'on' // Check if terms checkbox is checked
+  };
 
   try {
-    const formData = new FormData(this);
-    const response = await fetch('/appointments', {
+    const response = await fetch('/appointments/book', { // Use the correct endpoint for booking
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify(Object.fromEntries(formData))
+      body: JSON.stringify(appointmentData)
     });
 
     const result = await response.json();
 
-    if (response.ok) {
+    if (response.ok && result.success) {
+      // Success
+      document.getElementById('modalTitle').textContent = translations[currentLanguage].modalTitle;
+      document.getElementById('modalMessage').textContent = translations[currentLanguage].modalMessage;
       confirmationModal.style.display = 'flex';
-      appointmentForm.reset();
+      appointmentForm.reset(); // Clear form after successful submission
     } else {
-      alert(result.message || 'Failed to book appointment. Please try again.');
+      // Error from backend
+      showErrorModal(translations[currentLanguage].errorTitle || 'Error', result.message || 'An unknown error occurred.');
     }
+
   } catch (error) {
-    console.error('Error:', error);
-    alert('An error occurred. Please try again.');
+    console.error('Error during form submission:', error);
+    showErrorModal(translations[currentLanguage].errorTitle || 'Error', 'Failed to connect to the server. Please try again later.');
   } finally {
-    submitBtn.style.display = 'flex';
-    submitLoader.style.display = 'none';
+    submitBtn.disabled = false; // Re-enable button
+    submitLoader.style.display = 'none'; // Hide loader
   }
 });
 

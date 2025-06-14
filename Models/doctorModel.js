@@ -25,6 +25,11 @@ const doctorSchema = new mongoose.Schema(
             max:5,
             required: true
         },
+        status: {
+            type: String,
+            enum: ['active', 'inactive', 'on-leave'],
+            default: 'active'
+        },
         schedule: [
             {
                 day: { type: String, enum: ["saturday","sunday","monday","tuesday","wednesday","thursday"], required: true },

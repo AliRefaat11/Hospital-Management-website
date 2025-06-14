@@ -17,7 +17,7 @@
         <a href="/User/about" class="">ABOUT US</a>
         <a href="/Department/view" class="">DEPARTMENTS</a>
         <a href="/doctors" class="">DOCTORS</a>
-        <a href="/appointments/quick-appointment" class="">BOOK NOW</a>
+        <a href="/appointments/book" class="<%= currentPage === 'book' ? 'active' : '' %>">BOOK NOW</a>
         <% if (user) { %>
         <div class="user-menu">
           <a href="/User/profile" class="profile-link">

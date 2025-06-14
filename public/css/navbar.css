@@ -181,27 +181,46 @@ header p {
 }
 
 .user-menu:hover .dropdown-menu {
-  display: block;
+  display: block; /* Display as a block when hovered */
 }
 
 .dropdown-menu {
-  display: none;
+  display: none; /* Initially hidden */
   position: absolute;
+  top: 100%;
   right: 0;
   background-color: white;
   border: 1px solid #ddd;
+  border-radius: 5px;
   z-index: 1000;
   min-width: 160px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  padding: 5px 0;
+  /* Remove flex-direction, as we are using display: block for children */
 }
 
 .dropdown-menu a {
-  display: block;
-  padding: 10px;
-  color: #333;
+  display: block; /* Ensure each link takes its own line */
+  padding: 10px 15px;
+  color: #333; /* Ensuring the text color is visible */
   text-decoration: none;
+  margin: 0; /* Remove any horizontal margins */
 }
 
 .dropdown-menu a:hover {
   background-color: #f5f5f5;
+}
+
+.dropdown-menu a.logout-btn {
+  background-color: transparent !important; /* Ensure no button background */
+  border: none !important; /* Remove any button borders */
+  color: #333 !important; /* Force text color to be consistent */
+  font-weight: normal !important; /* Reset font-weight */
+  padding: 10px 15px !important; /* Ensure consistent padding */
+  border-radius: 0 !important; /* Remove any border-radius from button styles */
+}
+
+/* Ensure the dropdown menu itself aligns with the user's name */
+.navbar-links .user-menu {
+  margin-left: 15px; /* Adjust spacing if needed */
 }
