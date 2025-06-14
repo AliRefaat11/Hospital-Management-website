@@ -6,8 +6,9 @@
     <title>Appointment Management - PrimeCare</title>
     <link rel="stylesheet" href="../css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../public/css/appointments_management.css">
+    <link rel="stylesheet" href="css/appointments_management.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 <div class="sidebar" id="sidebarNav">
@@ -17,6 +18,16 @@
             <i class="fas fa-bars"></i>
         </button>
     </div>
+    <div class="container">
+  <div class="row">
+    <div class="col-md-6 col-12">
+      <!-- Content here -->
+    </div>
+    <div class="col-md-6 col-12">
+      <!-- Content here -->
+    </div>
+  </div>
+</div>
     <div class="admin-profile">
         <div class="admin-avatar">
             <img id="adminProfileImage" src="<%= admin.profileImage || '../images/admin-avatar.png' %>" alt="<%= admin.name %>">
@@ -277,16 +288,17 @@
                     </div>
                     <div class="form-group">
                         <label for="patientName">Patient Name *</label>
-                        <input type="text" id="patientName" required>
-                        <span class="validation-message">Please enter the patient's name</span>
+                        <select id="patientName" required data-fetch-type="patients">
+                            <option value="">Select Patient</option>
+                            <!-- Patients will be loaded here by JavaScript -->
+                        </select>
+                        <span class="validation-message">Please select a patient</span>
                     </div>
                     <div class="form-group">
                         <label for="doctorName">Doctor *</label>
-                        <select id="doctorName" required>
+                        <select id="doctorName" required data-fetch-type="doctors">
                             <option value="">Select Doctor</option>
-                            <% doctors.forEach(doctor => { %>
-                            <option value="<%= doctor.name %>"><%= doctor.name %> - <%= doctor.specialty %></option>
-                            <% }); %>
+                            <!-- Doctors will be loaded here by JavaScript -->
                         </select>
                         <span class="validation-message">Please select a doctor</span>
                     </div>
@@ -302,11 +314,9 @@
                     </div>
                     <div class="form-group">
                         <label for="appointmentDepartment">Department *</label>
-                        <select id="appointmentDepartment" required>
+                        <select id="appointmentDepartment" required data-fetch-type="departments">
                             <option value="">Select Department</option>
-                            <% departments.forEach(department => { %>
-                            <option value="<%= department.name %>"><%= department.name %></option>
-                            <% }); %>
+                            <!-- Departments will be loaded here by JavaScript -->
                         </select>
                         <span class="validation-message">Please select a department</span>
                     </div>

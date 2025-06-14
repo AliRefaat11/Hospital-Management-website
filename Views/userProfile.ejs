@@ -6,8 +6,9 @@
     <title><%= user.name %> - Patient Profile - PrimeCare</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/user_profile.css">
-    <link rel="stylesheet" href="css/book_appointment.css" />
+    <link rel="stylesheet" href="../public/css/user_profile.css">
+    <link rel="stylesheet" href="../public/css/book_appointment.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
     <nav>
@@ -39,7 +40,16 @@
           </div>
         </div>
     </nav>
-    
+    <div class="container">
+  <div class="row">
+    <div class="col-md-6 col-12">
+      <!-- Content here -->
+    </div>
+    <div class="col-md-6 col-12">
+      <!-- Content here -->
+    </div>
+  </div>
+</div>
     <main>
         <div class="container">
             <!-- Profile Header -->
@@ -63,15 +73,15 @@
 
             <!-- Action Buttons -->
             <section class="action-buttons">
-                <button class="btn btn-primary btn-action" onclick="window.location.href='./appointments.html'">
+                <button class="btn btn-primary btn-action" onclick="window.location.href='/appointments'">
                     <i class="fas fa-calendar-alt"></i>
                     <span>Appointments</span>
                 </button>
-                <button class="btn btn-outline btn-action" onclick="editProfile()">
+                <button class="btn btn-outline btn-action" onclick="window.location.href='/User/edit-profile'">
                     <i class="fas fa-edit"></i>
                     <span>Edit Profile</span>
                 </button>
-                <button class="btn btn-outline btn-action" onclick="openSettings()">
+                <button class="btn btn-outline btn-action" onclick="window.location.href='/User/settings'">
                     <i class="fas fa-cog"></i>
                     <span>Settings</span>
                 </button>
@@ -137,7 +147,7 @@
             <section class="content-card">
                 <div class="card-header">
                     <h2>Profile Information</h2>
-                    <button class="btn btn-sm btn-outline" onclick="editProfile()">
+                    <button class="btn btn-sm btn-outline" onclick="window.location.href='/User/edit-profile'">
                         <i class="fas fa-edit"></i> Edit
                     </button>
                 </div>

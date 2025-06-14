@@ -9,11 +9,10 @@ const getAll = async (req, res) => {
     try {
         const doctors = await Doctor.find()
             .populate('userId', 'FName LName Email PhoneNumber Gender Age')
-            .populate('departmentId', 'name');
+            .populate('departmentId', 'departmentName');
         
         res.status(200).json({
             status: 'success',
-            results: doctors.length,
             data: doctors
         });
     } catch (error) {
@@ -31,7 +30,7 @@ const getById = async (req, res) => {
             .populate('departmentId', 'name');
         
         if (!doctor) {
-            return res.status(404).send('Doctor not found');
+            return res.status(404).render('errorPage', { message: 'Doctor not found' });
         }
 
         let user = null;
@@ -42,85 +41,61 @@ const getById = async (req, res) => {
                 user = await User.findById(decoded.id).select('-Password');
             }
         } catch (error) {
-            console.log('Token verification failed in doctorController.getById:', error.message);
+            console.log('Token verification failed:', error.message);
         }
 
         const hospital = {
             name: "PrimeCare",
             address: "123 Health St, Wellness City",
             phone: "+1234567890",
-            email: "info@primecare.com",
-            tagline: "Your Health is Our Priority",
-            subTagline: "Providing quality healthcare services for you and your family",
-            about: "PrimeCare Hospital is committed to providing exceptional healthcare services with a focus on patient care and medical excellence."
+            email: "info@primecare.com"
         };
 
         res.render('doctorProfile', {
             doctor,
             user,
             hospital,
-            currentPage: 'doctors',
-            siteName: 'PrimeCare'
+            currentPage: 'doctors'
         });
     } catch (error) {
-        console.error("Error fetching doctor profile:", error);
-        res.status(500).send("Error loading doctor profile.");
+        console.error("Error rendering doctor profile page:", error);
+        res.status(500).render('errorPage', { message: "Error loading doctor profile." });
     }
 };
 
 const create = async (req, res) => {
-    const {FName, LName, Email, Password, Age, PhoneNumber, Gender, specialization, rating, schedule} = req.body;
     try {
-        // Check if user already exists
-        const existingUser = await User.findOne({ 
-            $or: [
-                { Email: Email },
-                { PhoneNumber: PhoneNumber }
-            ]
-        });
-        
-        if (existingUser) {
-            return res.status(400).json({
-                status: 'fail',
-                message: 'User with this email or phone number already exists'
-            });
-        }
-        // Find department by specialization (case-insensitive)
-        const department = await Department.findOne({ departmentName: { $regex: specialization, $options: 'i' } });
-        if (!department) {
-            return res.status(400).json({
-                status: 'fail',
-                message: `No department found for specialization: ${specialization}`
-            });
-        }
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(Password, salt);
-        const newUser = await User.create({
-            FName,
-            LName,
-            Email,
-            Password: hashedPassword,
-            Age,
-            PhoneNumber,
-            Gender,
-            role: "Doctor"
-        });
-        const newDoctor = await Doctor.create({
-            userId: newUser._id,
-            departmentId: department._id,
-            specialization,
-            rating,
-            schedule
-        });
-        const token = createToken(newUser._id);
-        const userResponse = newUser.toObject();
-        delete userResponse.Password;
+        // First create the user
+        const userData = {
+            FName: req.body.FName,
+            LName: req.body.LName,
+            Email: req.body.Email,
+            PhoneNumber: req.body.PhoneNumber,
+            Gender: req.body.Gender,
+            Age: req.body.Age,
+            Password: 'defaultPassword123', // You should generate a secure password
+            Role: 'doctor'
+        };
+
+        const user = await User.create(userData);
+
+        // Then create the doctor
+        const doctorData = {
+            userId: user._id,
+            departmentId: req.body.departmentId,
+            specialization: req.body.specialization,
+            rating: req.body.rating || 5,
+            status: 'active',
+            schedule: req.body.schedule || []
+        };
+
+        const doctor = await Doctor.create(doctorData);
+
         res.status(201).json({
             status: 'success',
-            token,
             data: {
-                user: userResponse,
-                doctor: newDoctor
+                doctor,
+                user
             }
         });
     } catch (error) {
@@ -133,23 +108,42 @@ const create = async (req, res) => {
 
 const update = async (req, res) => {
     try {
-        const doctor = await Doctor.findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            {
-                new: true,
-                runValidators: true
-            }
-        );
+        const doctor = await Doctor.findById(req.params.id);
+        
         if (!doctor) {
             return res.status(404).json({
                 status: 'fail',
-                message: 'No doctor found with that ID'
+                message: 'Doctor not found'
             });
         }
+
+        // Update user information
+        if (req.body.FName || req.body.LName || req.body.Email || req.body.PhoneNumber) {
+            await User.findByIdAndUpdate(doctor.userId, {
+                FName: req.body.FName,
+                LName: req.body.LName,
+                Email: req.body.Email,
+                PhoneNumber: req.body.PhoneNumber
+            });
+        }
+
+        // Update doctor information
+        const updatedDoctor = await Doctor.findByIdAndUpdate(
+            req.params.id,
+            {
+                departmentId: req.body.departmentId,
+                specialization: req.body.specialization,
+                rating: req.body.rating,
+                status: req.body.status,
+                schedule: req.body.schedule
+            },
+            { new: true }
+        ).populate('userId', 'FName LName Email PhoneNumber Gender Age')
+         .populate('departmentId', 'departmentName');
+
         res.status(200).json({
             status: 'success',
-            data: doctor
+            data: updatedDoctor
         });
     } catch (error) {
         res.status(400).json({
@@ -161,14 +155,20 @@ const update = async (req, res) => {
 
 const deleteById = async (req, res) => {
     try {
-        const doctor = await Doctor.findByIdAndDelete(req.params.id);
-
+        const doctor = await Doctor.findById(req.params.id);
+        
         if (!doctor) {
             return res.status(404).json({
                 status: 'fail',
-                message: 'No doctor found with that ID'
+                message: 'Doctor not found'
             });
         }
+
+        // Delete the associated user
+        await User.findByIdAndDelete(doctor.userId);
+        
+        // Delete the doctor
+        await Doctor.findByIdAndDelete(req.params.id);
 
         res.status(204).json({
             status: 'success',
@@ -185,12 +185,11 @@ const deleteById = async (req, res) => {
 const getByDepartment = async (req, res) => {
     try {
         const doctors = await Doctor.find({ departmentId: req.params.departmentId })
-            .populate('userId', 'name email')
-            .populate('departmentId', 'name');
+            .populate('userId', 'FName LName Email PhoneNumber Gender Age')
+            .populate('departmentId', 'departmentName');
 
         res.status(200).json({
             status: 'success',
-            results: doctors.length,
             data: doctors
         });
     } catch (error) {
@@ -204,12 +203,11 @@ const getByDepartment = async (req, res) => {
 const getBySpecialization = async (req, res) => {
     try {
         const doctors = await Doctor.find({ specialization: req.params.specialization })
-            .populate('userId', 'FName LName email')
-            .populate('departmentId', 'name');
+            .populate('userId', 'FName LName Email PhoneNumber Gender Age')
+            .populate('departmentId', 'departmentName');
 
         res.status(200).json({
             status: 'success',
-            results: doctors.length,
             data: doctors
         });
     } catch (error) {
@@ -222,93 +220,45 @@ const getBySpecialization = async (req, res) => {
 
 const search = async (req, res) => {
     try {
-        const { query } = req.query;
-        const hospital = req.hospital || { name: 'PrimeCare', address: '', phone: '', email: '' };
-        const user = req.user || null;
-        const currentPage = 'doctors';
-        const pageContent = {
-            heroTitle: 'Meet Our Expert Doctors',
-            heroSubtitle: 'Our team of highly skilled and compassionate doctors is here to provide you with the best care possible.'
-        };
-        const footerLinks = [
-            { url: '/', text: 'Home' },
-            { url: '/about', text: 'About Us' },
-            { url: '/department/view/all', text: 'Departments' },
-            { url: '/doctors', text: 'Doctors' },
-            { url: '/appointments', text: 'Book Now' }
-        ];
-        const socialLinks = [
-            { url: '#', icon: '<i class="fab fa-facebook"></i>' },
-            { url: '#', icon: '<i class="fab fa-twitter"></i>' },
-            { url: '#', icon: '<i class="fab fa-instagram"></i>' }
-        ];
-
-        if (!query) {
-            // If no query, show all doctors
+        const searchQuery = req.query.query;
+        
+        if (!searchQuery) {
+            // If no search query, return all doctors
             const doctors = await Doctor.find()
                 .populate('userId', 'FName LName Email PhoneNumber Gender Age')
-                .populate('departmentId', 'name');
-            return res.render('doctorPage', {
-                hospital,
-                user,
-                currentPage,
-                pageContent,
-                footerLinks,
-                socialLinks,
-                doctors,
-                searchQuery: '',
-                noResults: false
+                .populate('departmentId', 'departmentName');
+            
+            return res.status(200).json({
+                status: 'success',
+                data: doctors
             });
         }
-
-        const searchRegex = new RegExp(query, 'i');
+        
         const doctors = await Doctor.find()
             .populate({
                 path: 'userId',
                 match: {
                     $or: [
-                        { FName: searchRegex },
-                        { LName: searchRegex }
+                        { FName: { $regex: searchQuery, $options: 'i' } },
+                        { LName: { $regex: searchQuery, $options: 'i' } },
+                        { Email: { $regex: searchQuery, $options: 'i' } }
                     ]
                 }
             })
-            .populate('departmentId', 'name');
+            .populate('departmentId', 'departmentName');
+
+        // Filter out doctors where userId is null (no match)
         const filteredDoctors = doctors.filter(doctor => doctor.userId);
 
-        let finalDoctors = filteredDoctors;
-        if (filteredDoctors.length === 0) {
-            // Try searching by specialization
-            finalDoctors = await Doctor.find({ specialization: searchRegex })
-                .populate('userId', 'FName LName Email PhoneNumber Gender Age')
-                .populate('departmentId', 'name');
-        }
-
-        return res.render('doctorPage', {
-            hospital,
-            user,
-            currentPage,
-            pageContent,
-            footerLinks,
-            socialLinks,
-            doctors: finalDoctors,
-            searchQuery: query,
-            noResults: finalDoctors.length === 0
+        res.status(200).json({
+            status: 'success',
+            data: filteredDoctors
         });
     } catch (error) {
-        return res.status(500).render('doctorPage', {
-            hospital: req.hospital || { name: 'PrimeCare', address: '', phone: '', email: '' },
-            user: req.user || null,
-            currentPage: 'doctors',
-            pageContent: {
-                heroTitle: 'Meet Our Expert Doctors',
-                heroSubtitle: 'Our team of highly skilled and compassionate doctors is here to provide you with the best care possible.'
-            },
-            footerLinks: [],
-            socialLinks: [],
-            doctors: [],
-            searchQuery: req.query.query || '',
-            noResults: true,
-            error: 'An error occurred while searching for doctors.'
+        console.error("Error searching doctors:", error);
+        res.status(500).json({
+            status: 'error',
+            message: "Error searching for doctors."
         });
     }
 };

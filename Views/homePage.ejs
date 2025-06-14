@@ -4,9 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= hospital.name %> - Meet Our Doctors</title>
-  <link rel="stylesheet" href="css/home_page.css">
+  <link rel="stylesheet" href="/css/navbar.css">
   <link rel="stylesheet" href="/css/common_footer.css">
+  <link rel="stylesheet" href="css/home_page.css">
   <link rel="icon" href="/images/logo.jpeg" type="image/jpeg">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <meta name="theme-color" content="#3498db">
 </head>
 
@@ -19,7 +21,7 @@
         <a href="/User/about" class="<%= currentPage === 'about' ? 'active' : '' %>">ABOUT US</a>
         <a href="/Department/view" class="<%= currentPage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
         <a href="/doctors" class="<%= currentPage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
-        <a href="/appointments/quick-appointment" class="<%= currentPage === 'appointments' ? 'active' : '' %>">BOOK NOW</a>
+        <a href="/appointments/book" class="<%= currentPage === 'book' ? 'active' : '' %>">BOOK NOW</a>
         <% if (user) { %>
           <div class="user-menu">
             <a href="/User/profile" class="profile-link">
@@ -40,12 +42,21 @@
       </div>
     </div>
   </nav>
-
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 col-12">
+      <!-- Content here -->
+    </div>
+    <div class="col-md-6 col-12">
+      <!-- Content here -->
+    </div>
+  </div>
+</div>
   <section class="hero">
     <div class="container">
       <h2><%= hospital.tagline %></h2>
       <p><%= hospital.subTagline %></p>
-      <a href="/quick-appointment" class="btn">Book an Appointment</a>
+      <a href="/appointments/book" class="btn">Book an Appointment</a>
     </div>
   </section>
 
@@ -74,13 +85,20 @@
     <div class="container">
       <h3>Meet Our Doctors</h3>
       <div class="doctor-grid">
-        <% featuredDoctors.forEach(function(doctor) { %>
-          <div class="doctor-card">
-            <img src="<%= doctor.profileImage || '/images/account-icon-33.png' %>" alt="<%= doctor.name %>">
-            <h4><%= doctor.name %></h4>
-            <p><%= doctor.specialization %></p>
-          </div>
-        <% }); %>
+        <% if (doctors && doctors.length > 0) { %>
+          <% doctors.forEach(function(doctor) { %>
+            <div class="doctor-card" data-name="<%= doctor.userId.FName %> <%= doctor.userId.LName %>" data-specialization="<%= doctor.specialization %>">
+              <img src="<%= doctor.profileImage || '/images/account-icon-33.png' %>" 
+                   alt="Dr. <%= doctor.userId.FName %> <%= doctor.userId.LName %>">
+              <h4>Dr. <%= doctor.userId.FName %> <%= doctor.userId.LName %></h4>
+              <p class="specialization"><%= doctor.specialization %></p>
+              <div class="card-actions">
+              </div>
+            </div>
+          <% }); %>
+        <% } else { %>
+          <p>No doctors found.</p>
+        <% } %>
       </div>
     </div>
   </section>
@@ -113,7 +131,7 @@
   <section class="appointment-cta">
     <div class="container">
       <h3><%= cta.heading %></h3>
-      <a href="/appointments/quick-appointment" class="btn"><%= cta.buttonText %></a>
+      <a href="/appointments/book" class="btn"><%= cta.buttonText %></a>
     </div>
   </section>
 
@@ -128,26 +146,13 @@
         <a href="/terms">Terms of Service</a>
         <a href="/contact">Contact Us</a>
       </div>
-      <div class="footer-socials">
-        <a href="#"><i class="fab fa-facebook"></i></a>
-        <a href="#"><i class="fab fa-twitter"></i></a>
-        <a href="#"><i class="fab fa-instagram"></i></a>
-        <a href="#"><i class="fab fa-linkedin"></i></a>
+      <div class="footer-right">
+        <p>&copy; 2024 Prime Care. All rights reserved.</p>
       </div>
-    </div>
-    <div class="footer-bottom">
-      <p>&copy; <%= new Date().getFullYear() %> Prime Care. All Rights Reserved.</p>
     </div>
   </footer>
 
-  <script>
-    /*
-    const serverData = {
-      hospital: <%- JSON.stringify(hospital) %>,
-      user: <%- JSON.stringify(user) %>,
-      currentPage: '<%= currentPage %>'
-    };*/
-  </script>
-  <script src="javascript/home_page.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </body>
 </html>

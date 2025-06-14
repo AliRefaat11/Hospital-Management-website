@@ -1,32 +1,67 @@
 class DoctorManagement {
-    constructor() {
-        this.doctorData = [];
-        this.filteredData = [];
+    constructor(serverData) {
+        this.allDoctors = serverData.doctors || [];
+        this.allDepartments = serverData.departments || [];
+        this.specializations = serverData.specializations || [];
+        this.employmentTypes = serverData.employmentTypes || [];
+        this.adminUser = serverData.admin || {};
+        this.statsData = serverData.stats || {};
+        this.activitiesData = serverData.activities || [];
+
+        this.filteredData = [...this.allDoctors];
         this.currentEditingId = null;
         this.currentDeleteId = null;
 
-        // DOM Elements
+        // DOM Elements - moved here from outside the class
         this.doctorModal = document.getElementById('doctorModal');
         this.doctorDetailsModal = document.getElementById('doctorDetailsModal');
         this.deleteConfirmModal = document.getElementById('deleteConfirmModal');
         this.doctorForm = document.getElementById('doctorForm');
         this.doctorTableBody = document.getElementById('doctorTableBody');
         this.doctorSearch = document.getElementById('doctorSearch');
+        this.departmentFilter = document.getElementById('departmentFilter');
         this.specializationFilter = document.getElementById('specializationFilter');
         this.statusFilter = document.getElementById('statusFilter');
         this.sidebar = document.getElementById('sidebarNav');
         this.sidebarToggle = document.getElementById('sidebarToggle');
         this.mainContent = document.querySelector('.main-content');
+        this.modalTitle = document.getElementById('modalTitle');
+        this.cancelBtn = document.getElementById('cancelBtn');
+        this.saveBtn = document.getElementById('saveBtn');
+        this.closeDetailsModal = document.getElementById('closeDetailsModal');
+        this.editFromDetails = document.getElementById('editFromDetails');
+        this.cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+        this.confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+
+        // Form inputs
+        this.doctorFNameInput = document.getElementById('doctorFNameInput');
+        this.doctorLNameInput = document.getElementById('doctorLNameInput');
+        this.doctorEmailInput = document.getElementById('doctorEmail');
+        this.doctorPhoneInput = document.getElementById('doctorPhone');
+        this.doctorGenderInput = document.getElementById('doctorGenderInput');
+        this.doctorAgeInput = document.getElementById('doctorAgeInput');
+        this.doctorDepartmentInput = document.getElementById('doctorDepartment');
+        this.doctorSpecializationInput = document.getElementById('doctorRole'); // Maps to specialization in EJS
+        this.doctorRatingInput = document.getElementById('doctorRatingInput');
+        this.employmentTypeInput = document.getElementById('employmentType');
+
+        this.detailName = document.getElementById('detailName');
+        this.detailEmail = document.getElementById('detailEmail');
+        this.detailSpecialization = document.getElementById('detailSpecialization');
+        this.detailDepartment = document.getElementById('detailDepartment');
+        this.detailPhone = document.getElementById('detailPhone');
+        this.detailEmploymentType = document.getElementById('detailEmploymentType');
+        this.detailLastActive = document.getElementById('detailLastActive');
+        this.detailStatus = document.getElementById('detailStatus');
+
 
         // Initialize
         this.initializeEventListeners();
-        this.loadDoctorData();
-        this.updateStatistics();
+        this.renderAll(); // Renders table, filters, and stats based on initial data
         this.initializeSidebar();
     }
 
     initializeSidebar() {
-        // Check if sidebar state is saved in localStorage
         const isSidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
         if (isSidebarCollapsed) {
             this.sidebar.classList.add('collapsed');
@@ -35,400 +70,390 @@ class DoctorManagement {
     }
 
     initializeEventListeners() {
-        // Sidebar toggle
         this.sidebarToggle.addEventListener('click', () => this.toggleSidebar());
-
-        // Add Doctor button
-        document.getElementById('addDoctorBtn').addEventListener('click', () => this.showAddDoctorModal());
-
-        // Form submission
+        this.addDoctorBtn.addEventListener('click', () => this.showAddDoctorModal());
         this.doctorForm.addEventListener('submit', (e) => this.handleFormSubmission(e));
-
-        // Search and filters
-        this.doctorSearch.addEventListener('input', (e) => this.searchDoctors(e.target.value));
+        this.doctorSearch.addEventListener('input', () => this.applyFilters());
+        this.departmentFilter.addEventListener('change', () => this.applyFilters());
         this.specializationFilter.addEventListener('change', () => this.applyFilters());
-        this.statusFilter.addEventListener('change', () => this.applyFilters());
+        this.statusFilter.addEventListener('change', () => this.applyFilters()); // Assuming status filter exists
 
-        // Modal close buttons
-        document.querySelectorAll('.modal .btn-icon').forEach(btn => {
-            btn.addEventListener('click', () => this.closeModal(btn.closest('.modal')));
-        });
+        this.cancelBtn.addEventListener('click', () => this.closeModal(this.doctorModal));
+        this.closeDetailsModal.addEventListener('click', () => this.closeModal(this.doctorDetailsModal));
+        this.cancelDeleteBtn.addEventListener('click', () => this.closeModal(this.deleteConfirmModal));
+        this.confirmDeleteBtn.addEventListener('click', () => this.confirmDelete());
+        this.editFromDetails.addEventListener('click', (e) => this.editDoctor(e.target.dataset.id));
 
-        // Delete confirmation
-        document.getElementById('cancelDeleteBtn').addEventListener('click', () => this.closeModal(this.deleteConfirmModal));
-        document.getElementById('confirmDeleteBtn').addEventListener('click', () => this.confirmDelete());
-
-        // Edit from details
-        document.getElementById('editFromDetails').addEventListener('click', () => {
-            const id = this.doctorDetailsModal.dataset.doctorId;
-            this.closeModal(this.doctorDetailsModal);
-            this.editDoctor(id);
-        });
-    }
-
-    loadDoctorData() {
-        // Load from localStorage or use sample data
-        const savedData = localStorage.getItem('doctorManagement');
-        if (savedData) {
-            this.doctorData = JSON.parse(savedData);
-        } else {
-            this.doctorData = this.getSampleData();
-            this.saveDoctorData();
-        }
-        this.filteredData = [...this.doctorData];
-        this.renderDoctorTable();
-    }
-
-    saveDoctorData() {
-        localStorage.setItem('doctorManagement', JSON.stringify(this.doctorData));
-    }
-
-    getSampleData() {
-        return [
-            {
-                id: 'DR001',
-                name: 'Dr. Emily Johnson',
-                email: 'emily.johnson@primecare.com',
-                phone: '+1 (555) 123-4567',
-                specialization: 'Cardiologist',
-                department: 'Cardiology',
-                employmentType: 'Full-Time',
-                lastActive: '2024-03-20 09:15',
-                status: 'active',
-                dateAdded: '2024-01-10'
-            },
-            {
-                id: 'DR002',
-                name: 'Dr. Michael Brown',
-                email: 'michael.brown@primecare.com',
-                phone: '+1 (555) 234-5678',
-                specialization: 'Neurologist',
-                department: 'Neurology',
-                employmentType: 'Full-Time',
-                lastActive: '2024-03-20 10:30',
-                status: 'active',
-                dateAdded: '2024-01-15'
-            },
-            {
-                id: 'DR003',
-                name: 'Dr. Sarah Wilson',
-                email: 'sarah.wilson@primecare.com',
-                phone: '+1 (555) 345-6789',
-                specialization: 'General Practitioner',
-                department: 'General Medicine',
-                employmentType: 'Full-Time',
-                lastActive: '2024-03-19 16:45',
-                status: 'inactive',
-                dateAdded: '2024-02-01'
-            },
-            {
-                id: 'DR004',
-                name: 'Dr. David Chen',
-                email: 'david.chen@primecare.com',
-                phone: '+1 (555) 456-7890',
-                specialization: 'Orthopedist',
-                department: 'Orthopedics',
-                employmentType: 'Part-Time',
-                lastActive: '2024-03-20 08:00',
-                status: 'active',
-                dateAdded: '2024-02-15'
-            },
-            {
-                id: 'DR005',
-                name: 'Dr. Lisa Martinez',
-                email: 'lisa.martinez@primecare.com',
-                phone: '+1 (555) 567-8901',
-                specialization: 'Pediatrician',
-                department: 'Pediatrics',
-                employmentType: 'Full-Time',
-                lastActive: '2024-03-20 11:20',
-                status: 'on-leave',
-                dateAdded: '2024-03-01'
+        // Event delegation for view, edit, delete buttons in table
+        this.doctorTableBody.addEventListener('click', (e) => {
+            const target = e.target.closest('button');
+            if (!target) return;
+            const id = target.dataset.id;
+            if (target.classList.contains('view-doctor')) {
+                this.viewDoctorDetails(id);
+            } else if (target.classList.contains('edit-doctor')) {
+                this.editDoctor(id);
+            } else if (target.classList.contains('delete-doctor')) {
+                this.deleteDoctor(id);
             }
-        ];
+        });
+    }
+
+    renderAll() {
+        this.populateDepartmentFilter();
+        this.populateSpecializationFilter();
+        this.populateEmploymentTypeDropdown('employmentType');
+        this.renderDoctorTable(this.allDoctors);
+        this.updateStatistics();
+    }
+
+    renderDoctorTable(doctorsToRender) {
+        this.doctorTableBody.innerHTML = '';
+        if (doctorsToRender.length === 0) {
+            this.doctorTableBody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No doctors found.</td></tr>';
+            return;
+        }
+
+        doctorsToRender.forEach(doctor => {
+            const row = document.createElement('tr');
+            row.setAttribute('data-doctor-id', doctor._id);
+            row.innerHTML = `
+                <td>${doctor._id || 'N/A'}</td>
+                <td>${doctor.userId ? `${doctor.userId.FName || ''} ${doctor.userId.LName || ''}` : 'N/A'}</td>
+                <td>${doctor.userId ? (doctor.userId.Email || 'N/A') : 'N/A'}</td>
+                <td>${doctor.specialization || 'N/A'}</td>
+                <td>${doctor.departmentId ? (doctor.departmentId.departmentName || 'N/A') : 'N/A'}</td>
+                <td>${doctor.lastActive ? new Date(doctor.lastActive).toLocaleString() : 'N/A'}</td>
+                <td><span class="status-badge ${doctor.status ? doctor.status.toLowerCase() : 'unknown'}">${doctor.status || 'Unknown'}</span></td>
+                <td class="actions-cell">
+                    <button class="btn-icon view-doctor" title="View Details" data-id="${doctor._id}">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn-icon edit-doctor" title="Edit Doctor" data-id="${doctor._id}">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn-icon delete-doctor" title="Delete Doctor" data-id="${doctor._id}">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            `;
+            this.doctorTableBody.appendChild(row);
+        });
     }
 
     updateStatistics() {
-        const totalDoctors = this.doctorData.length;
-        const activeDoctors = this.doctorData.filter(d => d.status === 'active').length;
-        const specialistDoctors = this.doctorData.filter(d => 
-            d.specialization !== 'General Practitioner').length;
-        const generalDoctors = this.doctorData.filter(d => 
-            d.specialization === 'General Practitioner').length;
+        document.getElementById('totalDoctors').textContent = this.statsData.totalDoctors || 0;
+        document.getElementById('totalDoctorsChange').textContent = `${this.statsData.doctorsChange || 0}% from last month`;
+        document.getElementById('activeDoctors').textContent = this.statsData.activeDoctors || 0;
+        document.getElementById('specialistDoctors').textContent = this.statsData.specialistDoctors || 0;
+        document.getElementById('generalDoctors').textContent = this.statsData.generalDoctors || 0;
 
-        document.getElementById('totalDoctors').textContent = totalDoctors;
-        document.getElementById('activeDoctors').textContent = activeDoctors;
-        document.getElementById('specialistDoctors').textContent = specialistDoctors;
-        document.getElementById('generalDoctors').textContent = generalDoctors;
-    }
-
-    renderDoctorTable() {
-        this.doctorTableBody.innerHTML = '';
-        this.filteredData.forEach(doctor => {
-            const row = this.createDoctorRow(doctor);
-            this.doctorTableBody.appendChild(row);
-        });
-        this.setupTableEventListeners();
-    }
-
-    createDoctorRow(doctor) {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${doctor.id}</td>
-            <td>${doctor.name}</td>
-            <td>${doctor.email}</td>
-            <td>${doctor.specialization}</td>
-            <td>${doctor.department}</td>
-            <td>${this.formatDateTime(doctor.lastActive)}</td>
-            <td>
-                <span class="status-badge ${doctor.status}">${this.formatStatus(doctor.status)}</span>
-            </td>
-            <td>
-                <div class="action-buttons">
-                    <button class="btn-icon view-btn" data-id="${doctor.id}" title="View Details">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    <button class="btn-icon edit-btn" data-id="${doctor.id}" title="Edit">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="btn-icon delete-btn" data-id="${doctor.id}" title="Delete">
-                        <i class="fas fa-trash"></i>
-                    </button>
+        const activityList = document.getElementById('activityList');
+        activityList.innerHTML = '';
+        this.activitiesData.forEach(activity => {
+            const activityItem = document.createElement('div');
+            activityItem.classList.add('activity-item');
+            activityItem.innerHTML = `
+                <div class="activity-icon">
+                    <i class="fas ${activity.icon}"></i>
                 </div>
-            </td>
-        `;
-        return row;
-    }
-
-    setupTableEventListeners() {
-        document.querySelectorAll('.view-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const id = e.currentTarget.dataset.id;
-                this.viewDoctorDetails(id);
-            });
+                <div class="activity-details">
+                    <p class="activity-text">${activity.description}</p>
+                    <span class="activity-time">${new Date(activity.timestamp).toLocaleString()}</span>
+                </div>
+            `;
+            activityList.appendChild(activityItem);
         });
-        
-        document.querySelectorAll('.edit-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const id = e.currentTarget.dataset.id;
-                this.editDoctor(id);
-            });
-        });
-        
-        document.querySelectorAll('.delete-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const id = e.currentTarget.dataset.id;
-                this.deleteDoctor(id);
-            });
-        });
-    }
-
-    searchDoctors(query) {
-        let filtered = [...this.doctorData];
-        
-        if (query) {
-            filtered = filtered.filter(doctor => 
-                doctor.name.toLowerCase().includes(query.toLowerCase()) ||
-                doctor.email.toLowerCase().includes(query.toLowerCase()) ||
-                doctor.specialization.toLowerCase().includes(query.toLowerCase()) ||
-                doctor.department.toLowerCase().includes(query.toLowerCase()) ||
-                doctor.id.toLowerCase().includes(query.toLowerCase())
-            );
-        }
-        
-        this.filteredData = filtered;
-        this.renderDoctorTable();
     }
 
     applyFilters() {
-        const specializationFilter = this.specializationFilter.value;
-        const statusFilter = this.statusFilter.value;
-        const searchQuery = this.doctorSearch.value.toLowerCase();
+        const searchTerm = this.doctorSearch.value.toLowerCase();
+        const selectedDepartment = this.departmentFilter.value;
+        const selectedSpecialization = this.specializationFilter.value;
+        const selectedStatus = this.statusFilter.value;
 
-        let filtered = [...this.doctorData];
+        this.filteredData = this.allDoctors.filter(doctor => {
+            const matchesSearch =
+                (doctor.userId && doctor.userId.FName && doctor.userId.FName.toLowerCase().includes(searchTerm)) ||
+                (doctor.userId && doctor.userId.LName && doctor.userId.LName.toLowerCase().includes(searchTerm)) ||
+                (doctor.userId && doctor.userId.Email && doctor.userId.Email.toLowerCase().includes(searchTerm)) ||
+                (doctor.specialization && doctor.specialization.toLowerCase().includes(searchTerm)) ||
+                (doctor.departmentId && doctor.departmentId.departmentName && doctor.departmentId.departmentName.toLowerCase().includes(searchTerm)) ||
+                (doctor._id && doctor._id.toLowerCase().includes(searchTerm)); // Include ID search
 
-        if (specializationFilter) {
-            filtered = filtered.filter(doctor => doctor.specialization === specializationFilter);
+            const matchesDepartment = selectedDepartment ? (doctor.departmentId && doctor.departmentId._id === selectedDepartment) : true;
+            const matchesSpecialization = selectedSpecialization ? (doctor.specialization && doctor.specialization.toLowerCase() === selectedSpecialization.toLowerCase()) : true;
+            const matchesStatus = selectedStatus ? (doctor.status && doctor.status.toLowerCase() === selectedStatus.toLowerCase()) : true;
+
+            return matchesSearch && matchesDepartment && matchesSpecialization && matchesStatus;
+        });
+        this.renderDoctorTable(this.filteredData);
+    }
+
+    populateDepartmentFilter() {
+        this.departmentFilter.innerHTML = '<option value="">All Departments</option>';
+        this.allDepartments.forEach(department => {
+            const option = document.createElement('option');
+            option.value = department._id;
+            option.textContent = department.departmentName;
+            this.departmentFilter.appendChild(option);
+        });
+    }
+
+    populateSpecializationFilter() {
+        this.specializationFilter.innerHTML = '<option value="">All Specializations</option>';
+        this.specializations.forEach(specialization => {
+            const option = document.createElement('option');
+            option.value = specialization;
+            option.textContent = specialization;
+            this.specializationFilter.appendChild(option);
+        });
+    }
+
+    populateEmploymentTypeDropdown(selectElementId) {
+        const selectElement = document.getElementById(selectElementId);
+        if (selectElement) {
+            selectElement.innerHTML = '<option value="">Select Employment Type</option>';
+            this.employmentTypes.forEach(type => {
+                const option = document.createElement('option');
+                option.value = type;
+                option.textContent = type;
+                selectElement.appendChild(option);
+            });
         }
-        
-        if (statusFilter) {
-            filtered = filtered.filter(doctor => doctor.status === statusFilter);
-        }
+    }
 
-        if (searchQuery) {
-            filtered = filtered.filter(doctor => 
-                doctor.name.toLowerCase().includes(searchQuery) ||
-                doctor.email.toLowerCase().includes(searchQuery) ||
-                doctor.specialization.toLowerCase().includes(searchQuery) ||
-                doctor.department.toLowerCase().includes(searchQuery) ||
-                doctor.id.toLowerCase().includes(searchQuery)
-            );
-        }
+    openModal(modal) {
+        modal.style.display = 'block';
+    }
 
-        this.filteredData = filtered;
-        this.renderDoctorTable();
+    closeModal(modal) {
+        modal.style.display = 'none';
+        this.doctorForm.reset();
+        this.currentEditingId = null;
+        this.modalTitle.textContent = 'Add New Doctor';
+        this.clearValidationMessages();
     }
 
     showAddDoctorModal() {
-        this.currentEditingId = null;
-        document.getElementById('modalTitle').textContent = 'Add New Doctor';
-        this.doctorForm.reset();
-        this.clearValidationMessages();
-        this.showModal(this.doctorModal);
+        this.openModal(this.doctorModal);
+        this.modalTitle.textContent = 'Add New Doctor';
+        this.populateEmploymentTypeDropdown('employmentType');
+
+        this.doctorDepartmentInput.innerHTML = '<option value="">Select Department</option>';
+        this.allDepartments.forEach(department => {
+            const option = document.createElement('option');
+            option.value = department._id;
+            option.textContent = department.departmentName;
+            this.doctorDepartmentInput.appendChild(option);
+        });
+
+        this.doctorSpecializationInput.innerHTML = '<option value="">Select Specialization</option>';
+        this.specializations.forEach(specialization => {
+            const option = document.createElement('option');
+            option.value = specialization;
+            option.textContent = specialization;
+            this.doctorSpecializationInput.appendChild(option);
+        });
     }
 
     editDoctor(id) {
-        const doctor = this.doctorData.find(d => d.id === id);
-        if (!doctor) return;
-
         this.currentEditingId = id;
-        document.getElementById('modalTitle').textContent = 'Edit Doctor';
-        
-        document.getElementById('doctorId').value = doctor.id;
-        document.getElementById('doctorNameInput').value = doctor.name;
-        document.getElementById('doctorEmail').value = doctor.email;
-        document.getElementById('doctorPhone').value = doctor.phone;
-        document.getElementById('doctorRole').value = doctor.specialization;
-        document.getElementById('doctorDepartment').value = doctor.department;
-        document.getElementById('employmentType').value = doctor.employmentType;
+        const doctor = this.allDoctors.find(d => d._id === id);
 
-        this.clearValidationMessages();
-        this.showModal(this.doctorModal);
+        if (doctor) {
+            this.modalTitle.textContent = 'Edit Doctor';
+            this.doctorFNameInput.value = doctor.userId.FName || '';
+            this.doctorLNameInput.value = doctor.userId.LName || '';
+            this.doctorEmailInput.value = doctor.userId.Email || '';
+            this.doctorPhoneInput.value = doctor.userId.PhoneNumber || '';
+            this.doctorGenderInput.value = doctor.userId.Gender || '';
+            this.doctorAgeInput.value = doctor.userId.Age || '';
+            this.doctorDepartmentInput.value = doctor.departmentId ? doctor.departmentId._id : '';
+            this.doctorSpecializationInput.value = doctor.specialization || '';
+            this.doctorRatingInput.value = doctor.rating || '';
+            this.employmentTypeInput.value = doctor.employmentType || '';
+
+            this.openModal(this.doctorModal);
+        }
     }
 
     viewDoctorDetails(id) {
-        const doctor = this.doctorData.find(d => d.id === id);
-        if (!doctor) return;
-
-        document.getElementById('detailName').textContent = doctor.name;
-        document.getElementById('detailEmail').textContent = doctor.email;
-        document.getElementById('detailSpecialization').textContent = doctor.specialization;
-        document.getElementById('detailDepartment').textContent = doctor.department;
-        document.getElementById('detailPhone').textContent = doctor.phone;
-        document.getElementById('detailEmploymentType').textContent = doctor.employmentType;
-        document.getElementById('detailLastActive').textContent = this.formatDateTime(doctor.lastActive);
-        document.getElementById('detailStatus').innerHTML = `<span class="status-badge ${doctor.status}">${this.formatStatus(doctor.status)}</span>`;
-
-        this.doctorDetailsModal.dataset.doctorId = id;
-        this.showModal(this.doctorDetailsModal);
+        const doctor = this.allDoctors.find(d => d._id === id);
+        if (doctor) {
+            this.detailName.textContent = `${doctor.userId.FName || ''} ${doctor.userId.LName || ''}`;
+            this.detailEmail.textContent = doctor.userId.Email || 'N/A';
+            this.detailSpecialization.textContent = doctor.specialization || 'N/A';
+            this.detailDepartment.textContent = doctor.departmentId ? doctor.departmentId.departmentName : 'N/A';
+            this.detailPhone.textContent = doctor.userId.PhoneNumber || 'N/A';
+            this.detailEmploymentType.textContent = doctor.employmentType || 'N/A';
+            this.detailLastActive.textContent = doctor.lastActive ? new Date(doctor.lastActive).toLocaleString() : 'N/A';
+            this.detailStatus.textContent = doctor.status || 'N/A';
+            this.openModal(this.doctorDetailsModal);
+            this.editFromDetails.dataset.id = id;
+        }
     }
 
     deleteDoctor(id) {
         this.currentDeleteId = id;
-        const doctor = this.doctorData.find(d => d.id === id);
-        
-        const modalContent = this.deleteConfirmModal.querySelector('p');
-        modalContent.innerHTML = `Are you sure you want to delete Dr. ${doctor.name}'s record?`;
-        
-        this.showModal(this.deleteConfirmModal);
+        this.openModal(this.deleteConfirmModal);
     }
 
-    confirmDelete() {
-        if (!this.currentDeleteId) return;
+    async confirmDelete() {
+        try {
+            const response = await fetch(`/doctors/${this.currentDeleteId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // 'CSRF-Token': serverData.csrfToken // Uncomment if CSRF is implemented
+                }
+            });
 
-        const index = this.doctorData.findIndex(d => d.id === this.currentDeleteId);
-        if (index !== -1) {
-            this.doctorData.splice(index, 1);
-            this.saveDoctorData();
-            this.applyFilters();
-            this.updateStatistics();
-            this.showNotification('Doctor deleted successfully!', 'success');
+            if (response.ok) {
+                alert('Doctor deleted successfully!');
+                this.closeModal(this.deleteConfirmModal);
+                this.allDoctors = this.allDoctors.filter(doc => doc._id !== this.currentDeleteId);
+                this.applyFilters(); // Re-render table with updated data
+                this.updateStatistics();
+            } else {
+                const errorData = await response.json();
+                alert(`Error deleting doctor: ${errorData.message}`);
+            }
+        } catch (error) {
+            console.error('Error deleting doctor:', error);
+            alert('An error occurred while deleting the doctor.');
+        }
+    }
+
+    async handleFormSubmission(e) {
+        e.preventDefault();
+
+        if (!this.validateForm()) {
+            return;
         }
 
-        this.closeModal(this.deleteConfirmModal);
-    }
-
-    handleFormSubmission(e) {
-        e.preventDefault();
-        
-        if (!this.validateForm()) return;
-
-        const doctorData = {
-            id: document.getElementById('doctorId').value || this.generateDoctorId(),
-            name: document.getElementById('doctorNameInput').value,
-            email: document.getElementById('doctorEmail').value,
-            phone: document.getElementById('doctorPhone').value,
-            specialization: document.getElementById('doctorRole').value,
-            department: document.getElementById('doctorDepartment').value,
-            employmentType: document.getElementById('employmentType').value,
-            lastActive: new Date().toLocaleString(),
-            status: 'active',
-            dateAdded: this.currentEditingId ? 
-                this.doctorData.find(d => d.id === this.currentEditingId).dateAdded :
-                new Date().toISOString().split('T')[0]
+        const formData = {
+            userId: {
+                FName: this.doctorFNameInput.value,
+                LName: this.doctorLNameInput.value,
+                Email: this.doctorEmailInput.value,
+                PhoneNumber: this.doctorPhoneInput.value,
+                Gender: this.doctorGenderInput.value,
+                Age: this.doctorAgeInput.value,
+            },
+            departmentId: this.doctorDepartmentInput.value,
+            specialization: this.doctorSpecializationInput.value,
+            rating: this.doctorRatingInput.value,
+            employmentType: this.employmentTypeInput.value, // Added employmentType
+            // status and lastActive are typically handled by backend or default on creation/update
         };
 
-        if (this.currentEditingId) {
-            const index = this.doctorData.findIndex(d => d.id === this.currentEditingId);
-            this.doctorData[index] = doctorData;
-            this.showNotification('Doctor updated successfully!', 'success');
-        } else {
-            this.doctorData.push(doctorData);
-            this.showNotification('Doctor added successfully!', 'success');
-        }
+        try {
+            let response;
+            if (this.currentEditingId) {
+                // Edit Doctor (PATCH request)
+                response = await fetch(`/doctors/${this.currentEditingId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // 'CSRF-Token': serverData.csrfToken // Uncomment if CSRF is implemented
+                    },
+                    body: JSON.stringify(formData),
+                });
+            } else {
+                // Add New Doctor (POST request)
+                response = await fetch('/doctors', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // 'CSRF-Token': serverData.csrfToken // Uncomment if CSRF is implemented
+                    },
+                    body: JSON.stringify(formData),
+                });
+            }
 
-        this.saveDoctorData();
-        this.applyFilters();
-        this.updateStatistics();
-        this.closeModal(this.doctorModal);
+            if (response.ok) {
+                const result = await response.json();
+                console.log('Operation successful:', result);
+                // Assuming the API returns the updated list or the new/updated doctor object
+                // If it returns the updated list directly
+                if (result.data && Array.isArray(result.data)) {
+                    this.allDoctors = result.data;
+                } else if (result.doctor) { // If it returns a single doctor object (for add/edit)
+                    const updatedDoctor = result.doctor;
+                    const index = this.allDoctors.findIndex(d => d._id === updatedDoctor._id);
+                    if (index > -1) {
+                        this.allDoctors[index] = updatedDoctor;
+                    } else {
+                        this.allDoctors.push(updatedDoctor);
+                    }
+                }
+                this.applyFilters(); // Re-render table with updated data
+                this.updateStatistics(); // Update stats after data changes
+                this.closeModal(this.doctorModal);
+                alert('Doctor saved successfully!');
+            } else {
+                const errorData = await response.json();
+                alert(`Error saving doctor: ${errorData.message}`);
+            }
+        } catch (error) {
+            console.error('Error saving doctor:', error);
+            alert('An error occurred while saving the doctor.');
+        }
     }
 
     validateForm() {
         let isValid = true;
-        const form = this.doctorForm;
-        form.dataset.hasAttemptedSubmit = 'true';
+        this.clearValidationMessages();
 
-        // Required fields validation
-        const requiredFields = form.querySelectorAll('[required]');
-        requiredFields.forEach(field => {
-            if (!field.value.trim()) {
-                this.showValidationError(field);
+        const fieldsToValidate = [
+            { element: this.doctorFNameInput, message: 'First name is required' },
+            { element: this.doctorLNameInput, message: 'Last name is required' },
+            { element: this.doctorEmailInput, message: 'Please enter a valid email address', validator: this.isValidEmail },
+            { element: this.doctorPhoneInput, message: 'Please enter a valid phone number', validator: this.isValidPhone },
+            { element: this.doctorGenderInput, message: 'Please select a gender' },
+            { element: this.doctorAgeInput, message: 'Please enter a valid age', condition: val => !val || val <= 0 },
+            { element: this.doctorDepartmentInput, message: 'Please select a department' },
+            { element: this.doctorSpecializationInput, message: 'Please select a specialization' },
+            { element: this.doctorRatingInput, message: 'Please enter a rating between 1 and 5', condition: val => !val || val < 1 || val > 5 },
+            { element: this.employmentTypeInput, message: 'Please select an employment type' }
+        ];
+
+        fieldsToValidate.forEach(field => {
+            const value = field.element.value.trim();
+            if (field.validator) {
+                if (!field.validator(value)) {
+                    this.showValidationError(field.element, field.message);
+                    isValid = false;
+                }
+            } else if (field.condition) {
+                if (field.condition(value)) {
+                    this.showValidationError(field.element, field.message);
+                    isValid = false;
+                }
+            } else if (!value) {
+                this.showValidationError(field.element, field.message);
                 isValid = false;
-            } else {
-                this.clearValidationError(field);
             }
         });
-
-        // Email validation
-        const emailField = document.getElementById('doctorEmail');
-        if (emailField.value && !this.isValidEmail(emailField.value)) {
-            this.showValidationError(emailField, 'Please enter a valid email address');
-            isValid = false;
-        }
-
-        // Phone validation
-        const phoneField = document.getElementById('doctorPhone');
-        if (phoneField.value && !this.isValidPhone(phoneField.value)) {
-            this.showValidationError(phoneField, 'Please enter a valid phone number');
-            isValid = false;
-        }
-
         return isValid;
     }
 
-    showValidationError(field, message = 'This field is required') {
-        const validationMessage = field.nextElementSibling;
-        if (validationMessage && validationMessage.classList.contains('validation-message')) {
-            validationMessage.textContent = message;
-            validationMessage.style.display = 'block';
+    showValidationError(element, message) {
+        const errorMessageSpan = element.nextElementSibling;
+        if (errorMessageSpan && errorMessageSpan.classList.contains('validation-message')) {
+            errorMessageSpan.textContent = message;
+        } else {
+            const span = document.createElement('span');
+            span.classList.add('validation-message');
+            span.textContent = message;
+            element.parentNode.insertBefore(span, element.nextSibling);
         }
-        field.classList.add('invalid');
-    }
-
-    clearValidationError(field) {
-        const validationMessage = field.nextElementSibling;
-        if (validationMessage && validationMessage.classList.contains('validation-message')) {
-            validationMessage.style.display = 'none';
-        }
-        field.classList.remove('invalid');
     }
 
     clearValidationMessages() {
-        this.doctorForm.querySelectorAll('.validation-message').forEach(msg => {
-            msg.style.display = 'none';
-        });
-        this.doctorForm.querySelectorAll('.invalid').forEach(field => {
-            field.classList.remove('invalid');
+        document.querySelectorAll('.validation-message').forEach(span => {
+            span.textContent = '';
         });
     }
 
@@ -437,72 +462,37 @@ class DoctorManagement {
     }
 
     isValidPhone(phone) {
-        return /^\+?[\d\s-()]{10,}$/.test(phone);
-    }
-
-    generateDoctorId() {
-        const lastDoctor = this.doctorData[this.doctorData.length - 1];
-        const lastId = lastDoctor ? parseInt(lastDoctor.id.replace('DR', '')) : 0;
-        return `DR${String(lastId + 1).padStart(3, '0')}`;
-    }
-
-    showModal(modal) {
-        modal.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-    }
-
-    closeModal(modal) {
-        modal.style.display = 'none';
-        document.body.style.overflow = '';
-    }
-
-    showNotification(message, type = 'info') {
-        const notification = document.createElement('div');
-        notification.className = `notification ${type}`;
-        notification.innerHTML = `
-            <div class="notification-content">
-                <h4>${type.charAt(0).toUpperCase() + type.slice(1)}</h4>
-                <p>${message}</p>
-            </div>
-            <button class="notification-close">&times;</button>
-        `;
-
-        document.body.appendChild(notification);
-        setTimeout(() => notification.classList.add('show'), 10);
-
-        notification.querySelector('.notification-close').addEventListener('click', () => {
-            notification.classList.remove('show');
-            setTimeout(() => notification.remove(), 300);
-        });
-
-        setTimeout(() => {
-            notification.classList.remove('show');
-            setTimeout(() => notification.remove(), 300);
-        }, 5000);
+        return /^\+?[0-9]{10,14}$/.test(phone); // Basic phone validation
     }
 
     formatDateTime(dateTimeStr) {
-        const date = new Date(dateTimeStr);
-        return date.toLocaleString();
+        if (!dateTimeStr) return 'N/A';
+        try {
+            return new Date(dateTimeStr).toLocaleString();
+        } catch (e) {
+            return 'Invalid Date';
+        }
     }
 
     formatStatus(status) {
-        return status.split('-').map(word => 
-            word.charAt(0).toUpperCase() + word.slice(1)
-        ).join(' ');
+        return status ? status.charAt(0).toUpperCase() + status.slice(1) : 'Unknown';
     }
 
     toggleSidebar() {
         this.sidebar.classList.toggle('collapsed');
         this.mainContent.classList.toggle('sidebar-collapsed');
-        
-        // Save sidebar state to localStorage
-        const isCollapsed = this.sidebar.classList.contains('collapsed');
-        localStorage.setItem('sidebarCollapsed', isCollapsed);
+        localStorage.setItem('sidebarCollapsed', this.sidebar.classList.contains('collapsed'));
     }
 }
 
 // Initialize the doctor management system when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    window.doctorManager = new DoctorManagement();
+    // Ensure serverData is available globally from the EJS template
+    if (typeof serverData !== 'undefined') {
+        window.doctorManager = new DoctorManagement(serverData);
+    } else {
+        console.error('serverData is not defined. Please ensure it is passed from the EJS template.');
+        // Fallback for development if serverData is not yet integrated
+        // window.doctorManager = new DoctorManagement({ doctors: [], departments: [], specializations: [], employmentTypes: [], admin: {}, stats: {}, activities: [] });
+    }
 });

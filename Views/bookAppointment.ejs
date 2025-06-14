@@ -4,9 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Prime Care - Book Appointment</title>
+  <link rel="stylesheet" href="/css/navbar.css"/>
   <link rel="stylesheet" href="/css/book_appointment.css"/>
   <link rel="stylesheet" href="/css/common_footer.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 <body>
   <nav>
@@ -17,7 +19,7 @@
         <a href="/User/about" class="<%= currentPage === 'about' ? 'active' : '' %>">ABOUT US</a>
         <a href="/Department/view" class="<%= currentPage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
         <a href="/doctors" class="<%= currentPage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
-        <a href="/appointments/quick-appointment" class="active">BOOK NOW</a>
+        <a href="/appointments/book" class="<%= currentPage === 'book' ? 'active' : '' %>">BOOK NOW</a>
         <% if (user) { %>
           <div class="user-menu">
             <a href="/User/profile" class="profile-link">
@@ -38,8 +40,6 @@
       </div>
     </div>
   </nav>
-  <header>
-  </header>
   <main>
     <h1 class="page-title">Book Appointment</h1>
     <p class="subtitle">Schedule your doctor appointment</p>
@@ -47,10 +47,19 @@
     <div class="language-toggle">
       <button id="langButton" onclick="toggleLanguage()">Switch to Arabic</button>
     </div>
-
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 col-12">
+      <!-- Content here -->
+    </div>
+    <div class="col-md-6 col-12">
+      <!-- Content here -->
+    </div>
+  </div>
+</div>
     <div class="appointment-container">
       <h2 id="formTitle">Personal Information</h2>
-      <form id="appointmentForm" action="/appointments/book" method="POST">
+      <form id="appointmentForm" action="/api/appointments" method="POST">
         <div class="form-row">
           <div class="form-group half">
             <label for="patientFirstName" id="labelFirstName">First Name</label>
@@ -73,6 +82,10 @@
           <input type="email" id="patientEmail" name="email" value="<%= user ? user.email : '' %>" placeholder="your.email@example.com" required />
         </div>
 
+        <% if (user) { %>
+          <input type="hidden" name="patientID" value="<%= user._id %>" />
+        <% } %>
+
         <div class="form-row">
           <div class="form-group half">
             <label for="patientGender" id="labelGender">Gender</label>
@@ -91,46 +104,35 @@
 
         <h2 class="section-title">Appointment Details</h2>
 
-        <div class="form-row">
-          <div class="form-group half">
-            <label for="appointmentDate" id="labelDate">Appointment Date</label>
-            <input type="date" id="appointmentDate" name="date" min="<%= new Date().toISOString().split('T')[0] %>" required />
-          </div>
-          
-          <div class="form-group half">
-            <label for="appointmentTime" id="labelTime">Preferred Time</label>
-            <select id="appointmentTime" name="time" required>
-              <option value="" disabled selected>Select Time</option>
-              <% const timeSlots = ['09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00']; %>
-              <% timeSlots.forEach(time => { %>
-                <option value="<%= time %>"><%= time %></option>
-              <% }); %>
-            </select>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="departmentSelect" id="labelDepartment">Department</label>
-          <select id="departmentSelect" name="department" required>
-            <option value="" disabled selected>Select Department</option>
-            <% departments.forEach(dept => { %>
-              <option value="<%= dept._id %>" <%= selectedDoctor && selectedDoctor.departmentId && selectedDoctor.departmentId._id.toString() === dept._id.toString() ? 'selected' : '' %>>
-                <%= dept.name %>
-              </option>
-            <% }); %>
-          </select>
-        </div>
-
         <div class="form-group">
           <label for="doctorSelect" id="labelDoctor">Doctor</label>
           <select id="doctorSelect" name="doctor" required>
             <option value="" disabled selected>Select Doctor</option>
-            <% doctors.forEach(doctor => { %>
-              <option value="<%= doctor._id %>" <%= selectedDoctor && selectedDoctor._id.toString() === doctor._id.toString() ? 'selected' : '' %>>
+            <% doctors.forEach(doctor => {
+              // Check if doctor.weeklySchedule is an array, otherwise default to empty
+              const doctorScheduleData = JSON.stringify(doctor.weeklySchedule || []);
+            %>
+              <option value="<%= doctor._id %>"
+                <%= (selectedDoctor && selectedDoctor._id.toString() === doctor._id.toString()) ? 'selected' : '' %>
+                data-weekly-schedule="<%= doctorScheduleData %>">
                 Dr. <%= doctor.userId.FName %> <%= doctor.userId.LName %> - <%= doctor.specialization %>
               </option>
             <% }); %>
           </select>
+        </div>
+
+        <div class="form-group">
+          <label for="availableDates" id="labelAvailableDates">Available Dates</label>
+          <input type="text" id="availableDates" name="date" placeholder="Select an available date" readonly required />
+          <small class="help-text">Dates will appear after selecting a doctor.</small>
+        </div>
+
+        <div class="form-group">
+          <label for="availableTimes" id="labelAvailableTimes">Available Times</label>
+          <select id="availableTimes" name="startingHour" required>
+            <option value="" disabled selected>Select Time</option>
+          </select>
+          <small class="help-text">Times will appear after selecting a date.</small>
         </div>
 
         <div class="form-group">
@@ -193,6 +195,7 @@
     </div>
   </footer>
 
-  <script src="/javascript/book_appointment.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="/javascript/book_appointment.js?v=<%= Date.now() %>"></script>
 </body>
 </html>

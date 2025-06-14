@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doctor Management - PrimeCare</title>
     <link rel="stylesheet" href="/css/styles.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="../public/css/admin_profile.css">
+    <link rel="stylesheet" href="/css/admin_profile.css">
 </head>
 <body>
     <nav class="sidebar" id="sidebarNav">
@@ -17,13 +17,23 @@
                 <i class="fas fa-bars"></i>
             </button>
         </div>
+        <div class="container">
+  <div class="row">
+    <div class="col-md-6 col-12">
+      <!-- Content here -->
+    </div>
+    <div class="col-md-6 col-12">
+      <!-- Content here -->
+    </div>
+  </div>
+</div>
         <div class="sidebar-content">
             <div class="admin-profile">
                 <div class="admin-avatar">
-                    <img src="<%= admin.profileImage || '/images/admin-avatar.png' %>" alt="Admin Profile" id="adminProfileImage">
+                    <img src="/images/admin-avatar.png" alt="Admin Profile" id="adminProfileImage">
                 </div>
                 <div class="admin-info">
-                    <h3 id="adminName"><%= admin.name %></h3>
+                    <h3 id="adminName"><%= admin.FName %> <%= admin.LName %></h3>
                     <span class="admin-role"><%= admin.role %></span>
                 </div>
             </div>
@@ -42,11 +52,13 @@
                 </li>
                 <li>
                     <a href="/doctors">
+                    <a href="/doctors">
                         <i class="fas fa-user-md"></i>
                         <span>Doctors</span>
                     </a>
                 </li>
                 <li>
+                    <a href="/Patient/all">
                     <a href="/Patient/all">
                         <i class="fas fa-users"></i>
                         <span>Patients</span>
@@ -54,17 +66,20 @@
                 </li>
                 <li>
                     <a href="/appointments">
+                    <a href="/appointments">
                         <i class="fas fa-calendar-check"></i>
                         <span>Appointments</span>
                     </a>
                 </li>
                 <li>
                     <a href="/MedicalReport">
+                    <a href="/MedicalReport">
                         <i class="fas fa-chart-bar"></i>
                         <span>Reports</span>
                     </a>
                 </li>
                 <li>
+                    <a href="/User/settings">
                     <a href="/User/settings">
                         <i class="fas fa-cog"></i>
                         <span>Settings</span>
@@ -73,6 +88,7 @@
             </ul>
         </div>
         <div class="sidebar-footer">
+            <a href="/User/logout" class="logout-btn">
             <a href="/User/logout" class="logout-btn">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>Logout</span>
@@ -85,7 +101,7 @@
             <header class="dashboard-header">
                 <div class="header-left">
                     <h1>Doctor Management</h1>
-                    <p class="welcome-message">Welcome to Doctor Management Portal, <span id="adminNameHeader"><%= admin.name.split(' ')[0] %></span>!</p>
+                    <p class="welcome-message">Welcome to Doctor Management Portal, <span id="adminNameHeader"><%= admin.FName %></span>!</p>
                 </div>
                 <div class="header-right">
                     <div class="search-box">
@@ -110,23 +126,29 @@
                         <i class="fas fa-user-md"></i>
                     </div>
                     <div class="stat-info">
-                        <h3>Active Doctors</h3>
-                        <p class="stat-value"><%= stats.activeDoctors %></p>
-                        <p class="stat-change <%= stats.doctorsChange >= 0 ? 'positive' : 'negative' %>">
-                            <%= stats.doctorsChange >= 0 ? '+' : '' %><%= stats.doctorsChange %> this month
-                        </p>
+                        <h3>Total Doctors</h3>
+                        <p class="stat-value"><%= stats.totalDoctors %></p>
+                        <p class="stat-change">All registered doctors</p>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon">
-                        <i class="fas fa-calendar-check"></i>
+                        <i class="fas fa-users"></i>
                     </div>
                     <div class="stat-info">
-                        <h3>Today's Appointments</h3>
-                        <p class="stat-value"><%= stats.todayAppointments %></p>
-                        <p class="stat-change <%= stats.appointmentsChange >= 0 ? 'positive' : 'negative' %>">
-                            <%= stats.appointmentsChange >= 0 ? '+' : '' %><%= stats.appointmentsChange %> from yesterday
-                        </p>
+                        <h3>Total Patients</h3>
+                        <p class="stat-value"><%= stats.totalPatients %></p>
+                        <p class="stat-change">All registered patients</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total Appointments</h3>
+                        <p class="stat-value"><%= stats.totalAppointments %></p>
+                        <p class="stat-change">All scheduled appointments</p>
                     </div>
                 </div>
                 <div class="stat-card">
@@ -163,12 +185,54 @@
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon">
-                        <i class="fas fa-briefcase-medical"></i>
+                        <i class="fas fa-tint"></i>
                     </div>
                     <div class="stat-info">
-                        <h3>Available Slots</h3>
-                        <p class="stat-value"><%= stats.availableSlots %></p>
-                        <p class="stat-change">Next 7 Days</p>
+                        <h3>Patients by Blood Type</h3>
+                        <ul>
+                            <% stats.patientsByBloodType.forEach(function(bloodType) { %>
+                                <li><%= bloodType.bloodType || 'Unknown' %>: <%= bloodType.count %></li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-hospital"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Doctors by Department</h3>
+                        <ul>
+                            <% stats.doctorsByDepartment.forEach(function(department) { %>
+                                <li><%= department.departmentName || 'Unknown' %>: <%= department.count %></li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Appointments by Status</h3>
+                        <ul>
+                            <% stats.appointmentsByStatus.forEach(function(status) { %>
+                                <li><%= status.status || 'Unknown' %>: <%= status.count %></li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Monthly Appointments</h3>
+                        <ul>
+                            <% stats.monthlyAppointments.forEach(function(month) { %>
+                                <li><%= month.month || 'Unknown' %>: <%= month.count %></li>
+                            <% }); %>
+                        </ul>
                     </div>
                 </div>
             </section>
@@ -184,7 +248,7 @@
                             <h3>Doctor Availability</h3>
                             <p class="stat-value"><%= stats.availableDoctors %>/<%= stats.totalDoctors %></p>
                             <div class="progress-bar">
-                                <div class="progress" style="width: 75%"></div>
+                                <div class="progress" style="width: '<%= (stats.availableDoctors / stats.totalDoctors) * 100 %>%'"></div>
                             </div>
                             <p class="stat-change"><%= stats.coverageRate %>% Coverage Rate</p>
                         </div>
@@ -197,7 +261,7 @@
                             <h3>Appointment Status</h3>
                             <p class="stat-value"><%= stats.onTimeRate %>%</p>
                             <div class="progress-bar">
-                                <div class="progress emergency" style="width: 85%"></div>
+                                <div class="progress emergency" style="width: '<%= stats.onTimeRate %>%'"></div>
                             </div>
                             <p class="stat-change">On-Time Rate</p>
                         </div>
@@ -328,20 +392,60 @@
                     </div>
                 </div>
             </section>
+
+            <!-- Doctor Appointment Counts Section -->
+            <section class="content-card doctor-appointments-overview">
+                <div class="section-header">
+                    <h2>Doctor Appointment Counts</h2>
+                </div>
+                <div class="card-body">
+                    <ul class="doctor-appointment-list">
+                        <% stats.doctorAppointmentCounts.forEach(function(doctor) { %>
+                            <li><strong><%= doctor.doctorName || 'Unknown Doctor' %>:</strong> <%= doctor.count %> appointments</li>
+                        <% }); %>
+                    </ul>
+                </div>
+            </section>
         </div>
     </main>
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 PrimeCare. All rights reserved.</p>
+        </div>
+    </footer>
+
     <script>
-        /*
-        const serverData = {
-            admin: <%- JSON.stringify(admin) %>,
-            stats: <%- JSON.stringify(stats) %>,
-            departments: <%- JSON.stringify(departments) %>,
-            systemStatus: <%- JSON.stringify(systemStatus) %>,
-            notifications: <%- JSON.stringify(notifications) %>,
-            messages: <%- JSON.stringify(messages) %>,
-            csrfToken: '<%= csrfToken %>'
-        };*/
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch('/admin/dashboard-stats');
+                const data = await response.json();
+
+                if (data.success) {
+                    const stats = data.data;
+                    document.querySelector('.stat-card:nth-child(1) .stat-value').textContent = stats.totalDoctors; // Assuming activeDoctors is totalDoctors
+                    // You can add more specific logic here if activeDoctors is a subset
+
+                    document.querySelector('.stat-card:nth-child(2) .stat-value').textContent = stats.totalAppointments; // Assuming todayAppointments is totalAppointments
+                    // You can add more specific logic for todayAppointments
+
+                    // Update other stats as needed based on your backend logic and desired display
+                    // For now, I'm mapping directly to the overall counts
+                    document.querySelector('.stat-card:nth-child(3) .stat-value').textContent = stats.totalDoctors; // Placeholder for onDutyDoctors
+                    document.querySelector('.stat-card:nth-child(4) .stat-value').textContent = 'N/A'; // Placeholder for Average Rating
+                    document.querySelector('.stat-card:nth-child(5) .stat-value').textContent = stats.totalDepartments; // Placeholder for Specialists (count of departments)
+                    document.querySelector('.stat-card:nth-child(6) .stat-value').textContent = 'N/A'; // Placeholder for Available Slots
+
+                    document.querySelector('.healthcare-stats .stat-card:nth-child(1) .stat-value').textContent = `${stats.totalDoctors}/${stats.totalDoctors}`; // Placeholder for Doctor Availability
+                    document.querySelector('.healthcare-stats .stat-card:nth-child(2) .stat-value').textContent = 'N/A%'; // Placeholder for Appointment Status
+
+                } else {
+                    console.error('Failed to fetch dashboard stats:', data.message);
+                }
+            } catch (error) {
+                console.error('Error fetching dashboard stats:', error);
+            }
+        });
     </script>
-    <script src="../public/javascript/admin_profile.js"></script>
+    <script src="/javascript/admin_profile.js"></script>
 </body>
 </html> 

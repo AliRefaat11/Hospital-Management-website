@@ -110,18 +110,12 @@ const login = asyncHandler(async (req, res, next) => {
         maxAge: 24 * 60 * 60 * 1000 // 1 day
     });
     console.log('Login successful, token created and cookie set.');
-    res.status(200).json({
-        status: "success",
-        token,
-        data: {
-            user: {
-                id: user._id,
-                role: user.role,
-                email: user.Email,
-                name: `${user.FName} ${user.LName}`
-            }
-        }
-    });
+    
+    if (user.role === 'Admin') {
+        return res.redirect('/User/adminProfile'); // Corrected redirect for admin to /User/adminProfile
+    } else {
+        return res.redirect('/User/profile');
+    }
 });
 
 const update = async (req, res) => {

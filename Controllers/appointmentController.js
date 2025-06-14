@@ -1,21 +1,49 @@
 const Appointment = require('../Models/appointmentModel');
 const Doctor = require('../Models/doctorModel');
 const Department = require('../Models/departmentModel');
+const User = require('../Models/userModel');
+const jwt = require('jsonwebtoken');
+const { ApiError } = require('../middleware/authMiddleware');
 
 const appointmentController = {
 
   // CREATE - Add new appointment
-  createAppointment: async (req, res) => {
+  createAppointment: async (req) => {
     try {
-      const { doctorID, patientID, date, startingHour, status, reason } = req.body;
+      const { doctor, patientID, date, startingHour, status, reason } = req.body;
+      console.log('Received doctor in createAppointment (now as doctor):', doctor);
+
+      // Validate doctor exists
+      const doctorFound = await Doctor.findById(doctor);
+      if (!doctorFound) {
+        throw new ApiError('Doctor not found', 404);
+      }
+
+      // Validate patient exists
+      const patient = await User.findById(patientID);
+      if (!patient) {
+        throw new ApiError('Patient not found', 404);
+      }
+
+      // Check for conflicting appointments
+      const existingAppointment = await Appointment.findOne({
+        doctorID: doctor,
+        date,
+        startingHour,
+        status: { $nin: ['cancelled', 'no-show'] }
+      });
+
+      if (existingAppointment) {
+        throw new ApiError('Time slot is already booked', 409);
+      }
 
       // Create new appointment
       const appointment = new Appointment({
-        doctorID,
+        doctorID: doctor,
         patientID,
         date,
         startingHour,
-        status,
+        status: status || 'scheduled',
         reason
       });
 
@@ -24,39 +52,38 @@ const appointmentController = {
 
       // Populate doctor and patient info
       await savedAppointment.populate('doctorID', 'name specialization');
-      await savedAppointment.populate('patientID', 'name phone email');
+      await savedAppointment.populate('patientID', 'FName LName email');
 
-      res.status(201).json({
-        success: true,
-        message: 'Appointment created successfully',
-        data: savedAppointment
-      });
+      return savedAppointment;
 
     } catch (error) {
-      res.status(400).json({
-        success: false,
-        message: 'Failed to create appointment',
-        error: error.message
-      });
+      console.error('Create appointment error:', error);
+      if (error instanceof ApiError) {
+        throw error;
+      } else {
+        throw new ApiError('Failed to create appointment', 500);
+      }
     }
   },
 
   // READ - Get all appointments
   getAllAppointments: async (req, res) => {
     try {
-      const { page = 1, limit = 10, status, date } = req.query;
+      const { page = 1, limit = 10, status, date, doctorID, patientID } = req.query;
 
       // Build filter object
       const filter = {};
       if (status) filter.status = status;
       if (date) filter.date = new Date(date);
+      if (doctorID) filter.doctorID = doctorID;
+      if (patientID) filter.patientID = patientID;
 
       // Calculate skip value for pagination
       const skip = (page - 1) * limit;
 
       const appointments = await Appointment.find(filter)
         .populate('doctorID', 'name specialization')
-        .populate('patientID', 'name phone email')
+        .populate('patientID', 'FName LName email')
         .sort({ date: 1, startingHour: 1 })
         .skip(skip)
         .limit(parseInt(limit));
@@ -76,6 +103,7 @@ const appointmentController = {
       });
 
     } catch (error) {
+      console.error('Get all appointments error:', error);
       res.status(500).json({
         success: false,
         message: 'Failed to retrieve appointments',
@@ -91,7 +119,7 @@ const appointmentController = {
 
       const appointment = await Appointment.findById(id)
         .populate('doctorID', 'name specialization phone email')
-        .populate('patientID', 'name phone email address');
+        .populate('patientID', 'FName LName email phone');
 
       if (!appointment) {
         return res.status(404).json({
@@ -107,6 +135,7 @@ const appointmentController = {
       });
 
     } catch (error) {
+      console.error('Get appointment by ID error:', error);
       res.status(500).json({
         success: false,
         message: 'Failed to retrieve appointment',
@@ -121,13 +150,22 @@ const appointmentController = {
       const { doctorID } = req.params;
       const { date, status } = req.query;
 
+      // Validate doctor exists
+      const doctor = await Doctor.findById(doctorID);
+      if (!doctor) {
+        return res.status(404).json({
+          success: false,
+          message: 'Doctor not found'
+        });
+      }
+
       // Build filter
       const filter = { doctorID };
       if (date) filter.date = new Date(date);
       if (status) filter.status = status;
 
       const appointments = await Appointment.find(filter)
-        .populate('patientID', 'name phone email')
+        .populate('patientID', 'FName LName email phone')
         .sort({ date: 1, startingHour: 1 });
 
       res.status(200).json({
@@ -138,6 +176,7 @@ const appointmentController = {
       });
 
     } catch (error) {
+      console.error('Get doctor appointments error:', error);
       res.status(500).json({
         success: false,
         message: 'Failed to retrieve doctor appointments',
@@ -151,6 +190,15 @@ const appointmentController = {
     try {
       const { patientID } = req.params;
       const { status } = req.query;
+
+      // Validate patient exists
+      const patient = await User.findById(patientID);
+      if (!patient) {
+        return res.status(404).json({
+          success: false,
+          message: 'Patient not found'
+        });
+      }
 
       // Build filter
       const filter = { patientID };
@@ -168,6 +216,7 @@ const appointmentController = {
       });
 
     } catch (error) {
+      console.error('Get patient appointments error:', error);
       res.status(500).json({
         success: false,
         message: 'Failed to retrieve patient appointments',
@@ -182,6 +231,24 @@ const appointmentController = {
       const { id } = req.params;
       const updateData = req.body;
 
+      // Check for conflicting appointments if time is being updated
+      if (updateData.date || updateData.startingHour) {
+        const existingAppointment = await Appointment.findOne({
+          _id: { $ne: id },
+          doctorID: updateData.doctorID,
+          date: updateData.date,
+          startingHour: updateData.startingHour,
+          status: { $nin: ['cancelled', 'no-show'] }
+        });
+
+        if (existingAppointment) {
+          return res.status(400).json({
+            success: false,
+            message: 'Time slot is already booked'
+          });
+        }
+      }
+
       const appointment = await Appointment.findByIdAndUpdate(
         id,
         updateData,
@@ -190,7 +257,7 @@ const appointmentController = {
           runValidators: true 
         }
       ).populate('doctorID', 'name specialization')
-       .populate('patientID', 'name phone email');
+       .populate('patientID', 'FName LName email');
 
       if (!appointment) {
         return res.status(404).json({
@@ -206,6 +273,7 @@ const appointmentController = {
       });
 
     } catch (error) {
+      console.error('Update appointment error:', error);
       res.status(400).json({
         success: false,
         message: 'Failed to update appointment',
@@ -220,12 +288,19 @@ const appointmentController = {
       const { id } = req.params;
       const { status } = req.body;
 
+      if (!['scheduled', 'confirmed', 'in-progress', 'completed', 'cancelled', 'rescheduled', 'no-show'].includes(status)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid appointment status'
+        });
+      }
+
       const appointment = await Appointment.findByIdAndUpdate(
         id,
         { status },
         { new: true, runValidators: true }
       ).populate('doctorID', 'name specialization')
-       .populate('patientID', 'name phone email');
+       .populate('patientID', 'FName LName email');
 
       if (!appointment) {
         return res.status(404).json({
@@ -241,6 +316,7 @@ const appointmentController = {
       });
 
     } catch (error) {
+      console.error('Update appointment status error:', error);
       res.status(400).json({
         success: false,
         message: 'Failed to update appointment status',
@@ -265,11 +341,11 @@ const appointmentController = {
 
       res.status(200).json({
         success: true,
-        message: 'Appointment deleted successfully',
-        data: appointment
+        message: 'Appointment deleted successfully'
       });
 
     } catch (error) {
+      console.error('Delete appointment error:', error);
       res.status(500).json({
         success: false,
         message: 'Failed to delete appointment',
@@ -278,23 +354,18 @@ const appointmentController = {
     }
   },
 
-  // EXTRA - Get today's appointments
+  // READ - Get today's appointments
   getTodayAppointments: async (req, res) => {
     try {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      
-      const tomorrow = new Date(today);
-      tomorrow.setDate(tomorrow.getDate() + 1);
 
       const appointments = await Appointment.find({
-        date: {
-          $gte: today,
-          $lt: tomorrow
-        }
-      }).populate('doctorID', 'name specialization')
-        .populate('patientID', 'name phone')
-        .sort({ startingHour: 1 });
+        date: today
+      })
+      .populate('doctorID', 'name specialization')
+      .populate('patientID', 'FName LName email')
+      .sort({ startingHour: 1 });
 
       res.status(200).json({
         success: true,
@@ -304,6 +375,7 @@ const appointmentController = {
       });
 
     } catch (error) {
+      console.error('Get today appointments error:', error);
       res.status(500).json({
         success: false,
         message: 'Failed to retrieve today\'s appointments',
@@ -312,10 +384,10 @@ const appointmentController = {
     }
   },
 
-  // EXTRA - Get appointments by date range
+  // READ - Get appointments by date range
   getAppointmentsByDateRange: async (req, res) => {
     try {
-      const { startDate, endDate } = req.query;
+      const { startDate, endDate, status } = req.query;
 
       if (!startDate || !endDate) {
         return res.status(400).json({
@@ -324,13 +396,18 @@ const appointmentController = {
         });
       }
 
-      const appointments = await Appointment.find({
+      const filter = {
         date: {
           $gte: new Date(startDate),
           $lte: new Date(endDate)
         }
-      }).populate('doctorID', 'name specialization')
-        .populate('patientID', 'name phone')
+      };
+
+      if (status) filter.status = status;
+
+      const appointments = await Appointment.find(filter)
+        .populate('doctorID', 'name specialization')
+        .populate('patientID', 'FName LName email')
         .sort({ date: 1, startingHour: 1 });
 
       res.status(200).json({
@@ -341,6 +418,7 @@ const appointmentController = {
       });
 
     } catch (error) {
+      console.error('Get date range appointments error:', error);
       res.status(500).json({
         success: false,
         message: 'Failed to retrieve appointments',
@@ -349,40 +427,88 @@ const appointmentController = {
     }
   },
 
-  // Render booking page
-  renderBookingPage: async (req, res) => {
+  // Render book appointment page
+  renderBookAppointmentPage: async (req, res) => {
     try {
-      const { doctor } = req.query;
+      const doctorId = req.query.doctor; 
       let selectedDoctor = null;
-      
-      if (doctor) {
-        selectedDoctor = await Doctor.findById(doctor)
-          .populate('userId', 'FName LName Email PhoneNumber Gender Age')
-          .populate('departmentId', 'name');
+      if (doctorId) {
+          selectedDoctor = await Doctor.findById(doctorId)
+              .populate('userId', 'FName LName')
+              .populate('departmentId', 'departmentName');
       }
 
+      // Fetch all doctors for the dropdown, including their availableDays and weeklySchedule
       const doctors = await Doctor.find()
-        .populate('userId', 'FName LName Email PhoneNumber Gender Age')
-        .populate('departmentId', 'name');
+          .populate('userId', 'FName LName')
+          .populate('departmentId', 'departmentName');
 
       const departments = await Department.find();
 
+      let user = null;
+      try {
+          const token = req.cookies?.token;
+          if (token) {
+              const decoded = jwt.verify(token, process.env.JWT_SECRET);
+              user = await User.findById(decoded.id).select('-Password');
+          }
+      } catch (error) {
+          console.log('Token verification failed:', error.message);
+      }
+
       res.render('bookAppointment', {
-        selectedDoctor,
-        doctors,
-        departments,
-        user: req.user || null,
-        hospital: {
-          name: "PrimeCare",
-          address: "123 Health St, Wellness City",
-          phone: "+1234567890",
-          email: "info@primecare.com"
-        },
-        currentPage: 'appointments'
+          departments,
+          user,
+          selectedDoctor: selectedDoctor ? {
+              _id: selectedDoctor._id,
+              userId: selectedDoctor.userId,
+              departmentId: selectedDoctor.departmentId,
+              specialization: selectedDoctor.specialization,
+              rating: selectedDoctor.rating,
+              departmentName: selectedDoctor.departmentName,
+              weeklySchedule: selectedDoctor.weeklySchedule || []
+          } : null,
+          doctors: doctors.map(doc => ({
+              _id: doc._id,
+              userId: doc.userId,
+              departmentId: doc.departmentId,
+              specialization: doc.specialization,
+              rating: doc.rating,
+              departmentName: doc.departmentName,
+              weeklySchedule: doc.weeklySchedule
+          })),
+          currentPage: 'book',
+          siteName: 'PrimeCare'
       });
     } catch (error) {
-      console.error('Error rendering booking page:', error);
-      res.status(500).send('Error loading booking page');
+      console.error("Error rendering book appointment page:", error);
+      res.status(500).send("Error loading booking page.");
+    }
+  },
+
+  // Render quick appointment page
+  renderQuickAppointmentPage: async (req, res) => {
+    try {
+        const departments = await Department.find();
+        let user = null;
+        try {
+            const token = req.cookies?.token;
+            if (token) {
+                const decoded = jwt.verify(token, process.env.JWT_SECRET);
+                user = await User.findById(decoded.id).select('-Password');
+            }
+        } catch (error) {
+            console.log('Token verification failed:', error.message);
+        }
+        res.render('quickAppointment', { 
+            departments, 
+            user, 
+            currentPage: 'appointments',
+            siteName: 'PrimeCare'
+        });
+    } catch (error) {
+        console.error("Error rendering quick appointment page:", error);
+        res.status(500).send("Error loading quick appointment page.");
     }
   }
 };

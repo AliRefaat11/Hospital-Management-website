@@ -6,18 +6,16 @@ const jwt = require('jsonwebtoken');
 const User = require('../Models/userModel');
 const Patient = require('../Models/patientModel');
 const Doctor = require('../Models/doctorModel');
+const Department = require('../Models/departmentModel');
 
-// Public routes (no auth needed)
 UserRouter.post("/signup", UserController.create);
 UserRouter.post("/login", UserController.login);
 
-// Logout route
 UserRouter.get('/logout', (req, res) => {
-    res.clearCookie('token'); // Clear the JWT token cookie
-    res.redirect('/User/login'); // Redirect to login page
+    res.clearCookie('token');
+    res.redirect('/User/login');
 });
 
-// View Routes (Public - no auth needed)
 UserRouter.get('/login', async (req, res) => {
     res.render('loginPage', {
         title: 'Patient Login',
@@ -27,7 +25,6 @@ UserRouter.get('/login', async (req, res) => {
     });
 });
 
-// View Routes
 UserRouter.get('/about', async (req, res) => {
     try {
         let user = null;
@@ -75,7 +72,7 @@ UserRouter.get('/about', async (req, res) => {
 });
 
 // Protected routes (require authentication)
-UserRouter.use(auth); // Apply auth middleware to all routes below
+UserRouter.use(auth);
 
 // View Routes (Protected)
 UserRouter.get('/profile', async (req, res) => {
@@ -129,12 +126,39 @@ UserRouter.get('/profile', async (req, res) => {
                 hospital,
                 currentPage: 'profile'
             });
+        } else if (user.role === 'Admin') {
+            res.redirect('/User/adminProfile');
         } else {
-            // For other roles or if role is not defined, redirect to home or a generic dashboard
             res.redirect('/'); 
         }
     } catch (err) {
         console.error('Error loading profile page:', err);
+        next(err);
+    }
+});
+
+UserRouter.get('/edit-profile', async (req, res, next) => {
+    try {
+        const user = req.user;
+        res.render('editprofilePage', {
+            currentPage: 'edit-profile',
+            user: user
+        });
+    } catch (err) {
+        console.error('Error loading edit profile page:', err);
+        next(err);
+    }
+});
+
+UserRouter.get('/settings', async (req, res, next) => {
+    try {
+        const user = req.user;
+        res.render('settingsProfile', {
+            currentPage: 'settings',
+            user: user
+        });
+    } catch (err) {
+        console.error('Error loading settings page:', err);
         next(err);
     }
 });
@@ -145,7 +169,88 @@ UserRouter.patch("/profile", UserController.update);
 UserRouter.patch("/profile/password", UserController.updatePassword);
 
 // Admin only routes
-UserRouter.use(allowedTo('Admin')); // Apply admin role check to all routes below
+UserRouter.use(allowedTo('Admin'));
+UserRouter.get('/adminProfile', async (req, res, next) => {
+    try {
+        const admin = req.user;
+
+        // Fetch actual data from the database
+        const totalDoctors = await Doctor.countDocuments();
+        // Assuming 'active' doctors are simply all doctors for now. Adjust if there's an 'isActive' field.
+        const activeDoctors = totalDoctors; 
+        const specialists = await Doctor.distinct('specialization').countDocuments();
+        const allDepartments = await Department.find();
+        const departmentCount = allDepartments.length;
+
+        // You would need to implement logic to calculate these from your Appointment model
+        // and Doctor schedules.
+        const todayAppointments = 45; // Placeholder
+        const appointmentsChange = -2; // Placeholder
+        const onDutyDoctors = 15; // Placeholder
+        const averageRating = (await Doctor.aggregate([{$group: {_id: null, avgRating: {$avg: '$rating'}}}]).then(res => res[0]?.avgRating || 0)).toFixed(1); // Calculate average rating
+        const ratingChange = 0.1; // Placeholder
+        const availableDoctors = 90; // Placeholder
+        const coverageRate = ((availableDoctors / totalDoctors) * 100).toFixed(0); // Calculate coverage rate
+        const onTimeRate = 85; // Placeholder
+        const availableSlots = 120; // Placeholder
+
+        const departmentsData = await Promise.all(allDepartments.map(async (dept) => {
+            const totalDeptDoctors = await Doctor.countDocuments({ departmentId: dept._id });
+            // For 'availableDoctors', you might need to check schedules or a specific status
+            const availableDeptDoctors = Math.floor(totalDeptDoctors * 0.75); // Placeholder: 75% are available
+            return {
+                name: dept.departmentName,
+                totalDoctors: totalDeptDoctors,
+                availableDoctors: availableDeptDoctors
+            };
+        }));
+
+        const notifications = {
+            unreadCount: 5
+        };
+        const messages = {
+            unreadCount: 3
+        };
+
+        const stats = {
+            activeDoctors,
+            doctorsChange: 5,
+            todayAppointments,
+            appointmentsChange,
+            onDutyDoctors,
+            averageRating: parseFloat(averageRating),
+            ratingChange,
+            specialists,
+            departmentCount,
+            availableDoctors,
+            totalDoctors,
+            coverageRate: parseFloat(coverageRate),
+            onTimeRate
+        };
+
+        const systemStatus = [
+            { name: 'Doctor Portal', status: 'Active' },
+            { name: 'Scheduling System', status: 'Operational' },
+            { name: 'Access Control', status: 'Secured' }
+        ];
+
+        res.render('adminProfile', {
+            title: 'Admin Profile',
+            currentPage: 'adminProfile',
+            admin, // Pass the admin user object
+            notifications,
+            messages,
+            stats,
+            departments: departmentsData, // Pass the processed department data
+            systemStatus,
+            csrfToken: ''
+        });
+    } catch (err) {
+        console.error('Error loading admin profile page:', err);
+        next(err);
+    }
+});
+
 UserRouter.get("/", UserController.getAll);
 UserRouter.get("/:id", UserController.getById);
 UserRouter.patch("/:id", UserController.update);
