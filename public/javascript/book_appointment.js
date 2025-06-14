@@ -1,112 +1,112 @@
 // Global Variables
 let currentLanguage = 'en';
 const translations = {
-	en: {
-		formTitle: 'Personal Information',
-		sectionTitle: 'Appointment Details',
-		labelFirstName: 'First Name',
-		labelLastName: 'Last Name',
-		labelPhone: 'Phone Number',
-		labelEmail: 'Email Address',
-		labelGender: 'Gender',
-		labelAge: 'Age',
-		labelDate: 'Appointment Date',
-		labelTime: 'Preferred Time',
-		labelDepartment: 'Department',
-		labelDoctor: 'Doctor',
-		labelReason: 'Reason for Visit',
-		labelTerms: 'I agree to the terms and privacy policy',
-		labelInsuranceID: 'Insurance ID',
-		labelInsuranceProvider: 'Insurance Provider',
-		submitBtn: 'Confirm Appointment',
-		processing: 'Processing...',
-		modalTitle: 'Appointment Confirmed',
-		modalMessage: 'Your appointment has been scheduled successfully. A confirmation has been sent to your email.',
-		closeBtn: 'Close',
-		genderOptions: ['Select Gender', 'Male', 'Female'],
-		departmentOptions: [
-			'Select Department',
-			'General Medicine',
-			'Cardiology',
-			'Dermatology',
-			'Orthopedics',
-			'Pediatrics',
-			'Neurology'
-		],
-		insuranceOptions: [
-			'Select Insurance Provider',
-			'AXA Medical',
-			'Bupa Health',
-			'Cigna Healthcare',
-			'MetLife',
-			'Allianz Care',
-			'None/Self-pay'
-		],
-		switchLang: 'Switch to Arabic',
-		pastTimeAlert: 'Cannot book an appointment in the past. Please select a future date and time.',
-		errorTitle: 'Invalid Time Selection',
-		// Placeholders
-		firstNamePlaceholder: 'Enter your first name',
-		lastNamePlaceholder: 'Enter your last name',
-		phonePlaceholder: '11-digit phone number',
-		emailPlaceholder: 'your.email@example.com',
-		agePlaceholder: 'Your age',
-		reasonPlaceholder: 'Describe your symptoms or concerns...',
-		insuranceIDPlaceholder: 'Enter your insurance ID number'
-	},
-	ar: {
-		formTitle: 'المعلومات الشخصية',
-		sectionTitle: 'تفاصيل الموعد',
-		labelFirstName: 'الاسم الأول',
-		labelLastName: 'اسم العائلة',
-		labelPhone: 'رقم الهاتف',
-		labelEmail: 'البريد الإلكتروني',
-		labelGender: 'الجنس',
-		labelAge: 'العمر',
-		labelDate: 'تاريخ الموعد',
-		labelTime: 'الوقت المفضل',
-		labelDepartment: 'القسم',
-		labelDoctor: 'الطبيب',
-		labelReason: 'سبب الزيارة',
-		labelTerms: 'أوافق على الشروط وسياسة الخصوصية',
-		labelInsuranceID: 'رقم التأمين الصحي',
-		labelInsuranceProvider: 'شركة التأمين',
-		submitBtn: 'تأكيد الموعد',
-		processing: 'جاري المعالجة...',
-		modalTitle: 'تم تأكيد الموعد',
-		modalMessage: 'تم جدولة موعدك بنجاح. تم إرسال تأكيد إلى بريدك الإلكتروني.',
-		closeBtn: 'إغلاق',
-		genderOptions: ['اختر الجنس', 'ذكر', 'أنثى'],
-		departmentOptions: [
-			'اختر القسم',
-			'الطب العام',
-			'أمراض القلب',
-			'الجلدية',
-			'العظام',
-			'طب الأطفال',
-			'الأعصاب'
-		],
-		insuranceOptions: [
-			'اختر شركة التأمين',
-			'أكسا الطبية',
-			'بوبا للصحة',
-			'سيجنا للرعاية الصحية',
-			'ميتلايف',
-			'أليانز كير',
-			'بدون تأمين/دفع ذاتي'
-		],
-		switchLang: 'التبديل إلى الإنجليزية',
-		pastTimeAlert: 'لا يمكن حجز موعد في الماضي. يرجى اختيار تاريخ ووقت مستقبلي.',
-		errorTitle: 'اختيار وقت غير صالح',
-		// Placeholders
-		firstNamePlaceholder: 'أدخل الاسم الأول',
-		lastNamePlaceholder: 'أدخل اسم العائلة',
-		phonePlaceholder: 'رقم هاتف مكون من 11 رقم',
-		emailPlaceholder: 'بريدك@مثال.كوم',
-		agePlaceholder: 'عمرك',
-		reasonPlaceholder: 'صف الأعراض أو المخاوف الصحية...',
-		insuranceIDPlaceholder: 'أدخل رقم بطاقة التأمين الصحي'
-	}
+  en: {
+    formTitle: 'Personal Information',
+    sectionTitle: 'Appointment Details',
+    labelFirstName: 'First Name',
+    labelLastName: 'Last Name',
+    labelPhone: 'Phone Number',
+    labelEmail: 'Email Address',
+    labelGender: 'Gender',
+    labelAge: 'Age',
+    labelDate: 'Appointment Date',
+    labelTime: 'Preferred Time',
+    labelDepartment: 'Department',
+    labelDoctor: 'Doctor',
+    labelReason: 'Reason for Visit',
+    labelTerms: 'I agree to the terms and privacy policy',
+    labelInsuranceID: 'Insurance ID',
+    labelInsuranceProvider: 'Insurance Provider',
+    submitBtn: 'Confirm Appointment',
+    processing: 'Processing...',
+    modalTitle: 'Appointment Confirmed',
+    modalMessage: 'Your appointment has been scheduled successfully. A confirmation has been sent to your email.',
+    closeBtn: 'Close',
+    genderOptions: ['Select Gender', 'Male', 'Female'],
+    departmentOptions: [
+      'Select Department',
+      'General Medicine',
+      'Cardiology',
+      'Dermatology',
+      'Orthopedics',
+      'Pediatrics',
+      'Neurology'
+    ],
+    insuranceOptions: [
+      'Select Insurance Provider',
+      'AXA Medical',
+      'Bupa Health',
+      'Cigna Healthcare',
+      'MetLife',
+      'Allianz Care',
+      'None/Self-pay'
+    ],
+    switchLang: 'Switch to Arabic',
+    pastTimeAlert: 'Cannot book an appointment in the past. Please select a future date and time.',
+    errorTitle: 'Invalid Time Selection',
+    // Placeholders
+    firstNamePlaceholder: 'Enter your first name',
+    lastNamePlaceholder: 'Enter your last name',
+    phonePlaceholder: '11-digit phone number',
+    emailPlaceholder: 'your.email@example.com',
+    agePlaceholder: 'Your age',
+    reasonPlaceholder: 'Describe your symptoms or concerns...',
+    insuranceIDPlaceholder: 'Enter your insurance ID number'
+  },
+  ar: {
+    formTitle: 'المعلومات الشخصية',
+    sectionTitle: 'تفاصيل الموعد',
+    labelFirstName: 'الاسم الأول',
+    labelLastName: 'اسم العائلة',
+    labelPhone: 'رقم الهاتف',
+    labelEmail: 'البريد الإلكتروني',
+    labelGender: 'الجنس',
+    labelAge: 'العمر',
+    labelDate: 'تاريخ الموعد',
+    labelTime: 'الوقت المفضل',
+    labelDepartment: 'القسم',
+    labelDoctor: 'الطبيب',
+    labelReason: 'سبب الزيارة',
+    labelTerms: 'أوافق على الشروط وسياسة الخصوصية',
+    labelInsuranceID: 'رقم التأمين الصحي',
+    labelInsuranceProvider: 'شركة التأمين',
+    submitBtn: 'تأكيد الموعد',
+    processing: 'جاري المعالجة...',
+    modalTitle: 'تم تأكيد الموعد',
+    modalMessage: 'تم جدولة موعدك بنجاح. تم إرسال تأكيد إلى بريدك الإلكتروني.',
+    closeBtn: 'إغلاق',
+    genderOptions: ['اختر الجنس', 'ذكر', 'أنثى'],
+    departmentOptions: [
+      'اختر القسم',
+      'الطب العام',
+      'أمراض القلب',
+      'الجلدية',
+      'العظام',
+      'طب الأطفال',
+      'الأعصاب'
+    ],
+    insuranceOptions: [
+      'اختر شركة التأمين',
+      'أكسا الطبية',
+      'بوبا للصحة',
+      'سيجنا للرعاية الصحية',
+      'ميتلايف',
+      'أليانز كير',
+      'بدون تأمين/دفع ذاتي'
+    ],
+    switchLang: 'التبديل إلى الإنجليزية',
+    pastTimeAlert: 'لا يمكن حجز موعد في الماضي. يرجى اختيار تاريخ ووقت مستقبلي.',
+    errorTitle: 'اختيار وقت غير صالح',
+    // Placeholders
+    firstNamePlaceholder: 'أدخل الاسم الأول',
+    lastNamePlaceholder: 'أدخل اسم العائلة',
+    phonePlaceholder: 'رقم هاتف مكون من 11 رقم',
+    emailPlaceholder: 'بريدك@مثال.كوم',
+    agePlaceholder: 'عمرك',
+    reasonPlaceholder: 'صف الأعراض أو المخاوف الصحية...',
+    insuranceIDPlaceholder: 'أدخل رقم بطاقة التأمين الصحي'
+  }
 };
 
 // DOM Elements (declared later inside DOMContentLoaded)
@@ -133,14 +133,14 @@ const errorModal = document.createElement('div');
 errorModal.id = 'errorModal';
 errorModal.className = 'modal';
 errorModal.innerHTML = `
-	<div class="modal-content">
-		<div class="modal-icon" style="color: #e74c3c;">
-			<i class="fas fa-exclamation-circle"></i>
-		</div>
-		<h3 id="errorModalTitle"></h3>
-		<p id="errorModalMessage"></p>
-		<button id="closeErrorModalBtn"></button>
-	</div>
+  <div class="modal-content">
+    <div class="modal-icon" style="color: #e74c3c;">
+      <i class="fas fa-exclamation-circle"></i>
+    </div>
+    <h3 id="errorModalTitle"></h3>
+    <p id="errorModalMessage"></p>
+    <button id="closeErrorModalBtn"></button>
+  </div>
 `;
 document.body.appendChild(errorModal);
 
@@ -148,643 +148,616 @@ let closeErrorModalBtn; // Declared here, assigned in DOMContentLoaded
 
 // Initialize date input with minimum date of today
 window.addEventListener('DOMContentLoaded', async () => {
-	// Assign DOM Elements here after DOM is loaded
-	appointmentForm = document.getElementById('appointmentForm');
-	submitBtn = document.getElementById('submitBtn');
-	submitLoader = document.getElementById('submitLoader');
-	confirmationModal = document.getElementById('confirmationModal');
-	closeModalBtn = document.getElementById('closeModalBtn');
-	langButton = document.getElementById('langButton');
-	dateInput = document.getElementById('appointmentDate');
-	firstName = document.getElementById('patientFirstName');
-	lastName = document.getElementById('patientLastName');
-	phone = document.getElementById('patientPhone');
-	email = document.getElementById('patientEmail');
-	age = document.getElementById('patientAge');
-	reason = document.getElementById('reason');
-	departmentSelect = document.getElementById('departmentSelect');
-	doctorSelect = document.getElementById('doctorSelect');
-	availableDatesInput = document.getElementById('availableDates');
-	availableTimesSelect = document.getElementById('availableTimes');
-	closeErrorModalBtn = document.getElementById('closeErrorModalBtn');
+  // Assign DOM Elements here after DOM is loaded
+  appointmentForm = document.getElementById('appointmentForm');
+  submitBtn = document.getElementById('submitBtn');
+  submitLoader = document.getElementById('submitLoader');
+  confirmationModal = document.getElementById('confirmationModal');
+  closeModalBtn = document.getElementById('closeModalBtn');
+  langButton = document.getElementById('langButton');
+  dateInput = document.getElementById('appointmentDate');
+  firstName = document.getElementById('patientFirstName');
+  lastName = document.getElementById('patientLastName');
+  phone = document.getElementById('patientPhone');
+  email = document.getElementById('patientEmail');
+  age = document.getElementById('patientAge');
+  reason = document.getElementById('reason');
+  departmentSelect = document.getElementById('departmentSelect');
+  doctorSelect = document.getElementById('doctorSelect');
+  availableDatesInput = document.getElementById('availableDates');
+  availableTimesSelect = document.getElementById('availableTimes');
+  closeErrorModalBtn = document.getElementById('closeErrorModalBtn');
 
-	// Attach the main form submission listener
-	if (appointmentForm) {
-		appointmentForm.addEventListener('submit', handleFormSubmit);
-	}
+  // Attach the main form submission listener
+  if (appointmentForm) {
+    appointmentForm.addEventListener('submit', handleFormSubmit);
+  }
 
-	// Event listener for confirmation modal close button
-	closeModalBtn.addEventListener('click', function() {
-		confirmationModal.style.display = 'none';
-	});
+  // Event listener for confirmation modal close button
+  closeModalBtn.addEventListener('click', function() {
+    confirmationModal.style.display = 'none';
+  });
 
-	// Event listener for error modal close button
-	closeErrorModalBtn.addEventListener('click', function() {
-		errorModal.style.display = 'none';
-	});
+  // Event listener for error modal close button
+  closeErrorModalBtn.addEventListener('click', function() {
+    errorModal.style.display = 'none';
+  });
 
-	// Add Insurance fields to the form
-	addInsuranceFields();
-	
-	// Initialize form validation
-	initFormValidation();
+  // Add Insurance fields to the form
+  addInsuranceFields();
+  
+  // Initialize form validation
+  initFormValidation();
 
-	// Initial language update (moved here to ensure all elements are present before updating)
-	window.onload = updateLanguage;
-	
-	// Load doctors dynamically (if not already loaded by EJS)
-	// In this case, doctors are passed from the backend, so no need for this client-side fetch
-	// await loadDoctors(); 
+  // Initial language update (moved here to ensure all elements are present before updating)
+  window.onload = updateLanguage;
+  
+  // Load doctors dynamically (if not already loaded by EJS)
+  // In this case, doctors are passed from the backend, so no need for this client-side fetch
+  // await loadDoctors(); 
 
-	// Set up event listeners for doctor and date changes
-	doctorSelect.addEventListener('change', handleDoctorSelection);
-	availableTimesSelect.addEventListener('click', handleAvailableTimesClick);
+  // Set up event listeners for doctor and date changes
+  doctorSelect.addEventListener('change', handleDoctorSelection);
+  availableTimesSelect.addEventListener('click', handleAvailableTimesClick);
 
-	// If a doctor is pre-selected (e.g., from doctor profile page), trigger selection handling
-	if (doctorSelect.value) {
-		handleDoctorSelection();
-	}
+  // If a doctor is pre-selected (e.g., from doctor profile page), trigger selection handling
+  if (doctorSelect.value) {
+    handleDoctorSelection();
+  }
 
-	// Get the pre-selected doctor's ID from the URL if available
-	const urlParams = new URLSearchParams(window.location.search);
-	const preSelectedDoctorId = urlParams.get('doctor');
+  // Get the pre-selected doctor's ID from the URL if available
+  const urlParams = new URLSearchParams(window.location.search);
+  const preSelectedDoctorId = urlParams.get('doctor');
 
-	if (preSelectedDoctorId) {
-		// Find the corresponding option in the doctorSelect dropdown
-		const preSelectedOption = Array.from(doctorSelect.options).find(
-			option => option.value === preSelectedDoctorId
-		);
-		if (preSelectedOption) {
-			// Set the doctorSelect value to trigger the change event listeners
-			doctorSelect.value = preSelectedDoctorId;
-			// Manually trigger the change event if it's not already triggering handleDoctorSelection
-			doctorSelect.dispatchEvent(new Event('change'));
-		}
-	}
+  if (preSelectedDoctorId) {
+    // Find the corresponding option in the doctorSelect dropdown
+    const preSelectedOption = Array.from(doctorSelect.options).find(
+      option => option.value === preSelectedDoctorId
+    );
+    if (preSelectedOption) {
+      // Set the doctorSelect value to trigger the change event listeners
+      doctorSelect.value = preSelectedDoctorId;
+      // Manually trigger the change event to populate dates/times
+      doctorSelect.dispatchEvent(new Event('change'));
+    }
+  }
 });
 
 // Function to handle doctor selection
 function handleDoctorSelection() {
-	const selectedOption = doctorSelect.options[doctorSelect.selectedIndex];
-	const weeklyScheduleData = selectedOption.dataset.weeklySchedule;
-	console.log('Weekly Schedule Data (from JS): ', weeklyScheduleData);
-	const weeklySchedule = weeklyScheduleData ? JSON.parse(weeklyScheduleData) : [];
-	
-	// Clear previous date and time selections
-	availableDatesInput.value = '';
-	availableTimesSelect.innerHTML = '<option value="" disabled selected>Select Time</option>';
+  const selectedOption = doctorSelect.options[doctorSelect.selectedIndex];
+  const weeklyScheduleData = selectedOption.dataset.weeklySchedule;
+  console.log('Weekly Schedule Data (from JS): ', weeklyScheduleData);
+  const weeklySchedule = weeklyScheduleData ? JSON.parse(weeklyScheduleData) : [];
+  
+  // Clear previous date and time selections
+  availableDatesInput.value = '';
+  availableTimesSelect.innerHTML = '<option value="" disabled selected>Select Time</option>';
 
-	if (weeklySchedule.length > 0) {
-		// Extract available days from the weekly schedule
-		const availableDays = weeklySchedule.map(schedule => schedule.dayOfWeek);
-		initFlatpickr(availableDays, weeklySchedule); // Pass weeklySchedule to Flatpickr for time slot filtering
-	} else {
-		// Disable date input if no weekly schedule
-		if (flatpickrInstance) {
-			flatpickrInstance.destroy();
-		}
-		availableDatesInput.placeholder = "No availability for this doctor";
-		availableDatesInput.disabled = true;
-	}
+  if (weeklySchedule.length > 0) {
+    // Extract available days from the weekly schedule, converting to lowercase for consistency
+    const availableDays = weeklySchedule.map(s => s.dayOfWeek.toLowerCase());
+    initFlatpickr(availableDays, weeklySchedule); // Pass weeklySchedule to Flatpickr for time slot filtering
+  } else {
+    // Disable date input if no weekly schedule
+    if (flatpickrInstance) {
+      flatpickrInstance.destroy();
+    }
+    availableDatesInput.placeholder = "No availability for this doctor";
+    availableDatesInput.disabled = true;
+  }
 }
 
-let flatpickrInstance; // Declare a global variable to hold the Flatpickr instance
+let flatpickrInstance; // Define globally or ensure it's accessible
 
+// Function to initialize Flatpickr
 function initFlatpickr(availableDays = [], weeklySchedule = []) {
-	// Destroy existing instance if it exists to prevent re-initialization issues
-	if (flatpickrInstance) {
-		flatpickrInstance.destroy();
-	}
+  if (flatpickrInstance) {
+    flatpickrInstance.destroy(); // Destroy existing instance if any
+  }
 
-	const today = new Date();
-	today.setHours(0, 0, 0, 0); // Normalize to start of day
+  availableDatesInput.disabled = false;
+  availableDatesInput.placeholder = "Select an available date";
 
-	flatpickrInstance = flatpickr(dateInput, {
-		minDate: "today",
-		dateFormat: "Y-m-d",
-		enable: [
-			function(date) {
-				// Enable only dates that are in the future and correspond to an available day of the week
-				const dayOfWeek = date.toLocaleString('en-US', { weekday: 'long' });
-				const isAvailableDay = availableDays.includes(dayOfWeek);
-				const isFutureDate = date.getTime() >= today.getTime();
-				return isAvailableDay && isFutureDate;
-			}
-		],
-		onChange: function(selectedDates, dateStr, instance) {
-			if (selectedDates.length > 0) {
-				const selectedDate = selectedDates[0];
-				const selectedDayOfWeek = selectedDate.toLocaleString('en-US', { weekday: 'long' });
-				populateAvailableTimes(selectedDayOfWeek, weeklySchedule);
-			} else {
-				// Clear times if date is cleared
-				availableTimesSelect.innerHTML = '<option value="" disabled selected>Select Time</option>';
-			}
-		}
-	});
+  flatpickrInstance = flatpickr(availableDatesInput, {
+    enable: [function(date) {
+      const dayOfWeek = date.getDay(); // Sunday - Saturday : 0 - 6
+      const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+      const dayName = dayNames[dayOfWeek];
+      return availableDays.includes(dayName); // Enable only available days
+    }],
+    dateFormat: "Y-m-d",
+    minDate: "today",
+    onChange: function(selectedDates, dateStr, instance) {
+      if (selectedDates.length > 0) {
+        const selectedDate = selectedDates[0];
+        const dayOfWeek = selectedDate.getDay();
+        const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+        const selectedDayName = dayNames[dayOfWeek];
+        populateAvailableTimes(selectedDayName, weeklySchedule); // Pass weeklySchedule
+      } else {
+        availableTimesSelect.innerHTML = '<option value="" disabled selected>Select Time</option>';
+      }
+    },
+  });
 }
 
+// Function to populate available time slots
 function populateAvailableTimes(selectedDayOfWeek, weeklySchedule) {
-	availableTimesSelect.innerHTML = '<option value="" disabled selected>Select Time</option>'; // Clear previous options
+  availableTimesSelect.innerHTML = '<option value="" disabled selected>Select Time</option>';
+  const today = new Date();
+  const selectedDate = flatpickrInstance.selectedDates[0];
+  const isToday = selectedDate.toDateString() === today.toDateString();
 
-	const scheduleForDay = weeklySchedule.find(schedule => schedule.dayOfWeek === selectedDayOfWeek);
+  // Find the schedule for the selected day, converting day name to lowercase for consistency
+  const daySchedule = weeklySchedule.find(s => s.dayOfWeek.toLowerCase() === selectedDayOfWeek);
 
-	if (scheduleForDay && scheduleForDay.timeSlots.length > 0) {
-		scheduleForDay.timeSlots.forEach(slot => {
-			const option = document.createElement('option');
-			option.value = slot;
-			option.textContent = slot;
-			availableTimesSelect.appendChild(option);
-		});
-		availableTimesSelect.disabled = false;
-	} else {
-		availableTimesSelect.disabled = true;
-		const option = document.createElement('option');
-		option.value = "";
-		option.textContent = "No times available for this day";
-		option.disabled = true;
-		option.selected = true;
-		availableTimesSelect.appendChild(option);
-	}
+  if (daySchedule && daySchedule.timeSlots && daySchedule.timeSlots.length > 0) {
+    daySchedule.timeSlots.sort().forEach(time => {
+      const [hour, minute] = time.split(':').map(Number);
+      const currentTime = today.getHours() * 60 + today.getMinutes();
+      const slotTime = hour * 60 + minute;
+
+      if (isToday && slotTime <= currentTime) {
+        // Skip past times for today
+        return;
+      }
+      const option = document.createElement('option');
+      option.value = time;
+      option.textContent = time;
+      availableTimesSelect.appendChild(option);
+    });
+  } else {
+    const option = document.createElement('option');
+    option.value = "";
+    option.disabled = true;
+    option.textContent = "No times available for this day";
+    availableTimesSelect.appendChild(option);
+  }
 }
 
+// Handle click on availableTimes select to re-populate if necessary (e.g., if date changes but time wasn't re-selected)
 function handleAvailableTimesClick() {
-	const selectedDate = dateInput.value;
-	const selectedTime = availableTimesSelect.value;
-	if (selectedDate && selectedTime) {
-		const appointmentDateTime = new Date(`${selectedDate}T${selectedTime}`);
-		const now = new Date();
-
-		if (appointmentDateTime <= now) {
-			showErrorModal(translations[currentLanguage].errorTitle, translations[currentLanguage].pastTimeAlert);
-			availableTimesSelect.value = ""; // Reset time selection
-		}
-	}
+  // This function might not be strictly necessary with Flatpickr's onChange
+  // but keeping it for robustness if time slots aren't immediately populated
+  if (availableDatesInput.value && availableTimesSelect.options.length <= 1) {
+    const selectedDate = flatpickrInstance.selectedDates[0];
+    if (selectedDate) {
+      const selectedDayOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][selectedDate.getDay()];
+      const selectedOption = doctorSelect.options[doctorSelect.selectedIndex];
+      const weeklyScheduleData = selectedOption.dataset.weeklySchedule;
+      const weeklySchedule = weeklyScheduleData ? JSON.parse(weeklyScheduleData) : [];
+      populateAvailableTimes(selectedDayOfWeek, weeklySchedule);
+    }
+  }
 }
 
+// Function to toggle language
 function toggleLanguage() {
-	currentLanguage = currentLanguage === 'en' ? 'ar' : 'en';
-	updateLanguage();
-	// Reorder name fields based on language direction
-	reorderNameFields();
+  currentLanguage = currentLanguage === 'en' ? 'ar' : 'en';
+  updateLanguage();
 }
 
+// Function to update placeholders
 function updatePlaceholders() {
-	firstName.placeholder = translations[currentLanguage].firstNamePlaceholder;
-	lastName.placeholder = translations[currentLanguage].lastNamePlaceholder;
-	phone.placeholder = translations[currentLanguage].phonePlaceholder;
-	email.placeholder = translations[currentLanguage].emailPlaceholder;
-	age.placeholder = translations[currentLanguage].agePlaceholder;
-	reason.placeholder = translations[currentLanguage].reasonPlaceholder;
-	document.getElementById('insuranceID').placeholder = translations[currentLanguage].insuranceIDPlaceholder;
+  document.getElementById('patientFirstName').placeholder = translations[currentLanguage].firstNamePlaceholder;
+  document.getElementById('patientLastName').placeholder = translations[currentLanguage].lastNamePlaceholder;
+  document.getElementById('patientPhone').placeholder = translations[currentLanguage].phonePlaceholder;
+  document.getElementById('patientEmail').placeholder = translations[currentLanguage].emailPlaceholder;
+  document.getElementById('patientAge').placeholder = translations[currentLanguage].agePlaceholder;
+  document.getElementById('reason').placeholder = translations[currentLanguage].reasonPlaceholder;
+
+  // Safely set placeholder for dynamically added insuranceID
+  const insuranceIdInput = document.getElementById('insuranceID');
+  if (insuranceIdInput) {
+    insuranceIdInput.placeholder = translations[currentLanguage].insuranceIDPlaceholder;
+  }
 }
 
+// Function to reorder name fields for Arabic
 function reorderNameFields() {
-	const nameGroup = document.querySelector('.form-group.name-group');
-	if (nameGroup) {
-		if (currentLanguage === 'ar') {
-			nameGroup.classList.add('ar-layout');
-		} else {
-			nameGroup.classList.remove('ar-layout');
-		}
-	}
+  const formRow = document.querySelector('.form-row');
+  if (currentLanguage === 'ar') {
+    // Reorder for RTL (Arabic)
+    formRow.style.flexDirection = 'row-reverse';
+  } else {
+    // Default for LTR (English)
+    formRow.style.flexDirection = 'row';
+  }
 }
 
+// Function to update language
 function updateLanguage() {
-	const currentTranslations = translations[currentLanguage];
+  const t = translations[currentLanguage];
+  
+  // Update form titles and section titles
+  const formTitle = document.getElementById('formTitle');
+  if (formTitle) {
+    formTitle.textContent = t.formTitle;
+  }
+  const sectionTitle = document.querySelector('.section-title');
+  if (sectionTitle) {
+    sectionTitle.textContent = t.sectionTitle;
+  }
 
-	// Update form titles and section titles
-	document.getElementById('formTitle').textContent = currentTranslations.formTitle;
-	document.getElementById('appointmentDetailsTitle').textContent = currentTranslations.sectionTitle;
+  // Update labels - add null checks for dynamically added elements
+  const labelFirstName = document.getElementById('labelFirstName');
+  if (labelFirstName) {
+    labelFirstName.textContent = t.labelFirstName;
+  }
+  const labelLastName = document.getElementById('labelLastName');
+  if (labelLastName) {
+    labelLastName.textContent = t.labelLastName;
+  }
+  const labelPhone = document.getElementById('labelPhone');
+  if (labelPhone) {
+    labelPhone.textContent = t.labelPhone;
+  }
+  const labelEmail = document.getElementById('labelEmail');
+  if (labelEmail) {
+    labelEmail.textContent = t.labelEmail;
+  }
+  const labelGender = document.getElementById('labelGender');
+  if (labelGender) {
+    labelGender.textContent = t.labelGender;
+  }
+  const labelAge = document.getElementById('labelAge');
+  if (labelAge) {
+    labelAge.textContent = t.labelAge;
+  }
+  const labelDate = document.getElementById('labelDate');
+  if (labelDate) {
+    labelDate.textContent = t.labelDate;
+  }
+  const labelTime = document.getElementById('labelTime');
+  if (labelTime) {
+    labelTime.textContent = t.labelTime;
+  }
+  const labelDepartment = document.getElementById('labelDepartment');
+  if (labelDepartment) {
+    labelDepartment.textContent = t.labelDepartment;
+  }
+  const labelDoctor = document.getElementById('labelDoctor');
+  if (labelDoctor) {
+    labelDoctor.textContent = t.labelDoctor;
+  }
+  const labelReason = document.getElementById('labelReason');
+  if (labelReason) {
+    labelReason.textContent = t.labelReason;
+  }
+  const labelTerms = document.getElementById('labelTerms');
+  if (labelTerms) {
+    labelTerms.textContent = t.labelTerms;
+  }
+  
+  // Safely update dynamically added insurance labels
+  const labelInsuranceID = document.getElementById('labelInsuranceID');
+  if (labelInsuranceID) {
+    labelInsuranceID.textContent = t.labelInsuranceID;
+  }
+  const labelInsuranceProvider = document.getElementById('labelInsuranceProvider');
+  if (labelInsuranceProvider) {
+    labelInsuranceProvider.textContent = t.labelInsuranceProvider;
+  }
 
-	// Update labels
-	document.getElementById('labelFirstName').textContent = currentTranslations.labelFirstName;
-	document.getElementById('labelLastName').textContent = currentTranslations.labelLastName;
-	document.getElementById('labelPhone').textContent = currentTranslations.labelPhone;
-	document.getElementById('labelEmail').textContent = currentTranslations.labelEmail;
-	document.getElementById('labelGender').textContent = currentTranslations.labelGender;
-	document.getElementById('labelAge').textContent = currentTranslations.labelAge;
-	document.getElementById('labelDate').textContent = currentTranslations.labelDate;
-	document.getElementById('labelTime').textContent = currentTranslations.labelTime;
-	document.getElementById('labelDepartment').textContent = currentTranslations.labelDepartment;
-	document.getElementById('labelDoctor').textContent = currentTranslations.labelDoctor;
-	document.getElementById('labelReason').textContent = currentTranslations.labelReason;
-	document.getElementById('labelTerms').textContent = currentTranslations.labelTerms;
-	document.getElementById('labelInsuranceID').textContent = currentTranslations.labelInsuranceID;
-	document.getElementById('labelInsuranceProvider').textContent = currentTranslations.labelInsuranceProvider;
+  // Update button texts
+  submitBtn.querySelector('span').textContent = t.submitBtn;
+  submitLoader.querySelector('span').textContent = t.processing;
+  document.getElementById('modalTitle').textContent = t.modalTitle;
+  document.getElementById('modalMessage').textContent = t.modalMessage;
+  closeModalBtn.textContent = t.closeBtn;
+  langButton.textContent = t.switchLang;
 
-	// Update button texts
-	submitBtn.textContent = currentTranslations.submitBtn;
-	langButton.textContent = currentTranslations.switchLang;
-	closeModalBtn.textContent = currentTranslations.closeBtn;
-	document.getElementById('closeErrorModalBtn').textContent = currentTranslations.closeBtn;
+  // Update select options
+  updateSelectOptions('patientGender', t.genderOptions);
+  updateSelectOptions('departmentSelect', t.departmentOptions);
+  updateSelectOptions('insuranceProvider', t.insuranceOptions);
 
-	// Update modal content
-	document.getElementById('confirmationModalTitle').textContent = currentTranslations.modalTitle;
-	document.getElementById('confirmationModalMessage').textContent = currentTranslations.modalMessage;
+  // Reorder name fields for RTL
+  reorderNameFields();
 
-	// Update select options
-	updateSelectOptions('patientGender', currentTranslations.genderOptions);
-	updateSelectOptions('departmentSelect', currentTranslations.departmentOptions);
-	updateSelectOptions('insuranceProvider', currentTranslations.insuranceOptions);
-
-	// Update placeholders
-	updatePlaceholders();
-
-	// Adjust text direction for Arabic
-	document.body.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
-	document.body.lang = currentLanguage;
+  // Update text direction
+  document.body.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
 }
 
 function updateSelectOptions(selectId, options) {
-	const selectElement = document.getElementById(selectId);
-	if (!selectElement) return; // Guard against null element
+  const selectElement = document.getElementById(selectId);
+  if (!selectElement) return;
 
-	const currentValue = selectElement.value; // Store the currently selected value
+  const currentValue = selectElement.value;
+  selectElement.innerHTML = ''; // Clear existing options
 
-	selectElement.innerHTML = ''; // Clear existing options
-
-	options.forEach((optionText, index) => {
-		const option = document.createElement('option');
-		option.textContent = optionText;
-		if (index === 0) { // Assuming the first option is always the "Select" placeholder
-			option.value = '';
-			option.disabled = true;
-			option.selected = true;
-		} else {
-			// Use the optionText itself as the value for other options
-			option.value = optionText;
-		}
-		selectElement.appendChild(option);
-	});
-
-	// Attempt to restore the previously selected value, if it still exists
-	if (currentValue && Array.from(selectElement.options).some(option => option.value === currentValue)) {
-		selectElement.value = currentValue;
-	}
+  options.forEach((text, index) => {
+    const option = document.createElement('option');
+    option.value = index === 0 ? '' : text.toLowerCase().replace(/\s/g, ''); // Value for "Select Gender" is empty
+    option.textContent = text;
+    if (index === 0) {
+      option.disabled = true;
+      option.selected = true;
+    }
+    if (option.value === currentValue) {
+        option.selected = true;
+    }
+    selectElement.appendChild(option);
+  });
 }
 
 function initFormValidation() {
-	const inputs = appointmentForm.querySelectorAll('input, select, textarea');
-	inputs.forEach(input => {
-		input.addEventListener('input', () => validateInput(input));
-		input.addEventListener('change', () => validateInput(input)); // For select elements
-	});
+  const form = document.getElementById('appointmentForm');
+  const inputs = form.querySelectorAll('input[required], select[required], textarea[required]');
+
+  inputs.forEach(input => {
+    input.addEventListener('input', () => validateInput(input));
+    input.addEventListener('blur', () => validateInput(input)); // Validate on blur
+  });
+
+  // Ensure the availableTimesSelect (formerly timeInput) is validated
+  availableTimesSelect.setAttribute('required', '');
 }
 
 function validateInput(input) {
-	let isValid = true;
-	let errorMessage = '';
+  let isValid = true;
+  let errorMessage = '';
 
-	const value = input.value.trim();
-	const type = input.type;
-	const id = input.id;
+  if (input.hasAttribute('required') && !input.value.trim()) {
+    isValid = false;
+    errorMessage = 'This field is required.';
+  } else {
+    switch (input.id) {
+      case 'patientEmail':
+        if (input.value && !isValidEmail(input.value)) {
+          isValid = false;
+          errorMessage = 'Please enter a valid email address.';
+        }
+        break;
+      case 'patientPhone':
+        if (input.value && !isValidPhone(input.value)) {
+          isValid = false;
+          errorMessage = 'Please enter a valid phone number (e.g., +1234567890 or 1234567890).';
+        }
+        break;
+      case 'patientAge':
+        const age = parseInt(input.value);
+        if (input.value && (isNaN(age) || age < 0 || age > 120)) {
+          isValid = false;
+          errorMessage = 'Please enter a valid age (0-120).';
+        }
+        break;
+      case 'termsCheck':
+        if (!input.checked) {
+          isValid = false;
+          errorMessage = 'You must agree to the terms and privacy policy.';
+        }
+        break;
+      case 'reason':
+        if (input.value && input.value.trim().length < 5) {
+          isValid = false;
+          errorMessage = 'Reason must be at least 5 characters.';
+        }
+        break;
+      // Add validation for new time input if it's a select
+      case 'appointmentTime':
+        if (input.value === '' || input.disabled) {
+          isValid = false;
+          errorMessage = 'Please select an available time slot.';
+        }
+        break;
+    }
+  }
 
-	// Clear previous error
-	hideError(input);
-
-	switch (id) {
-		case 'patientFirstName':
-		case 'patientLastName':
-			if (value.length < 2) {
-				isValid = false;
-				errorMessage = 'Name must be at least 2 characters.';
-			}
-			break;
-		case 'patientPhone':
-			if (!isValidPhone(value)) {
-				isValid = false;
-				errorMessage = 'Enter a valid 11-digit phone number.';
-			}
-			break;
-		case 'patientEmail':
-			if (!isValidEmail(value)) {
-				isValid = false;
-				errorMessage = 'Enter a valid email address.';
-			}
-			break;
-		case 'patientAge':
-			const age = parseInt(value);
-			if (isNaN(age) || age < 0 || age > 120) {
-				isValid = false;
-				errorMessage = 'Enter a valid age (0-120).';
-			}
-			break;
-		case 'appointmentDate':
-			if (!value) {
-				isValid = false;
-				errorMessage = 'Please select a date.';
-			}
-			break;
-		case 'availableTimes':
-			if (!value) {
-				isValid = false;
-				errorMessage = 'Please select a time.';
-			}
-			break;
-		case 'departmentSelect':
-		case 'doctorSelect':
-		case 'patientGender':
-		case 'insuranceProvider':
-			if (!value) {
-				isValid = false;
-				errorMessage = 'Please select an option.';
-			}
-			break;
-		case 'reason':
-			if (value.length < 10) {
-				isValid = false;
-				errorMessage = 'Please describe your reason for visit (min 10 characters).';
-			}
-			break;
-		case 'insuranceID':
-			// Only validate if insurance provider is selected and not 'None/Self-pay'
-			const insuranceProvider = document.getElementById('insuranceProvider').value;
-			if (insuranceProvider && insuranceProvider !== 'None/Self-pay' && !value) {
-				isValid = false;
-				errorMessage = 'Please enter your insurance ID.';
-			}
-			break;
-	}
-
-	if (!isValid) {
-		showError(input, errorMessage);
-	}
-	return isValid;
-
-	function hideError(input) {
-		const formGroup = input.closest('.form-group');
-		if (formGroup) {
-			const errorElement = formGroup.querySelector('.error-message');
-			if (errorElement) {
-				errorElement.textContent = '';
-				errorElement.style.display = 'none';
-			}
-			input.classList.remove('input-error');
-		}
-	}
+  if (isValid) {
+    hideError(input);
+  } else {
+    showError(input, errorMessage);
+  }
+  return isValid;
 }
 
 function showError(input, message) {
-	const formGroup = input.closest('.form-group');
-	if (formGroup) {
-		let errorElement = formGroup.querySelector('.error-message');
-		if (!errorElement) {
-			errorElement = document.createElement('div');
-			errorElement.classList.add('error-message');
-			formGroup.appendChild(errorElement);
-		}
-		errorElement.textContent = message;
-		errorElement.style.display = 'block';
-		input.classList.add('input-error');
-	}
+  let errorElement = input.nextElementSibling;
+  if (!errorElement || !errorElement.classList.contains('error-message')) {
+    errorElement = document.createElement('span');
+    errorElement.className = 'error-message';
+    input.parentNode.insertBefore(errorElement, input.nextSibling);
+  }
+  errorElement.textContent = message;
+  errorElement.style.display = 'block';
+  input.classList.add('invalid');
+}
+
+function hideError(input) {
+  const errorElement = input.nextElementSibling;
+  if (errorElement && errorElement.classList.contains('error-message')) {
+    errorElement.textContent = '';
+    errorElement.style.display = 'none';
+  }
+  input.classList.remove('invalid');
 }
 
 function isValidEmail(email) {
-	// Basic email validation regex
-	return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
 function isValidPhone(phone) {
-	// Basic 11-digit phone number validation
-	return /^\d{11}$/.test(phone);
+  return /^\+?[\d\s-()]{10,}$/.test(phone);
 }
 
 function validateForm() {
-	let allValid = true;
-	const inputs = appointmentForm.querySelectorAll('input:not([type="hidden"]), select, textarea');
-	inputs.forEach(input => {
-		if (!validateInput(input)) {
-			allValid = false;
-		}
-	});
-	// Special check for terms and privacy policy checkbox
-	const termsCheckbox = document.getElementById('termsCheckbox');
-	if (termsCheckbox && !termsCheckbox.checked) {
-		showError(termsCheckbox.closest('.form-group'), 'You must agree to the terms and privacy policy.');
-		allValid = false;
-	} else if (termsCheckbox) {
-		hideError(termsCheckbox.closest('.form-group'));
-	}
-	return allValid;
+  let isFormValid = true;
+  const form = document.getElementById('appointmentForm');
+  const inputs = form.querySelectorAll('input[required], select[required], textarea[required], input[type="checkbox"]');
+
+  inputs.forEach(input => {
+    if (!validateInput(input)) {
+      isFormValid = false;
+    }
+  });
+
+  return isFormValid;
 }
 
-function showConfirmationModal() {
-	confirmationModal.style.display = 'block';
+function showConfirmationModal() {33320
+  
+  confirmationModal.style.display = 'flex';
 }
 
+// Form Submission
 async function handleFormSubmit(event) {
-	event.preventDefault(); // Prevent default form submission
+    console.log('handleFormSubmit called.');
+    event.preventDefault();
 
-	// Clear previous validation messages
-	clearValidationMessages();
+    // Validate all fields
+    const isValid = validateForm();
+    if (!isValid) return;
 
-	if (!validateForm()) {
-		console.log('Form validation failed.');
-		return; // Stop if form is not valid
-	}
+    // Show loading state
+    submitBtn.disabled = true;
+    submitLoader.style.display = 'block';
+    submitBtn.querySelector('span').textContent = translations[currentLanguage].processing;
 
-	// Show loading indicator
-	submitBtn.disabled = true;
-	submitLoader.style.display = 'inline-block';
-	submitBtn.textContent = translations[currentLanguage].processing; // Update button text
+    try {
+        const formData = new FormData(appointmentForm);
+        const data = Object.fromEntries(formData.entries());
 
-	const formData = {
-		patientFirstName: firstName.value.trim(),
-		patientLastName: lastName.value.trim(),
-		patientPhone: phone.value.trim(),
-		patientEmail: email.value.trim(),
-		patientGender: document.getElementById('patientGender').value,
-		patientAge: parseInt(age.value),
-		appointmentDate: dateInput.value,
-		appointmentTime: availableTimesSelect.value,
-		department: departmentSelect.value,
-		doctor: doctorSelect.value, // This will be the doctor's _id
-		reason: reason.value.trim(),
-		insuranceProvider: document.getElementById('insuranceProvider').value,
-		insuranceID: document.getElementById('insuranceID').value.trim()
-	};
+        // Adjust keys to match backend expected keys
+        data.doctorID = data.doctor; // Rename 'doctor' to 'doctorID'
+        data.date = data.date; // Use the value from availableDatesInput
+        data.startingHour = data.startingHour; // Use the value from availableTimesSelect
+        data.reason = data.reason;
 
-	try {
-		const response = await fetch('/book-appointment', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(formData),
-		});
+        const response = await fetch(appointmentForm.action, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
 
-		if (!response.ok) {
-			const errorData = await response.json();
-			throw new Error(errorData.message || 'Failed to book appointment');
-		}
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.log('Server error response data:', errorData); // Added for debugging
+            showErrorModal(translations[currentLanguage].errorTitle, errorData.message || 'Failed to book appointment');
+            return; // Stop execution after showing error
+        }
 
-		const result = await response.json();
-		console.log('Appointment booked:', result);
-
-		// Show confirmation modal
-		showConfirmationModal();
-
-		// Optionally, clear the form after successful submission
-		appointmentForm.reset();
-		clearWeeklyScheduleInputs(); // Clear any dynamic schedule inputs
-		availableDatesInput.value = ''; // Clear date input
-		availableTimesSelect.innerHTML = '<option value="" disabled selected>Select Time</option>'; // Clear time input
-		availableTimesSelect.disabled = true; // Disable time input
-
-		// Reset doctor and department selects to their initial state (placeholder)
-		departmentSelect.value = '';
-		doctorSelect.value = '';
-		doctorSelect.innerHTML = '<option value="" disabled selected>Select Doctor</option>';
-		doctorSelect.disabled = true; // Disable doctor select until department is chosen
-
-	} catch (error) {
-		console.error('Error booking appointment:', error);
-		showErrorModal('Booking Error', error.message);
-	} finally {
-		// Hide loading indicator
-		submitBtn.disabled = false;
-		submitLoader.style.display = 'none';
-		submitBtn.textContent = translations[currentLanguage].submitBtn; // Restore button text
-	}
+        // Show success modal
+        showConfirmationModal();
+        
+        // Reset form
+        appointmentForm.reset();
+    } catch (error) {
+        // This catch block will now primarily handle network errors or issues before response parsing
+        showErrorModal(translations[currentLanguage].errorTitle, error.message || 'An unexpected error occurred.');
+    } finally {
+        // Reset button state
+        submitBtn.disabled = false;
+        submitLoader.style.display = 'none';
+        submitBtn.querySelector('span').textContent = translations[currentLanguage].submitBtn;
+    }
 }
 
-function clearValidationMessages() {
-	document.querySelectorAll('.error-message').forEach(el => {
-		el.textContent = '';
-		el.style.display = 'none';
-	});
-	document.querySelectorAll('.input-error').forEach(el => {
-		el.classList.remove('input-error');
-	});
+// Function to dynamically load doctors from the backend
+// Remove this function as doctors are now passed via EJS
+/*
+async function loadDoctors() {
+  try {
+    const response = await fetch('/api/doctors');
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const result = await response.json();
+    const doctors = result.data;
+
+    doctorSelect.innerHTML = '<option value="" disabled selected>Select Doctor</option>';
+    doctors.forEach(doctor => {
+      const option = document.createElement('option');
+      option.value = doctor._id;
+      option.textContent = `Dr. ${doctor.userId.FName} ${doctor.userId.LName} - ${doctor.specialization}`;
+      option.dataset.departmentId = doctor.departmentId._id; // Store department ID
+      doctorSelect.appendChild(option);
+    });
+    updateDoctorOptions(departmentSelect.value); // Filter based on initial department
+  } catch (error) {
+    console.error('Error loading doctors:', error);
+    showErrorModal(translations[currentLanguage].errorTitle, 'Failed to load doctor list.');
+  }
+}
+*/
+
+// Function to filter doctor options by department (keep if departments are still a filter)
+// This logic should now be handled by EJS if doctor options are pre-rendered.
+// If you still need client-side filtering, ensure 'doctors' array is available globally or fetched.
+function updateDoctorOptions(selectedDepartmentId) {
+  Array.from(doctorSelect.options).forEach(option => {
+    if (option.value === '') return; // Skip default option
+
+    const doctorDepartmentId = option.departmentId; // Use option.departmentId instead of dataset.departmentId for simpler access
+    if (selectedDepartmentId === '' || doctorDepartmentId === selectedDepartmentId) {
+      option.style.display = '';
+    } else {
+      option.style.display = 'none';
+    }
+  });
+  // If the currently selected doctor is hidden, reset selection
+  const currentDoctor = doctorSelect.value;
+  const selectedOption = doctorSelect.querySelector(`option[value="${currentDoctor}"]`);
+  if (currentDoctor && selectedOption && selectedOption.style.display === 'none') {
+    doctorSelect.value = '';
+  }
 }
 
-function showConfirmationModal() {
-	confirmationModal.style.display = 'block';
+// Setup combined date and time validation
+function setupDateTimeValidation() {
+  // dateInput.addEventListener('change', validateDateAndTime); // Not needed with Flatpickr onChange
+  availableTimesSelect.addEventListener('change', validateDateAndTime);
+}
+
+// Function to validate if the selected date and time are in the past
+function validateDateAndTime() {
+  const dateValue = availableDatesInput.value;
+  const timeValue = availableTimesSelect.value;
+  
+  // Only validate if both date and time have been selected
+  if (dateValue && timeValue) {
+    const selectedDateTime = new Date(`${dateValue}T${timeValue}`);
+    const now = new Date();
+    
+    if (selectedDateTime < now) {
+      showErrorModal(translations[currentLanguage].errorTitle, translations[currentLanguage].pastTimeAlert);
+      // availableDatesInput.value = ''; // Optionally clear the date/time
+      // availableTimesSelect.value = '';
+      return false;
+    }
+  }
+  return true;
+}
+
+// Function to add insurance fields dynamically
+function addInsuranceFields() {
+  const insuranceGroup = document.createElement('div');
+  insuranceGroup.className = 'form-group';
+  insuranceGroup.id = 'insuranceGroup';
+  insuranceGroup.innerHTML = `
+    <label for="insuranceProvider" id="labelInsuranceProvider">Insurance Provider</label>
+    <select id="insuranceProvider" name="insuranceProvider">
+      <!-- Options will be populated by updateSelectOptions -->
+    </select>
+    <label for="insuranceId" id="labelInsuranceID">Insurance ID</label>
+    <input type="text" id="insuranceId" name="insuranceId" placeholder="Enter your insurance ID number" />
+  `;
+  const reasonForVisitGroup = document.getElementById('reason').closest('.form-group');
+  if (reasonForVisitGroup) {
+    reasonForVisitGroup.before(insuranceGroup);
+  }
+  updateSelectOptions('insuranceProvider', translations[currentLanguage].insuranceOptions);
+  updatePlaceholders(); // Call updatePlaceholders AFTER the elements are added to the DOM
 }
 
 function showErrorModal(title, message) {
-	document.getElementById('errorModalTitle').textContent = title;
-	document.getElementById('errorModalMessage').textContent = message;
-	errorModal.style.display = 'block';
+  console.log('showErrorModal called with:', title, message); // Added for debugging
+  document.getElementById('errorModalTitle').textContent = title;
+  document.getElementById('errorModalMessage').textContent = message;
+  document.getElementById('closeErrorModalBtn').textContent = translations[currentLanguage].closeBtn; // Ensure close button text is set
+  errorModal.style.display = 'flex';
+  console.log('Error modal display style after setting:', errorModal.style.display); // Added for debugging
 }
-
-function addInsuranceFields() {
-	const insuranceDetailsDiv = document.getElementById('insuranceDetails');
-	const insuranceProviderSelect = document.getElementById('insuranceProvider');
-	const insuranceIdInput = document.getElementById('insuranceID');
-
-	// Initially hide the insurance ID field
-	insuranceDetailsDiv.style.display = 'none';
-
-	insuranceProviderSelect.addEventListener('change', () => {
-		if (insuranceProviderSelect.value && insuranceProviderSelect.value !== 'None/Self-pay') {
-			insuranceDetailsDiv.style.display = 'block';
-			insuranceIdInput.required = true; // Make ID required if a provider is selected
-		} else {
-			insuranceDetailsDiv.style.display = 'none';
-			insuranceIdInput.required = false;
-			insuranceIdInput.value = ''; // Clear value if hidden
-		}
-	});
-}
-
-function clearWeeklyScheduleInputs() {
-	// This function might need to be adjusted based on how weekly schedules are displayed and cleared.
-	// For now, it will just clear any time slot inputs if they exist.
-	document.querySelectorAll('.time-slots-input').forEach(input => {
-		input.value = '';
-	});
-	document.querySelectorAll('input[type="checkbox"][data-day-of-week]').forEach(checkbox => {
-		checkbox.checked = false;
-	});
-}
-
-// Fetch departments and doctors
-async function fetchDepartments() {
-	try {
-		const response = await fetch('/api/departments');
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
-		}
-		const departments = await response.json();
-		populateDepartments(departments.data);
-	} catch (error) {
-		console.error('Error fetching departments:', error);
-		showErrorModal('Error', 'Failed to load departments.');
-	}
-}
-
-function populateDepartments(departments) {
-	departmentSelect.innerHTML = '<option value="" disabled selected>Select Department</option>';
-	departments.forEach(department => {
-		const option = document.createElement('option');
-		option.value = department._id; // Use _id as the value
-		option.textContent = department.departmentName;
-		departmentSelect.appendChild(option);
-	});
-}
-
-async function fetchDoctorsByDepartment(departmentId) {
-	try {
-		const response = await fetch(`/api/doctors/department/${departmentId}`);
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
-		}
-		const doctors = await response.json();
-		populateDoctors(doctors.data);
-	} catch (error) {
-		console.error('Error fetching doctors:', error);
-		showErrorModal('Error', 'Failed to load doctors for this department.');
-	}
-}
-
-function populateDoctors(doctors) {
-	doctorSelect.innerHTML = '<option value="" disabled selected>Select Doctor</option>';
-	if (doctors.length > 0) {
-		doctorSelect.disabled = false;
-		doctors.forEach(doctor => {
-			const option = document.createElement('option');
-			option.value = doctor._id;
-			option.textContent = `${doctor.userId.FName} ${doctor.userId.LName} - ${doctor.specialization}`;
-			// Store weekly schedule as a data attribute
-			option.dataset.weeklySchedule = JSON.stringify(doctor.weeklySchedule || []);
-			doctorSelect.appendChild(option);
-		});
-	} else {
-		doctorSelect.disabled = true;
-		const option = document.createElement('option');
-		option.value = "";
-		option.textContent = "No doctors available in this department";
-		option.disabled = true;
-		option.selected = true;
-		doctorSelect.appendChild(option);
-	}
-}
-
-// Event listener for department selection
-document.addEventListener('DOMContentLoaded', () => {
-	fetchDepartments(); // Load departments on page load
-
-	departmentSelect.addEventListener('change', async () => {
-		const selectedDepartmentId = departmentSelect.value;
-		if (selectedDepartmentId) {
-			await fetchDoctorsByDepartment(selectedDepartmentId);
-		} else {
-			// Reset doctor select if no department is selected
-			doctorSelect.innerHTML = '<option value="" disabled selected>Select Doctor</option>';
-			doctorSelect.disabled = true;
-			// Clear date and time if department is unselected
-			availableDatesInput.value = '';
-			availableTimesSelect.innerHTML = '<option value="" disabled selected>Select Time</option>';
-			availableTimesSelect.disabled = true;
-			if (flatpickrInstance) {
-				flatpickrInstance.destroy(); // Destroy Flatpickr instance
-			}
-			availableDatesInput.placeholder = "Select an appointment date"; // Reset placeholder
-			availableDatesInput.disabled = false; // Enable date input
-		}
-	});
-
-	langButton.addEventListener('click', toggleLanguage);
-});

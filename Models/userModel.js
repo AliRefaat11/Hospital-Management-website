@@ -45,10 +45,14 @@ const userSchema = new mongoose.Schema(
             required: [true, "gender number is required"],
             enum: ["Male","Female"]
         },
-        Age: {
-            type: Number,
-            trim:true,
-            required:[true,"Age is required"],
+        DateOfBirth: {
+            type: Date,
+            required: [true, "Date of Birth is required"],
+        },
+        Address: {
+            type: String,
+            trim: true,
+            required: [true, "Address is required"],
         }
     }
 );

@@ -5,8 +5,9 @@ const { auth } = require('../middleware/authMiddleware');
 const jwt = require('jsonwebtoken');
 const User = require('../Models/userModel');
 const Doctor = require('../Models/doctorModel');
+const Department = require('../Models/departmentModel');
 
-// View Routes (prioritized)
+// View Routes (prioritized for root /doctors)
 DrRouter.get('/', async (req, res) => {
     try {
         const doctors = await Doctor.find()
@@ -64,6 +65,15 @@ DrRouter.get('/', async (req, res) => {
         res.status(500).send("Error loading doctors page.");
     }
 });
+
+// API Routes
+DrRouter.get("/api/doctors", DocController.getAll);
+DrRouter.get("/search", DocController.search);
+DrRouter.post("/", DocController.create);
+DrRouter.get("/:id", DocController.getById);
+DrRouter.delete("/:id", DocController.deleteById);
+DrRouter.get("/department/:departmentId", DocController.getByDepartment);
+DrRouter.get("/specialization/:specialization", DocController.getBySpecialization);
 
 DrRouter.get('/manage', auth, async (req, res) => {
     try {
@@ -218,15 +228,5 @@ DrRouter.get('/test-manage', async (req, res) => {
         res.status(500).send("Error loading test doctor management page.");
     }
 });
-
-// API Routes (moved after view routes)
-DrRouter.get("/api", DocController.getAll);
-DrRouter.get("/search", DocController.search);
-DrRouter.get("/:id", DocController.getById);
-DrRouter.post("/", auth, DocController.create);
-DrRouter.patch("/:id", auth, DocController.update);
-DrRouter.delete("/:id", auth, DocController.deleteById);
-DrRouter.get("/department/:departmentId", DocController.getByDepartment);
-DrRouter.get("/specialization/:specialization", DocController.getBySpecialization);
 
 module.exports = DrRouter;

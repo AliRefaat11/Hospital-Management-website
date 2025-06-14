@@ -71,6 +71,7 @@ exports.signup = asyncHandler(async (req, res, next) => {
 });
 
 exports.getLoggedPatientData = asyncHandler(async (req, res, next) => {
+
   const user = req.user;
   const patient = await Patient.findOne({ userId: req.user._id });
   if (!user) {

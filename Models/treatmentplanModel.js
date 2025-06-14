@@ -1,16 +1,16 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const treatmentPlanSchema = new mongoose.Schema(
     {
         appointmentId: {
-            type: mongoose.Schema.ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
             ref: "Appointment",
             required: [true, "Appointment ID is required"]
         },
         patientId: {
-            type: mongoose.Schema.ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
             ref: "Patient",
-            //required: [true, "Patient ID is required"]
+            required: [true, "Patient ID is required"]
         },
         startDate: {
             type: Date,
@@ -30,6 +30,4 @@ const treatmentPlanSchema = new mongoose.Schema(
     }
 );
 
-const TreatmentPlan = mongoose.model("TreatmentPlan", treatmentPlanSchema);
-module.exports = TreatmentPlan;
-
+module.exports = mongoose.model("TreatmentPlan", treatmentPlanSchema);

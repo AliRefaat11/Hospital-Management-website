@@ -1,17 +1,16 @@
 const dotenv = require('dotenv');
-dotenv.config({path:"config.env"});
-const dbconnection = require('./config/database');
-dbconnection(); // Call the database connection function
+dotenv.config({ path: "config.env" });
+
 const express = require('express');
+const dbconnection = require('./config/database');
+dbconnection();
 const path = require('path');
 const { auth } = require('./middleware/authMiddleware');
 const jwt = require('jsonwebtoken');
-const appointmentController = require('./Controllers/appointmentController');
 const cookieParser = require('cookie-parser');
 const adminController = require('./Controllers/adminController'); // Import the adminController
-const Doctor = require('./Models/doctorModel'); // Single, correct declaration
-const Department = require('./Models/departmentModel'); // Single, correct declaration
-const User = require('./Models/userModel'); // Single, correct declaration
+const doctorController = require('./Controllers/doctorController'); // Corrected: Ensure this import is correct
+const DocController = require('./Controllers/documentController'); // Import the DocController
 
 const app = express();
 
@@ -29,17 +28,20 @@ const TreatRouter = require('./Routes/treatmentplanRouter');
 const AdminRouter = require('./Routes/adminRoutes');
 const TreatmentPlan = require('./Models/treatmentplanModel');
 const MedicalReport = require('./Models/medicalreportModel');
+const User = require('./Models/userModel');
+const Doctor = require('./Models/doctorModel');
+const Department = require('./Models/departmentModel');
 
 // View engine setup
 app.set('views', path.join(__dirname, 'Views'));
 app.set('view engine', 'ejs');
 
-// Middleware - Place express.static at the very beginning to serve static files
-app.use(express.static(path.join(__dirname, 'public')));
-
+// Middleware
+app.use(express.static('public'));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Request logging middleware
 app.use((req, res, next) => {
@@ -50,10 +52,6 @@ app.use((req, res, next) => {
     next();
 });
 
-// Models
-// const Patient = require('./Models/patientModel');
-
-// Home page route
 app.get('/', async (req, res) => {
     try {
         const hospital = {
@@ -174,6 +172,9 @@ app.get('/', async (req, res) => {
             }
         ];
 
+        // Fetch all doctors from the database
+        const doctors = await Doctor.find().populate('userId', 'FName LName').lean();
+
         let user = null;
         try {
             const token = req.cookies?.token;
@@ -196,7 +197,7 @@ app.get('/', async (req, res) => {
             cta,
             footerLinks,
             socialLinks,
-            featuredDoctors,
+            doctors,
             siteName: 'PrimeCare Hospital - Updated'
         });
     } catch (error) {
@@ -205,7 +206,10 @@ app.get('/', async (req, res) => {
     }
 });
 
-// Temporary test route for admin doctor management
+// *** IMPORTANT: Place API routes here, before any app.use() calls that mount routers ***
+app.get('/api/doctors', doctorController.getAll); // This must come before app.use('/doctors', DrRouter)
+
+// Temporary test route for admin doctor management - RESTORED
 app.get('/test-admin-doctors', async (req, res) => {
     try {
         const doctors = await Doctor.find()
@@ -214,20 +218,18 @@ app.get('/test-admin-doctors', async (req, res) => {
 
         const departments = await Department.find();
 
-        // Placeholder admin user for testing
         let admin = {
             name: "Test Admin",
             role: "System Administrator",
-            profileImage: "/images/admin-avatar.png" // Or any default image
+            profileImage: "/images/admin-avatar.png"
         };
 
-        // Placeholder stats and activities data
         const stats = {
             totalDoctors: doctors.length,
-            doctorsChange: 5, // Example value
-            activeDoctors: doctors.filter(doc => doc.status === 'active').length, // Assuming a status field exists
-            specialistDoctors: doctors.filter(doc => doc.specialization).length, // Example of specialists
-            generalDoctors: doctors.filter(doc => doc.specialization === 'General Practitioner').length // Example of general practitioners
+            doctorsChange: 5,
+            activeDoctors: doctors.filter(doc => doc.status === 'active').length,
+            specialistDoctors: doctors.filter(doc => doc.specialization).length,
+            generalDoctors: doctors.filter(doc => doc.specialization === 'General Practitioner').length
         };
 
         const activities = [
@@ -235,10 +237,9 @@ app.get('/test-admin-doctors', async (req, res) => {
             { icon: 'fa-edit', description: 'Test Doctor updated', timestamp: new Date() },
         ];
 
-        // Additional data required by doctorManagement.ejs
         const specializations = ["Cardiology", "Dermatology", "Orthopedics", "Pediatrics", "Neurology", "General Practitioner"];
         const employmentTypes = ["Full-Time", "Part-Time", "Consultant"];
-        const csrfToken = 'test-csrf-token'; // Placeholder, replace with actual CSRF token in production
+        const csrfToken = 'test-csrf-token';
 
         res.render('doctorManagement', {
             doctors,
@@ -249,7 +250,7 @@ app.get('/test-admin-doctors', async (req, res) => {
             specializations,
             employmentTypes,
             csrfToken,
-            currentPage: 'doctors-management' // Active page for sidebar highlighting
+            currentPage: 'doctors-management'
         });
     } catch (error) {
         console.error("Error rendering test admin doctor management page:", error);
@@ -257,25 +258,105 @@ app.get('/test-admin-doctors', async (req, res) => {
     }
 });
 
-// Mount routers
+// Mount your routers - these should come AFTER specific API routes if there's any overlap
+app.use('/doctors', DrRouter); // This handles view routes like /doctors and /doctors/:id
 app.use('/User', UserRouter);
-app.use('/doctors', TestDrRouter);
-app.use('/doctors', DrRouter);
 app.use('/Patient', PatRouter);
-app.use('/documents', DocRouter);
+app.use('/Document', DocRouter);
 app.use('/Department', DepRouter);
 app.use('/appointments', AppRouter);
-app.use('/Insurance', InsurRouter);
-app.use('/MedicalReport', MedRouter);
-app.use('/TreatmentPlan', TreatRouter);
+app.use('/insurance', InsurRouter);
+app.use('/medicalreports', MedRouter);
+app.use('/treatmentplans', TreatRouter);
+app.use('/admin', AdminRouter);
+app.use('/test-doctors', TestDrRouter); // Mount the test router here
+
+// Admin Dashboard Page Route
+app.get('/admin/dashboard', async (req, res) => {
+    try {
+        const statsResponse = await adminController.getDashboardStats();
+        const backendStats = statsResponse.data; // This contains totalDoctors, totalPatients, etc.
+
+        // Construct the stats object with all expected properties for adminProfile.ejs
+        const stats = {
+            activeDoctors: backendStats.totalDoctors || 0, // Using totalDoctors as activeDoctors for now
+            doctorsChange: 0, // Placeholder: You can add logic to calculate this later
+            todayAppointments: backendStats.totalAppointments || 0, // Using totalAppointments as todayAppointments for now
+            appointmentsChange: 0, // Placeholder
+            onDutyDoctors: backendStats.totalDoctors || 0, // Placeholder: You might fetch actual on-duty doctors later
+            averageRating: 0.0, // Placeholder
+            ratingChange: 0.0, // Placeholder
+            specialists: backendStats.totalDepartments || 0, // Using totalDepartments as specialists count
+            departmentCount: backendStats.totalDepartments || 0, // Ensuring departmentCount is available
+            availableSlots: 0, // Placeholder
+            availableDoctors: backendStats.totalDoctors || 0, // Placeholder for available doctors
+            totalDoctors: backendStats.totalDoctors || 0, // Ensure totalDoctors is explicitly passed
+            coverageRate: 0, // Placeholder
+            onTimeRate: 0, // Placeholder
+            // Add any other stats properties expected by adminProfile.ejs here
+        };
+
+        // Placeholder admin user for testing
+        let admin = {
+            name: "Admin User", // Replace with actual admin name from session/DB if available
+            role: "Administrator",
+            profileImage: "/images/admin-avatar.png" // Default image
+        };
+
+        // Placeholder notifications and messages
+        const notifications = { unreadCount: 5 };
+        const messages = { unreadCount: 2 };
+
+        res.render('adminProfile', {
+            admin,
+            notifications,
+            messages,
+            stats, // Pass the constructed stats object to the EJS template
+            currentPage: 'dashboard' // Active page for sidebar highlighting
+        });
+    } catch (error) {
+        console.error("Error rendering admin dashboard:", error);
+        res.status(500).send("Error loading admin dashboard: " + error.message);
+    }
+});
 
 // Server setup
-const hostname = "127.0.0.1";
-const port = 3000;
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
 
-// Connect to database
-dbconnection();
+// Global error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack); // Log the error stack for debugging
 
-app.listen(port, hostname, () => {
-    console.log(`Server running at http://${hostname}:${port}/`);
+    // Default values for error
+    err.statusCode = err.statusCode || 500;
+    err.status = err.status || 'error';
+    err.message = err.message || 'Something went wrong!';
+
+    if (err.name === 'JsonWebTokenError') {
+        err.statusCode = 401;
+        err.message = 'Invalid token. Please login again.';
+    }
+    if (err.name === 'TokenExpiredError') {
+        err.statusCode = 401;
+        err.message = 'Your token has expired. Please login again.';
+    }
+
+    // Check if the request expects JSON or HTML
+    if (req.accepts('html')) {
+        // Render an error page for HTML requests
+        res.status(err.statusCode).render('errorPage', { // Assuming you have an errorPage.ejs
+            statusCode: err.statusCode,
+            message: err.message,
+            title: `Error ${err.statusCode}`
+        });
+    } else {
+        // Send JSON response for API requests
+        res.status(err.statusCode).json({
+            status: err.status,
+            message: err.message
+        });
+    }
 });

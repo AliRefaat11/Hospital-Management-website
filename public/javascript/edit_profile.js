@@ -1,8 +1,72 @@
-document.getElementById('editProfileForm').addEventListener('submit', function(e) {
+document.getElementById('editProfileForm').addEventListener('submit', async function(e) {
     e.preventDefault();
-    alert('Profile changes saved successfully!');
-    window.location.href = 'user_profile.html';  // Redirect back to profile
+
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const dob = document.getElementById('dob').value;
+    const gender = document.getElementById('gender').value;
+    const phone = document.getElementById('phone').value.replace(/\D/g, '');
+    const address = document.getElementById('address').value;
+    const doctor = document.getElementById('doctor').value;
+    const insurance = document.getElementById('insurance').value;
+
+    if (!name) {
+        showFormError('Please enter your full name');
+        return;
+    }
+    if (!email) {
+        showFormError('Please enter your email');
+        return;
+    }
+    if (!validateEmail(email)) {
+        showFormError('Please enter a valid email address');
+        return;
+    }
+    if (!phone) {
+        showFormError('Please enter your phone number');
+        return;
+    }
+    if (!address) {
+        showFormError('Please enter your address');
+        return;
+    }
+
+    const formData = {
+        name: name,
+        email: email,
+        dob: dob, // Send raw DOB for now
+        gender: gender,
+        phone: phone,
+        address: address,
+        doctor: doctor,
+        insurance: insurance
+    };
+
+    try {
+        const response = await fetch('/User/profile/update', {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            showSuccessMessage(data.message || 'Profile updated successfully!');
+            setTimeout(() => {
+                window.location.href = '/User/profile';
+            }, 1500);
+        } else {
+            showFormError(data.message || 'Failed to update profile.');
+        }
+    } catch (error) {
+        console.error('Error during profile update:', error);
+        showFormError('An error occurred. Please try again.');
+    }
 });
+
 // Load existing user data into form fields
 document.addEventListener('DOMContentLoaded', function() {
     // Try to get saved user data
@@ -74,101 +138,15 @@ function previewImage(e) {
     e.target.parentNode.appendChild(previewContainer);
 }
 
-// Save form data when submitted
-document.getElementById('editProfileForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    // Form validation
-    const name = document.getElementById('name').value.trim();
-    const email = document.getElementById('email').value.trim();
-    
-    if (!name) {
-        showFormError('Please enter your name');
-        return;
-    }
-    
-    if (!email) {
-        showFormError('Please enter your email');
-        return;
-    }
-    
-    if (!validateEmail(email)) {
-        showFormError('Please enter a valid email address');
-        return;
-    }
-    
-    // Get values from form
-    const dobInput = document.getElementById('dob').value;
-    const gender = document.getElementById('gender').value;
-    const phoneInput = document.getElementById('phone').value.replace(/\D/g, '');
-    const address = document.getElementById('address').value;
-    const doctor = document.getElementById('doctor').value;
-    const insurance = document.getElementById('insurance').value;
-    
-    // Format date nicely for display
-    const dobDate = new Date(dobInput);
-    const dobFormatted = dobDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-    
-    // Format phone nicely for display
-    const phoneFormatted = phoneInput.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
-    
-    // Create user data object
-    const userData = {
-        name: name,
-        email: email,
-        dob: dobFormatted,
-        dobRaw: dobInput,
-        gender: gender,
-        phone: phoneFormatted,
-        phoneRaw: phoneInput,
-        address: address,
-        doctor: doctor,
-        insurance: insurance
-    };
-    
-    // Handle profile image if it's selected
-    const profileImageInput = document.getElementById('profileImage');
-    if (profileImageInput.files && profileImageInput.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            userData.profileImage = event.target.result;
-            saveUserDataAndRedirect(userData);
-        };
-        reader.readAsDataURL(profileImageInput.files[0]);
-    } else {
-        // Keep existing profile image if available
-        const savedUserData = localStorage.getItem('primecare_user_data');
-        if (savedUserData) {
-            const oldData = JSON.parse(savedUserData);
-            if (oldData.profileImage) {
-                userData.profileImage = oldData.profileImage;
-            }
-        }
-        saveUserDataAndRedirect(userData);
-    }
-});
-
-// Helper function to save data and redirect
-function saveUserDataAndRedirect(userData) {
-    // Save to localStorage
-    localStorage.setItem('primecare_user_data', JSON.stringify(userData));
-    
-    // Show success message and redirect
-    showSuccessMessage('Profile changes saved successfully!');
-    setTimeout(() => {
-        window.location.href = 'user_profile.html';
-    }, 1500);
-}
-
 // Show form error message
 function showFormError(message) {
     const errorDiv = document.createElement('div');
     errorDiv.className = 'error-message';
     errorDiv.textContent = message;
     
-    // Remove any existing error
-    const existingError = document.querySelector('.error-message');
-    if (existingError) existingError.remove();
+    // Remove any existing messages (success or error)
+    const existingMsg = document.querySelector('.success-message, .error-message');
+    if (existingMsg) existingMsg.remove();
     
     // Add new error before the form actions
     const formActions = document.querySelector('.form-actions');
@@ -181,7 +159,7 @@ function showSuccessMessage(message) {
     successDiv.className = 'success-message';
     successDiv.textContent = message;
     
-    // Remove any existing messages
+    // Remove any existing messages (success or error)
     const existingMsg = document.querySelector('.success-message, .error-message');
     if (existingMsg) existingMsg.remove();
     

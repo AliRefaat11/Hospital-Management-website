@@ -1,10 +1,9 @@
 const Doctor = require("../Models/doctorModel");
 const User = require("../Models/userModel");
+const Department = require("../Models/departmentModel");
 const bcrypt = require('bcryptjs');
 const { createToken } = require("../middleware/authMiddleware");
 const jwt = require('jsonwebtoken');
-const Appointment = require("../Models/appointmentModel");
-const Department = require('../Models/departmentModel');
 
 const getAll = async (req, res) => {
     try {
@@ -28,13 +27,10 @@ const getById = async (req, res) => {
     try {
         const doctor = await Doctor.findById(req.params.id)
             .populate('userId', 'FName LName Email PhoneNumber Gender Age')
-            .populate('departmentId', 'departmentName');
+            .populate('departmentId', 'name');
         
         if (!doctor) {
-            return res.status(404).json({
-                status: 'fail',
-                message: 'Doctor not found'
-            });
+            return res.status(404).render('errorPage', { message: 'Doctor not found' });
         }
 
         let user = null;
@@ -45,76 +41,61 @@ const getById = async (req, res) => {
                 user = await User.findById(decoded.id).select('-Password');
             }
         } catch (error) {
-            console.log('Token verification failed in doctorController.getById:', error.message);
+            console.log('Token verification failed:', error.message);
         }
 
         const hospital = {
             name: "PrimeCare",
             address: "123 Health St, Wellness City",
             phone: "+1234567890",
-            email: "info@primecare.com",
-            tagline: "Your Health is Our Priority",
-            subTagline: "Providing quality healthcare services for you and your family",
-            about: "PrimeCare Hospital is committed to providing exceptional healthcare services with a focus on patient care and medical excellence."
+            email: "info@primecare.com"
         };
 
         res.render('doctorProfile', {
             doctor,
             user,
             hospital,
-            currentPage: 'doctors',
-            siteName: 'PrimeCare'
+            currentPage: 'doctors'
         });
     } catch (error) {
-        console.error("Error fetching doctor profile:", error);
-        res.status(500).send("Error loading doctor profile.");
+        console.error("Error rendering doctor profile page:", error);
+        res.status(500).render('errorPage', { message: "Error loading doctor profile." });
     }
 };
 
 const create = async (req, res) => {
     try {
-        const { FName, LName, Email, Password, PhoneNumber, Gender, Age, departmentId, specialization, rating, experience, profileImage, weeklySchedule } = req.body;
+        // First create the user
+        const userData = {
+            FName: req.body.FName,
+            LName: req.body.LName,
+            Email: req.body.Email,
+            PhoneNumber: req.body.PhoneNumber,
+            Gender: req.body.Gender,
+            Age: req.body.Age,
+            Password: 'defaultPassword123', // You should generate a secure password
+            Role: 'doctor'
+        };
 
-        // Create user
-        const hashedPassword = await bcrypt.hash(Password, 12);
-        const newUser = await User.create({
-            FName,
-            LName,
-            Email,
-            Password: hashedPassword,
-            PhoneNumber,
-            Gender,
-            Age,
-            role: 'Doctor'
-        });
+        const user = await User.create(userData);
 
-        // Get department name
-        const department = await Department.findById(departmentId);
-        if (!department) {
-            await User.findByIdAndDelete(newUser._id);
-            return res.status(400).json({
-                status: 'fail',
-                message: 'Department not found'
-            });
-        }
+        // Then create the doctor
+        const doctorData = {
+            userId: user._id,
+            departmentId: req.body.departmentId,
+            specialization: req.body.specialization,
+            rating: req.body.rating || 5,
+            status: 'active',
+            schedule: req.body.schedule || []
+        };
 
-        // Create doctor
-        const newDoctor = await Doctor.create({
-            userId: newUser._id,
-            departmentId,
-            specialization,
-            rating,
-            departmentName: department.name,
-            experience,
-            profileImage,
-            weeklySchedule: weeklySchedule || [] // Save weeklySchedule
-        });
+        const doctor = await Doctor.create(doctorData);
 
         res.status(201).json({
             status: 'success',
             data: {
-                doctor: newDoctor,
-                user: newUser
+                doctor,
+                user
             }
         });
     } catch (error) {
@@ -127,14 +108,8 @@ const create = async (req, res) => {
 
 const update = async (req, res) => {
     try {
-        const doctor = await Doctor.findByIdAndUpdate(
-            req.params.id,
-            { ...req.body, weeklySchedule: req.body.weeklySchedule || [] }, // Update weeklySchedule
-            {
-                new: true,
-                runValidators: true
-            }
-        );
+        const doctor = await Doctor.findById(req.params.id);
+        
         if (!doctor) {
             return res.status(404).json({
                 status: 'fail',
@@ -142,22 +117,33 @@ const update = async (req, res) => {
             });
         }
 
-        // Update associated user data if provided (e.g., FName, LName, Email, PhoneNumber)
-        if (req.body.FName || req.body.LName || req.body.Email || req.body.PhoneNumber || req.body.Gender || req.body.Age) {
-            const userUpdateData = {};
-            if (req.body.FName) userUpdateData.FName = req.body.FName;
-            if (req.body.LName) userUpdateData.LName = req.body.LName;
-            if (req.body.Email) userUpdateData.Email = req.body.Email;
-            if (req.body.PhoneNumber) userUpdateData.PhoneNumber = req.body.PhoneNumber;
-            if (req.body.Gender) userUpdateData.Gender = req.body.Gender;
-            if (req.body.Age) userUpdateData.Age = req.body.Age;
-
-            await User.findByIdAndUpdate(doctor.userId, userUpdateData, { new: true, runValidators: true });
+        // Update user information
+        if (req.body.FName || req.body.LName || req.body.Email || req.body.PhoneNumber) {
+            await User.findByIdAndUpdate(doctor.userId, {
+                FName: req.body.FName,
+                LName: req.body.LName,
+                Email: req.body.Email,
+                PhoneNumber: req.body.PhoneNumber
+            });
         }
+
+        // Update doctor information
+        const updatedDoctor = await Doctor.findByIdAndUpdate(
+            req.params.id,
+            {
+                departmentId: req.body.departmentId,
+                specialization: req.body.specialization,
+                rating: req.body.rating,
+                status: req.body.status,
+                schedule: req.body.schedule
+            },
+            { new: true }
+        ).populate('userId', 'FName LName Email PhoneNumber Gender Age')
+         .populate('departmentId', 'departmentName');
 
         res.status(200).json({
             status: 'success',
-            data: doctor
+            data: updatedDoctor
         });
     } catch (error) {
         res.status(400).json({
@@ -201,7 +187,7 @@ const getByDepartment = async (req, res) => {
         const doctors = await Doctor.find({ departmentId: req.params.departmentId })
             .populate('userId', 'FName LName Email PhoneNumber Gender Age')
             .populate('departmentId', 'departmentName');
-        
+
         res.status(200).json({
             status: 'success',
             data: doctors
@@ -219,7 +205,7 @@ const getBySpecialization = async (req, res) => {
         const doctors = await Doctor.find({ specialization: req.params.specialization })
             .populate('userId', 'FName LName Email PhoneNumber Gender Age')
             .populate('departmentId', 'departmentName');
-        
+
         res.status(200).json({
             status: 'success',
             data: doctors
@@ -234,36 +220,45 @@ const getBySpecialization = async (req, res) => {
 
 const search = async (req, res) => {
     try {
-        const searchQuery = req.query.q;
+        const searchQuery = req.query.query;
         
         if (!searchQuery) {
+            // If no search query, return all doctors
             const doctors = await Doctor.find()
                 .populate('userId', 'FName LName Email PhoneNumber Gender Age')
                 .populate('departmentId', 'departmentName');
+            
             return res.status(200).json({
                 status: 'success',
                 data: doctors
             });
         }
-
-        const doctors = await Doctor.find({
-            $or: [
-                { specialization: { $regex: searchQuery, $options: 'i' } },
-                { 'userId.FName': { $regex: searchQuery, $options: 'i' } },
-                { 'userId.LName': { $regex: searchQuery, $options: 'i' } }
-            ]
-        })
-        .populate('userId', 'FName LName Email PhoneNumber Gender Age')
-        .populate('departmentId', 'departmentName');
         
+        const doctors = await Doctor.find()
+            .populate({
+                path: 'userId',
+                match: {
+                    $or: [
+                        { FName: { $regex: searchQuery, $options: 'i' } },
+                        { LName: { $regex: searchQuery, $options: 'i' } },
+                        { Email: { $regex: searchQuery, $options: 'i' } }
+                    ]
+                }
+            })
+            .populate('departmentId', 'departmentName');
+
+        // Filter out doctors where userId is null (no match)
+        const filteredDoctors = doctors.filter(doctor => doctor.userId);
+
         res.status(200).json({
             status: 'success',
-            data: doctors
+            data: filteredDoctors
         });
     } catch (error) {
-        res.status(400).json({
-            status: 'fail',
-            message: error.message
+        console.error("Error searching doctors:", error);
+        res.status(500).json({
+            status: 'error',
+            message: "Error searching for doctors."
         });
     }
 };

@@ -8,7 +8,8 @@
 <link rel="stylesheet" href="../css/user_profile.css">
 <link rel="stylesheet" href="../css/edit_profile.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script src="../javascript/edit_profile.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
 </head>
 <body>
   <nav>
@@ -19,7 +20,7 @@
         <a href="/User/about" class="<%= currentPage === 'about' ? 'active' : '' %>">ABOUT US</a>
         <a href="/Department/view" class="<%= currentPage === 'departments' ? 'active' : '' %>">DEPARTMENTS</a>
         <a href="/doctors" class="<%= currentPage === 'doctors' ? 'active' : '' %>">DOCTORS</a>
-        <a href="/appointments/book" class="<%= currentPage === 'book' ? 'active' : '' %>">BOOK NOW</a>
+        <a href="/appointments/quick-appointment" class="<%= currentPage === 'book' ? 'active' : '' %>">BOOK NOW</a>
         <% if (user) { %>
           <a href="/User/profile" class="<%= currentPage === 'profile' ? 'active' : '' %>">My Profile</a>
           <a href="/User/logout" class="logout-btn">Logout</a>
@@ -30,6 +31,16 @@
       </div>
     </div>
   </nav>
+  <div class="container">
+  <div class="row">
+    <div class="col-md-6 col-12">
+      <!-- Content here -->
+    </div>
+    <div class="col-md-6 col-12">
+      <!-- Content here -->
+    </div>
+  </div>
+</div>
   <main>
     <div class="container">
       <div class="edit-profile-form">
@@ -37,64 +48,56 @@
           <form id="editProfileForm">
               <div class="form-group">
                   <label for="name">Full Name</label>
-                  <% /* Example: Populate with user.fullName from server */ %>
-                  <input type="text" id="name" value="<%= user ? user.fullName : 'John Smith' %>">
+                  <input type="text" id="name" value="<%= user ? (user.FName + ' ' + user.LName) : '' %>">
               </div>
               <div class="form-group">
                   <label for="email">Email</label>
-                  <% /* Example: Populate with user.email from server */ %>
-                  <input type="email" id="email" value="<%= user ? user.email : 'john.smith@example.com' %>">
+                  <input type="email" id="email" value="<%= user ? user.Email : '' %>">
               </div>
               <div class="form-group">
                   <label for="dob">Date of Birth</label>
-                  <% /* Example: Populate with user.dob from server */ %>
-                  <input type="date" id="dob" value="<%= user ? user.dob : '1990-02-10' %>">
+                  <input type="date" id="dob" value="<%= user && user.DateOfBirth ? user.DateOfBirth.toISOString().substring(0,10) : '' %>">
+                  <% /* Consider updating User model to store DateOfBirth (Date type) if you want to pre-populate this */ %>
               </div>
               <div class="form-group">
                   <label for="gender">Gender</label>
                   <select id="gender">
-                      <% /* Example: Select option based on user.gender from server */ %>
-                      <option value="Male" <%= user && user.gender === 'Male' ? 'selected' : '' %>>Male</option>
-                      <option value="Female" <%= user && user.gender === 'Female' ? 'selected' : '' %>>Female</option>
-                      <option value="Other" <%= user && user.gender === 'Other' ? 'selected' : '' %>>Other</option>
+                      <option value="Male" <%= user && user.Gender === 'Male' ? 'selected' : '' %>>Male</option>
+                      <option value="Female" <%= user && user.Gender === 'Female' ? 'selected' : '' %>>Female</option>
+                      <option value="Other" <%= user && user.Gender === 'Other' ? 'selected' : '' %>>Other</option>
                   </select>
               </div>
               <div class="form-group">
                   <label for="phone">Phone</label>
-                  <% /* Example: Populate with user.phone from server */ %>
-                  <input type="tel" id="phone" value="<%= user ? user.phone : '1284567890' %>">
+                  <input type="tel" id="phone" value="<%= user ? user.PhoneNumber : '' %>">
               </div>
               <div class="form-group">
                   <label for="address">Address</label>
-                  <% /* Example: Populate with user.address from server */ %>
-                  <input type="text" id="address" value="<%= user ? user.address : '123 Elm St, Springfield, IL 62701' %>">
+                  <input type="text" id="address" value="<%= user ? user.Address : '' %>">
               </div>
               <div class="form-group">
                   <label for="doctor">Primary Doctor</label>
-                  <% /* Example: Populate with user.primaryDoctor from server */ %>
-                  <input type="text" id="doctor" value="<%= user ? user.primaryDoctor : 'Dr. Emily Johnson' %>">
+                  <input type="text" id="doctor" value="<%= patient ? patient.primaryDoctor : '' %>">
               </div>
               <div class="form-group">
                   <label for="insurance">Insurance</label>
-                  <% /* Example: Populate with user.insurance from server */ %>
-                  <input type="text" id="insurance" value="<%= user ? user.insurance : 'BlueCross HealthPlus' %>">
+                  <input type="text" id="insurance" value="<%= patient ? patient.insuranceName : '' %>">
               </div>
               <div class="form-group">
                   <label for="profileImage">Profile Image</label>
                   <input type="file" id="profileImage">
-                  <% /* You might want to display a current profile image if available */ %>
                   <% if (user && user.profileImagePath) { %>
                     <img src="<%= user.profileImagePath %>" alt="Current Profile Image" style="max-width: 100px; margin-top: 10px;">
                   <% } %>
               </div>
               <div class="form-actions">
-                  <a href="user_profile.html" class="btn btn-outline">Cancel</a>
+                  <a href="/User/profile" class="btn btn-outline">Cancel</a>
                   <button type="submit" class="btn btn-primary">Save Changes</button>
               </div>
           </form>
       </div>
     </div>
   </main>
-  <script src="../public/javascript/edit_profile.js"></script>
+  <script src="/javascript/edit_profile.js"></script>
   </body>
 </html>

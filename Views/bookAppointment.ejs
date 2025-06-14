@@ -1,12 +1,12 @@
-`<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Prime Care - Book Appointment</title>
+  <link rel="stylesheet" href="/css/navbar.css"/>
   <link rel="stylesheet" href="/css/book_appointment.css"/>
   <link rel="stylesheet" href="/css/common_footer.css">
-  <link rel="stylesheet" href="/css/navbar.css"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
@@ -40,8 +40,6 @@
       </div>
     </div>
   </nav>
-  <header>
-  </header>
   <main>
     <h1 class="page-title">Book Appointment</h1>
     <p class="subtitle">Schedule your doctor appointment</p>
@@ -49,7 +47,16 @@
     <div class="language-toggle">
       <button id="langButton" onclick="toggleLanguage()">Switch to Arabic</button>
     </div>
-
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 col-12">
+      <!-- Content here -->
+    </div>
+    <div class="col-md-6 col-12">
+      <!-- Content here -->
+    </div>
+  </div>
+</div>
     <div class="appointment-container">
       <h2 id="formTitle">Personal Information</h2>
       <form id="appointmentForm" action="/api/appointments" method="POST">
@@ -101,10 +108,13 @@
           <label for="doctorSelect" id="labelDoctor">Doctor</label>
           <select id="doctorSelect" name="doctor" required>
             <option value="" disabled selected>Select Doctor</option>
-            <% doctors.forEach(doctor => { %>
-              <option value="<%= doctor._id %>" 
-                      data-weekly-schedule="<%= JSON.stringify(doctor.weeklySchedule) %>" 
-                      <%= selectedDoctor && selectedDoctor._id.toString() === doctor._id.toString() ? 'selected' : '' %>>
+            <% doctors.forEach(doctor => {
+              // Check if doctor.weeklySchedule is an array, otherwise default to empty
+              const doctorScheduleData = JSON.stringify(doctor.weeklySchedule || []);
+            %>
+              <option value="<%= doctor._id %>"
+                <%= (selectedDoctor && selectedDoctor._id.toString() === doctor._id.toString()) ? 'selected' : '' %>
+                data-weekly-schedule="<%= doctorScheduleData %>">
                 Dr. <%= doctor.userId.FName %> <%= doctor.userId.LName %> - <%= doctor.specialization %>
               </option>
             <% }); %>
@@ -186,11 +196,6 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-  <script>
-    // Log selectedDoctor when the page loads
-    const selectedDoctorData = JSON.parse(decodeURIComponent(`<%= encodeURIComponent(JSON.stringify(selectedDoctor || null)) %>`));
-    console.log('Selected Doctor (from EJS): ', selectedDoctorData);
-  </script>
   <script src="/javascript/book_appointment.js?v=<%= Date.now() %>"></script>
 </body>
 </html>

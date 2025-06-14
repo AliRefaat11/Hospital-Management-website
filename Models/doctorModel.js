@@ -14,10 +14,10 @@ const doctorSchema = new mongoose.Schema(
             required:[true,"Department id is required"]
         },
         specialization: {
-            type: String,  
-            trim:true,
-            required:[true,"speciality is required"],
-            enum:["cardiology","dermatology","orthopedics","pediatrics","Neurology"]
+            type: String,
+            trim: true,
+            required: [true, "speciality is required"],
+            enum: ["cardiology", "dermatology", "orthopedics", "pediatrics", "Neurology"]
         },
         rating: {
             type: Number,
@@ -56,5 +56,4 @@ const doctorSchema = new mongoose.Schema(
     }
 );
 
-// Check if the model already exists to prevent redeclaration errors
-module.exports = mongoose.models.Doctor || mongoose.model('Doctor', doctorSchema);
+module.exports = mongoose.model('Doctor', doctorSchema);

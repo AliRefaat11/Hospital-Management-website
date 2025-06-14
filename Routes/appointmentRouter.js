@@ -4,9 +4,8 @@ const appointmentController = require('../Controllers/appointmentController');
 const { auth } = require('../middleware/authMiddleware');
 const jwt = require('jsonwebtoken');
 const User = require('../Models/userModel');
-const Doctor = require('../Models/doctorModel');
-const TreatmentPlan = require('../Models/treatmentplanModel');
 const Department = require('../Models/departmentModel');
+const Doctor = require('../Models/doctorModel');
 
 const validateAppointment = (req, res, next) => {
   const { doctorID, patientID, date, startingHour, reason } = req.body;
@@ -83,8 +82,7 @@ AppRouter.get('/', async (req, res) => {
         // Fetch doctors for the dropdown in appointmentsManagement.ejs
         const doctors = await Doctor.find()
             .populate('userId', 'FName LName')
-            .populate('departmentId', 'departmentName')
-            .populate('weeklySchedule');
+            .populate('departmentId', 'departmentName');
 
         res.render('appointmentsManagement', { 
             user,
@@ -124,14 +122,21 @@ AppRouter.get('/book', async (req, res) => {
             selectedDoctor = await Doctor.findById(doctorId)
                 .populate('userId', 'FName LName')
                 .populate('departmentId', 'departmentName')
-                .populate('weeklySchedule');
+                .select('+weeklySchedule') // Explicitly include weeklySchedule
+                .lean(); 
+            if (selectedDoctor) {
+                // Ensure weeklySchedule is explicitly included for selectedDoctor
+                const fullSelectedDoctor = await Doctor.findById(selectedDoctor._id).select('+weeklySchedule').lean();
+                selectedDoctor.weeklySchedule = fullSelectedDoctor.weeklySchedule; // Assign the weeklySchedule from the full fetch
+            }
         }
 
         // Fetch all doctors for the dropdown
         const doctors = await Doctor.find()
             .populate('userId', 'FName LName')
             .populate('departmentId', 'departmentName')
-            .populate('weeklySchedule');
+            .select('+weeklySchedule') // Explicitly include weeklySchedule for all doctors
+            .lean();
 
         const departments = await Department.find();
 
@@ -145,6 +150,9 @@ AppRouter.get('/book', async (req, res) => {
         } catch (error) {
             console.log('Token verification failed:', error.message);
         }
+
+        console.log('Selected Doctor being sent to EJS:', selectedDoctor);
+        console.log('Doctors list being sent to EJS:', doctors);
 
         res.render('bookAppointment', {
             departments,
