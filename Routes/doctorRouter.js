@@ -85,7 +85,7 @@ DrRouter.get('/', async (req, res) => {
 // API Routes
 DrRouter.get("/api/doctors", auth, allowedTo('Admin'), DocController.getAll);
 DrRouter.get("/search", DocController.search);
-DrRouter.post("/", DocController.create);
+DrRouter.post("/", auth, allowedTo('Admin'), DocController.create);
 DrRouter.get("/:id", DocController.getById);
 DrRouter.delete("/:id", DocController.deleteById);
 DrRouter.get("/department/:departmentId", DocController.getByDepartment);

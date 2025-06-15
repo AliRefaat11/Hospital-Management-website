@@ -66,7 +66,8 @@ const getById = async (req, res) => {
 
 const create = async (req, res) => {
     try {
-        // First create the user
+        console.log('Received request to create doctor. Request body:', req.body);
+
         const userData = {
             FName: req.body.FName,
             LName: req.body.LName,
@@ -74,16 +75,31 @@ const create = async (req, res) => {
             PhoneNumber: req.body.PhoneNumber,
             Gender: req.body.Gender,
             Age: req.body.Age,
-            Password: 'defaultPassword123', // You should generate a secure password
-            Role: 'doctor'
+            Password: bcrypt.hashSync('defaultPassword123', 10), // Hash the default password
+            Role: 'Doctor',
+            DateOfBirth: req.body.DateOfBirth,
+            Address: req.body.Address
         };
 
         const user = await User.create(userData);
+        console.log('User created:', user);
+
+        // Find the department based on specialization (assuming specialization name matches department name)
+        const department = await Department.findOne({ departmentName: req.body.specialization });
+        console.log('Department found:', department);
+
+        if (!department) {
+            console.log('Department not found for specialization:', req.body.specialization);
+            return res.status(404).json({
+                status: 'fail',
+                message: 'Department not found for the given specialization.'
+            });
+        }
 
         // Then create the doctor
         const doctorData = {
             userId: user._id,
-            departmentId: req.body.departmentId,
+            departmentId: department._id, // Use the found department ID
             specialization: req.body.specialization,
             rating: req.body.rating || 5,
             status: 'active',
@@ -91,6 +107,7 @@ const create = async (req, res) => {
         };
 
         const doctor = await Doctor.create(doctorData);
+        console.log('Doctor created:', doctor);
 
         res.status(201).json({
             status: 'success',

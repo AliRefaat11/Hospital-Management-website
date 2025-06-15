@@ -17,7 +17,7 @@ const doctorSchema = new mongoose.Schema(
             type: String,
             trim: true,
             required: [true, "speciality is required"],
-            enum: ["cardiology", "dermatology", "orthopedics", "pediatrics", "Neurology"]
+            enum: ["cardiology", "dermatology", "orthopedics", "pediatrics", "neurology"]
         },
         rating: {
             type: Number,

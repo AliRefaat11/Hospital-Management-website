@@ -5,7 +5,7 @@ const express = require('express');
 const dbconnection = require('./config/database');
 dbconnection();
 const path = require('path');
-const { auth } = require('./middleware/authMiddleware');
+const { auth, allowedTo } = require('./middleware/authMiddleware');
 const jwt = require('jsonwebtoken');
 const appointmentController = require('./Controllers/appointmentController');
 const cookieParser = require('cookie-parser');
@@ -192,6 +192,9 @@ app.get('/', async (req, res) => {
 
 // *** IMPORTANT: Place API routes here, before any app.use() calls that mount routers ***
 app.get('/api/doctors', doctorController.getAll); // This must come before app.use('/doctors', DrRouter)
+
+// TEMPORARY: Direct POST route for creating doctors to bypass DrRouter for testing
+app.post('/doctors', auth, allowedTo('Admin'), doctorController.create); 
 
 // Temporary test route for admin doctor management - RESTORED
 app.get('/test-admin-doctors', async (req, res) => {

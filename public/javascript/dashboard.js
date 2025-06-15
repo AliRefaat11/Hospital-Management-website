@@ -40,11 +40,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 populateStatistics(stats); // Call a new function to populate stats and charts
             } else if (tabName === 'doctors') {
                 // Initialize doctor management if it's the doctors tab
-                if (typeof initDoctorManagement === 'function') {
-                    initDoctorManagement();
-                } else {
-                    console.error("initDoctorManagement function not found.");
-                }
+                // No specific initialization function needed here as functions are global
+                // Re-attach event listeners for dynamically loaded content
+                attachDoctorManagementEventListeners();
             }
 
         } catch (error) {
@@ -166,10 +164,194 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // Load the default active tab (Statistics) content on initial page load
     const initialActiveTab = document.querySelector('.tab-btn.active');
     if (initialActiveTab) {
         loadTabContent(initialActiveTab.dataset.tab);
     }
 });
-  
+
+function openAddDoctorModal() {
+    document.getElementById('doctorModal').style.display = 'block';
+    document.getElementById('modalTitle').textContent = 'Add New Doctor';
+    document.getElementById('doctorForm').reset();
+    document.body.style.overflow = 'hidden';
+}
+
+function closeDoctorModal() {
+    document.getElementById('doctorModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+    clearMessages();
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('doctorModal');
+    if (event.target == modal) {
+        closeDoctorModal();
+    }
+}
+
+// Message Functions
+function showMessage(message, type = 'success') {
+    const messageContainer = document.getElementById('messageContainer');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = type === 'success' ? 'success-message' : 'error-message';
+    messageDiv.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
+        ${message}
+    `;
+    
+    messageContainer.innerHTML = '';
+    messageContainer.appendChild(messageDiv);
+    
+    // Auto hide after 5 seconds
+    setTimeout(() => {
+        messageDiv.style.opacity = '0';
+        setTimeout(() => {
+            if (messageDiv.parentNode) {
+                messageDiv.parentNode.removeChild(messageDiv);
+            }
+        }, 300);
+    }, 5000);
+}
+
+function clearMessages() {
+    document.getElementById('messageContainer').innerHTML = '';
+}
+
+// Form Submission (Now called explicitly after tab content loads)
+function attachDoctorManagementEventListeners() {
+    const doctorForm = document.getElementById('doctorForm');
+    if (doctorForm) {
+        doctorForm.removeEventListener('submit', handleSubmitDoctorForm); // Remove existing listener to prevent duplicates
+        doctorForm.addEventListener('submit', handleSubmitDoctorForm);
+    } else {
+        console.error("Doctor form not found on tab load. Cannot attach event listener.");
+    }
+
+    // Event listener for specialization filter
+    const specializationFilter = document.getElementById('specializationFilter');
+    if (specializationFilter) {
+        specializationFilter.removeEventListener('change', filterDoctors); // Prevent duplicates
+        specializationFilter.addEventListener('change', filterDoctors);
+    }
+
+    // Event listener for status filter
+    const statusFilter = document.getElementById('statusFilter');
+    if (statusFilter) {
+        statusFilter.removeEventListener('change', filterDoctors); // Prevent duplicates
+        statusFilter.addEventListener('change', filterDoctors);
+    }
+
+    // Event listener for search input
+    const doctorSearch = document.getElementById('doctorSearch');
+    if (doctorSearch) {
+        doctorSearch.removeEventListener('keyup', filterDoctors); // Prevent duplicates
+        doctorSearch.addEventListener('keyup', filterDoctors);
+    }
+
+    // Initial load of doctors (if needed for the tab itself)
+    // loadDoctors(); // Uncomment if you have a loadDoctors function and want to load on tab load
+}
+
+// New function for handling doctor form submission
+async function handleSubmitDoctorForm(e) {
+    e.preventDefault();
+    
+    const submitBtn = document.getElementById('submitBtn');
+    const originalText = submitBtn.innerHTML;
+    
+    // Disable submit button and show loading
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
+    
+    try {
+        // Get form data
+        const formData = new FormData(this);
+        
+        // Prepare data object matching the required structure
+        const doctorData = {
+            FName: formData.get('FName').trim(),
+            LName: formData.get('LName').trim(),
+            Email: formData.get('Email').trim(),
+            PhoneNumber: formData.get('PhoneNumber').trim(),
+            Gender: formData.get('Gender'),
+            Age: parseInt(formData.get('Age')),
+            Password: 'defaultPassword123', // Default password as specified
+            Role: 'doctor',
+            specialization: formData.get('specialization'),
+            rating: parseInt(formData.get('rating')) || 5,
+            status: 'active',
+            schedule: formData.get('schedule') ? [formData.get('schedule').trim()] : [],
+            DateOfBirth: formData.get('DateOfBirth'),
+            Address: formData.get('Address').trim()
+        };
+        
+        // Validate required fields
+        if (!doctorData.FName || !doctorData.LName || !doctorData.Email || 
+            !doctorData.PhoneNumber || !doctorData.Gender || !doctorData.Age || 
+            !doctorData.specialization || !doctorData.DateOfBirth || !doctorData.Address) {
+            throw new Error('Please fill in all required fields');
+        }
+        
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(doctorData.Email)) {
+            throw new Error('Please enter a valid email address');
+        }
+        
+        // Validate phone number (basic validation)
+        const phoneRegex = /^[\+]?[\d\s\-\(\)]{10,}$/;
+        if (!phoneRegex.test(doctorData.PhoneNumber)) {
+            throw new Error('Please enter a valid phone number');
+        }
+        
+        // Validate age
+        if (doctorData.Age < 25 || doctorData.Age > 80) {
+            throw new Error('Age must be between 25 and 80 years');
+        }
+        
+        console.log('Sending doctor data:', doctorData);
+        
+        // Send POST request to the server
+        const response = await fetch('/doctors', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(doctorData)
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+            showMessage('Doctor created successfully!', 'success');
+            closeDoctorModal();
+        } else {
+            throw new Error(result.message || 'Failed to create doctor');
+        }
+        
+    } catch (error) {
+        console.error('Error creating doctor:', error);
+        showMessage(error.message || 'An error occurred while creating the doctor', 'error');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+    }
+}
+
+function filterDoctors() {
+    console.log('Filtering doctors...');
+}
+
+function loadDoctors() {
+    console.log('Loading doctors...');
+}
+
+// Expose functions globally if needed for EJS onclick attributes
+window.openAddDoctorModal = openAddDoctorModal;
+window.closeDoctorModal = closeDoctorModal;
+window.showMessage = showMessage;
+window.clearMessages = clearMessages;
+window.filterDoctors = filterDoctors;
+window.loadDoctors = loadDoctors;

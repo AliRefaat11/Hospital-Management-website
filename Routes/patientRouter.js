@@ -3,7 +3,6 @@ const PatRouter = express.Router();
 const patientController = require('../Controllers/patientController');
 const { auth, allowedTo } = require('../middleware/authMiddleware');
 
-// Authentication routes
 PatRouter.post('/signup', patientController.signup);
 PatRouter.get('/signup', (req, res) => {
     res.render('signupPage', { 

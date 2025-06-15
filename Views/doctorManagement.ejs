@@ -1,3 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
 <!-- Doctor Management Tab Content -->
 <style>
     .management-header {
@@ -266,13 +275,20 @@
         animation: fadeIn 0.3s ease;
     }
 
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
     .modal-content {
         background-color: #fefefe;
-        margin: 5% auto;
+        margin: 2% auto;
         padding: 0;
         border-radius: 12px;
         width: 90%;
-        max-width: 500px;
+        max-width: 600px;
+        max-height: 90vh;
+        overflow-y: auto;
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
         animation: slideIn 0.3s ease;
     }
@@ -313,6 +329,12 @@
         padding: 30px;
     }
 
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
     .form-group {
         margin-bottom: 20px;
     }
@@ -333,6 +355,7 @@
         border-radius: 8px;
         font-size: 14px;
         transition: border-color 0.3s ease;
+        box-sizing: border-box;
     }
 
     .form-group input:focus,
@@ -370,6 +393,12 @@
         box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
     }
 
+    .btn-submit:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+
     .btn-cancel {
         background: #6c757d;
         color: white;
@@ -398,6 +427,10 @@
         color: #dee2e6;
     }
 
+    .required {
+        color: #dc3545;
+    }
+
     @media (max-width: 768px) {
         .search-filter-section {
             grid-template-columns: 1fr;
@@ -416,7 +449,11 @@
         
         .modal-content {
             width: 95%;
-            margin: 10% auto;
+            margin: 5% auto;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
         }
     }
 </style>
@@ -478,66 +515,103 @@
             <span class="close" onclick="closeDoctorModal()">&times;</span>
         </div>
         <div class="modal-body">
-            <form id="doctorForm">
-                <input type="hidden" id="doctorId" name="doctorId">
+            <form id="doctorForm" method="POST">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="doctorFirstName">First Name <span class="required">*</span></label>
+                        <input type="text" id="doctorFirstName" name="FName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="doctorLastName">Last Name <span class="required">*</span></label>
+                        <input type="text" id="doctorLastName" name="LName" required>
+                    </div>
+                </div>
                 
-                <div class="form-group">
-                    <label for="doctorName">Full Name *</label>
-                    <input type="text" id="doctorName" name="name" required>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="doctorEmail">Email <span class="required">*</span></label>
+                        <input type="email" id="doctorEmail" name="Email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="doctorPhone">Phone Number <span class="required">*</span></label>
+                        <input type="tel" id="doctorPhone" name="PhoneNumber" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="doctorGender">Gender <span class="required">*</span></label>
+                        <select id="doctorGender" name="Gender" required>
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="doctorAge">Age <span class="required">*</span></label>
+                        <input type="number" id="doctorAge" name="Age" min="25" max="80" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="doctorSpecialization">Specialization <span class="required">*</span></label>
+                        <select id="doctorSpecialization" name="specialization" required>
+                            <option value="">Select Specialization</option>
+                            <option value="cardiology">Cardiology</option>
+                            <option value="neurology">Neurology</option>
+                            <option value="orthopedics">Orthopedics</option>
+                            <option value="pediatrics">Pediatrics</option>
+                            <option value="dermatology">Dermatology</option>
+                            <option value="psychiatry">Psychiatry</option>
+                            <option value="general Medicine">General Medicine</option>
+                            <option value="oncology">Oncology</option>
+                            <option value="gynecology">Gynecology</option>
+                            <option value="ophthalmology">Ophthalmology</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="doctorRating">Rating (1-5)</label>
+                        <select id="doctorRating" name="rating">
+                            <option value="5">5 - Excellent</option>
+                            <option value="4">4 - Very Good</option>
+                            <option value="3">3 - Good</option>
+                            <option value="2">2 - Fair</option>
+                            <option value="1">1 - Poor</option>
+                        </select>
+                    </div>
                 </div>
                 
                 <div class="form-group">
-                    <label for="doctorEmail">Email *</label>
-                    <input type="email" id="doctorEmail" name="email" required>
+                    <label for="doctorDateOfBirth">Date of Birth <span class="required">*</span></label>
+                    <input type="date" id="doctorDateOfBirth" name="DateOfBirth" required>
                 </div>
-                
+
                 <div class="form-group">
-                    <label for="doctorPhone">Phone Number *</label>
-                    <input type="tel" id="doctorPhone" name="phone" required>
+                    <label for="doctorAddress">Address <span class="required">*</span></label>
+                    <textarea id="doctorAddress" name="Address" placeholder="Enter doctor's address" required></textarea>
                 </div>
-                
+
                 <div class="form-group">
-                    <label for="doctorSpecialization">Specialization *</label>
-                    <select id="doctorSpecialization" name="specialization" required>
-                        <option value="">Select Specialization</option>
-                        <option value="cardiology">Cardiology</option>
-                        <option value="neurology">Neurology</option>
-                        <option value="orthopedics">Orthopedics</option>
-                        <option value="pediatrics">Pediatrics</option>
-                        <option value="dermatology">Dermatology</option>
-                        <option value="psychiatry">Psychiatry</option>
-                        <option value="general">General Medicine</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="doctorExperience">Years of Experience</label>
-                    <input type="number" id="doctorExperience" name="experience" min="0" max="50">
-                </div>
-                
-                <div class="form-group">
-                    <label for="doctorQualification">Qualification</label>
-                    <input type="text" id="doctorQualification" name="qualification" placeholder="e.g., MBBS, MD">
-                </div>
-                
-                <div class="form-group">
-                    <label for="doctorAddress">Address</label>
-                    <textarea id="doctorAddress" name="address" placeholder="Enter full address"></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label for="doctorStatus">Status</label>
-                    <select id="doctorStatus" name="status">
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                    </select>
+                    <label for="doctorSchedule">Schedule (Optional)</label>
+                    <textarea id="doctorSchedule" name="schedule" placeholder="Enter working schedule (e.g., Monday-Friday: 9AM-5PM)"></textarea>
                 </div>
                 
                 <div class="form-actions">
                     <button type="button" class="btn-cancel" onclick="closeDoctorModal()">Cancel</button>
-                    <button type="submit" class="btn-submit">Save Doctor</button>
+                    <button type="submit" class="btn-submit" id="submitBtn">
+                        <i class="fas fa-plus"></i> Create Doctor
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+</body>
+</html>
