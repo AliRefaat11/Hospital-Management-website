@@ -1,7 +1,7 @@
 const express = require("express");
 const DrRouter = express.Router();
 const DocController = require("../Controllers/doctorController");
-const { auth } = require('../middleware/authMiddleware');
+const { auth, allowedTo } = require('../middleware/authMiddleware');
 const jwt = require('jsonwebtoken');
 const User = require('../Models/userModel');
 const Doctor = require('../Models/doctorModel');
@@ -83,7 +83,7 @@ DrRouter.get('/', async (req, res) => {
 });
 
 // API Routes
-DrRouter.get("/api/doctors", DocController.getAll);
+DrRouter.get("/api/doctors", auth, allowedTo('Admin'), DocController.getAll);
 DrRouter.get("/search", DocController.search);
 DrRouter.post("/", DocController.create);
 DrRouter.get("/:id", DocController.getById);

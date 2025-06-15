@@ -130,11 +130,6 @@ const update = async (req, res) => {
             req.user.id,
             {
                 ...req.body,
-                // Assuming emailNotifications, smsNotifications, privateProfile are boolean and may not always be present in req.body
-                // Spreading req.body handles direct updates to these if they are sent.
-                // If you need to explicitly ensure these are set to false when not present,
-                // you would need additional logic here (e.g., emailNotifications: req.body.emailNotifications || false).
-                // For now, we'll rely on ...req.body to pass any present fields.
             },
             {
                 new: true,
@@ -228,10 +223,8 @@ const deleteById = async (req, res) => {
     }
 };
 
-// Get user profile (protected route)
 const getProfile = asyncHandler(async (req, res, next) => {
     try {
-        // Fetch the profile of the currently authenticated user
         const user = await User.findById(req.user.id).select('-Password');
 
         if (!user) {
@@ -250,7 +243,7 @@ const getProfile = asyncHandler(async (req, res, next) => {
 
 const logout = (req, res) => {
     res.clearCookie('token');
-    res.redirect('/User/login'); // Redirect to login page after logout
+    res.redirect('/User/login');
 };
 
 const forgotPasswordPage = (req, res) => {
@@ -258,7 +251,6 @@ const forgotPasswordPage = (req, res) => {
 };
 
 const forgotPassword = asyncHandler(async (req, res, next) => {
-    // Implement forgot password logic here
     res.status(200).json({ status: 'success', message: 'Forgot password functionality not yet implemented.' });
 });
 

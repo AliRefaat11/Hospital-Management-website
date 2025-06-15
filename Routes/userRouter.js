@@ -12,13 +12,13 @@ const Doctor = require('../Models/doctorModel');
 const Department = require('../Models/departmentModel');
 const Appointment = require('../Models/appointmentModel');
 
-// Public routes (no auth needed)
 UserRouter.get('/login', (req, res) => res.render('loginPage', {
     currentPage: 'login',
     title: 'Patient Login',
     formTitle: 'Login to PrimeCare',
     siteName: 'PrimeCare'
 }));
+
 UserRouter.post('/login', UserController.login);
 UserRouter.get('/signup', (req, res) => res.render('signupPage', { currentPage: 'signup' }));
 UserRouter.post('/signup', UserController.signup);
@@ -186,7 +186,6 @@ UserRouter.get('/edit-profile', async (req, res, next) => {
     }
 });
 
-// API Routes for current user (no :id in URL)
 UserRouter.get("/profile", UserController.getProfile);
 UserRouter.patch("/profile", UserController.update);
 UserRouter.patch("/profile/password", UserController.updatePassword);
@@ -195,31 +194,24 @@ UserRouter.patch("/profile/password", UserController.updatePassword);
 UserRouter.get('/adminProfile', allowedTo('Admin'), async (req, res, next) => {
     try {
         const admin = req.user;
-
-        // Fetch actual data from the database
         const totalDoctors = await Doctor.countDocuments();
-        // Assuming 'active' doctors are simply all doctors for now. Adjust if there's an 'isActive' field.
         const activeDoctors = totalDoctors; 
         const specialists = await Doctor.distinct('specialization').countDocuments();
         const allDepartments = await Department.find();
         const departmentCount = allDepartments.length;
-
-        // You would need to implement logic to calculate these from your Appointment model
-        // and Doctor schedules.
-        const todayAppointments = 45; // Placeholder
-        const appointmentsChange = -2; // Placeholder
-        const onDutyDoctors = 15; // Placeholder
+        const todayAppointments = 45;
+        const appointmentsChange = -2;
+        const onDutyDoctors = 15;
         const averageRating = (await Doctor.aggregate([{$group: {_id: null, avgRating: {$avg: '$rating'}}}]).then(res => res[0]?.avgRating || 0)).toFixed(1); // Calculate average rating
-        const ratingChange = 0.1; // Placeholder
-        const availableDoctors = 90; // Placeholder
-        const coverageRate = ((availableDoctors / totalDoctors) * 100).toFixed(0); // Calculate coverage rate
-        const onTimeRate = 85; // Placeholder
-        const availableSlots = 120; // Placeholder
+        const ratingChange = 0.1;
+        const availableDoctors = 90;
+        const coverageRate = ((availableDoctors / totalDoctors) * 100).toFixed(0);
+        const onTimeRate = 85;
+        const availableSlots = 120;
 
         const departmentsData = await Promise.all(allDepartments.map(async (dept) => {
             const totalDeptDoctors = await Doctor.countDocuments({ departmentId: dept._id });
-            // For 'availableDoctors', you might need to check schedules or a specific status
-            const availableDeptDoctors = Math.floor(totalDeptDoctors * 0.75); // Placeholder: 75% are available
+            const availableDeptDoctors = Math.floor(totalDeptDoctors * 0.75);
             return {
                 name: dept.departmentName,
                 totalDoctors: totalDeptDoctors,
@@ -259,11 +251,11 @@ UserRouter.get('/adminProfile', allowedTo('Admin'), async (req, res, next) => {
         res.render('adminProfile', {
             title: 'Admin Profile',
             currentPage: 'adminProfile',
-            admin, // Pass the admin user object
+            admin,
             notifications,
             messages,
             stats,
-            departments: departmentsData, // Pass the processed department data
+            departments: departmentsData,
             systemStatus,
             csrfToken: ''
         });
@@ -273,7 +265,6 @@ UserRouter.get('/adminProfile', allowedTo('Admin'), async (req, res, next) => {
     }
 });
 
-// Generic API routes by ID - MUST COME LAST IN PROTECTED ROUTES
 UserRouter.get("/:id", UserController.getById);
 UserRouter.patch("/:id", UserController.update);
 UserRouter.delete("/:id", UserController.deleteById);

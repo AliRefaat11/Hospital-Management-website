@@ -9,9 +9,10 @@ const { auth } = require('./middleware/authMiddleware');
 const jwt = require('jsonwebtoken');
 const appointmentController = require('./Controllers/appointmentController');
 const cookieParser = require('cookie-parser');
-const adminController = require('./Controllers/adminController'); // Import the adminController
-const doctorController = require('./Controllers/doctorController'); // Corrected: Ensure this import is correct
-const DocController = require('./Controllers/documentController'); // Import the DocController
+const adminController = require('./Controllers/adminController');
+const doctorController = require('./Controllers/doctorController');
+const DocController = require('./Controllers/documentController');
+const userController = require('./Controllers/userController');
 
 const app = express();
 
@@ -43,6 +44,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Mount AdminRouter for /admin and /api/admin routes early
+app.use('/admin', AdminRouter);
+app.use('/api/admin', AdminRouter);
 
 // Request logging middleware
 app.use((req, res, next) => {
@@ -247,7 +252,6 @@ app.use('/appointments', AppRouter);
 app.use('/insurance', InsurRouter);
 app.use('/medical-reports', MedRouter);
 app.use('/treatment-plans', TreatRouter);
-app.use('/admin', AdminRouter);
 app.use('/test-doctors', TestDrRouter);
 
 // Admin Dashboard Page Route
@@ -303,6 +307,8 @@ app.get('/admin/dashboard', async (req, res) => {
     }
 });
 
+app.post('/logout', userController.logout);
+
 // Server setup
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
@@ -346,3 +352,5 @@ app.use((err, req, res, next) => {
         });
     }
 });
+
+module.exports = app;

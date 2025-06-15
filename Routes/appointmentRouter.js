@@ -48,7 +48,6 @@ const validateAppointment = (req, res, next) => {
   next();
 };
 
-// Middleware to validate MongoDB ObjectId
 const validateObjectId = (req, res, next) => {
   const { id, doctorID, patientID } = req.params;
   const mongoose = require('mongoose');
@@ -65,7 +64,6 @@ const validateObjectId = (req, res, next) => {
   next();
 };
 
-// View Routes (placed before API routes)
 AppRouter.get('/', async (req, res) => {
     try {
         let user = null;
@@ -85,22 +83,16 @@ AppRouter.get('/', async (req, res) => {
         }
 
         if (user.role === 'Patient') {
-            // If it's a patient, redirect them to their profile page which shows appointments
             return res.redirect('/User/profile');
         } else if (user.role === 'Admin') {
-            // If it's an admin, proceed to render appointmentsManagement
-            // You need to fetch admin data here for the appointmentsManagement.ejs
-            const admin = user; // Assuming user object contains admin details or you fetch them here
-            
-            // Fetch doctors for the dropdown in appointmentsManagement.ejs
+            const admin = user;
+
             const doctors = await Doctor.find()
                 .populate('userId', 'FName LName')
                 .populate('departmentId', 'departmentName');
-
-            // Placeholder data for stats, departments, etc. You should fetch real data here.
             res.render('appointmentsManagement', {
                 user,
-                admin, // Pass admin object for admin view
+                admin,
                 currentPage: 'appointments',
                 siteName: 'PrimeCare',
                 stats: {
@@ -109,8 +101,8 @@ AppRouter.get('/', async (req, res) => {
                     completed: { count: 0 },
                     pending: { count: 0 }
                 },
-                departments: [], // Fetch real departments
-                appointments: [], // Fetch real appointments for admin view
+                departments: [],
+                appointments: [],
                 todaySchedule: {
                     urgent: 0,
                     late: 0,
@@ -120,11 +112,10 @@ AppRouter.get('/', async (req, res) => {
                 nextAppointments: [],
                 notifications: { count: 0 },
                 messages: { count: 0 },
-                doctors, // Pass the fetched doctors to the template
+                doctors,
                 appointmentTypes: ['Scheduled', 'Confirmed', 'Completed', 'Cancelled', 'No Show']
             });
         } else {
-            // For other roles, redirect to home or an appropriate page
             return res.redirect('/');
         }
     } catch (error) {
@@ -148,8 +139,6 @@ AppRouter.get('/book', auth, async (req, res) => {
                 .lean(); 
             console.log('Selected doctor:', selectedDoctor);
         }
-
-        // Fetch all doctors for the dropdown
         const doctors = await Doctor.find()
             .populate('userId', 'FName LName')
             .populate('departmentId', 'departmentName')
@@ -240,7 +229,6 @@ AppRouter.get('/quick-appointment', async (req, res) => {
     }
 });
 
-// API Routes
 AppRouter.post('/', auth, validateAppointment, appointmentController.createAppointment);
 AppRouter.get('/api', auth, appointmentController.getAllAppointments);
 AppRouter.get('/api/today', auth, appointmentController.getTodayAppointments);

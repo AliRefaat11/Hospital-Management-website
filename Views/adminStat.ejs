@@ -1,0 +1,114 @@
+<div class="row justify-content-center">
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-info">
+            <div class="inner">
+                <h3 id="totalDoctors">0</h3>
+                <p>Total Doctors</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-person-add"></i>
+            </div>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-success">
+            <div class="inner">
+                <h3 id="totalPatients">0</h3>
+                <p>Total Patients</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-person-add"></i>
+            </div>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-warning">
+            <div class="inner">
+                <h3 id="totalAppointments">0</h3>
+                <p>Total Appointments</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-pie-graph"></i>
+            </div>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-danger">
+            <div class="inner">
+                <h3 id="totalDepartments">0</h3>
+                <p>Total Departments</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-pie-graph"></i>
+            </div>
+        </div>
+    </div>
+    <!-- ./col -->
+</div>
+<!-- /.row -->
+
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title">Patients by Blood Type</h3>
+            </div>
+            <div class="card-body">
+                <canvas id="bloodTypeChart" style="height:250px"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title">Doctors per Department</h3>
+            </div>
+            <div class="card-body">
+                <canvas id="departmentChart" style="height:250px"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title">Appointments by Status</h3>
+            </div>
+            <div class="card-body">
+                <canvas id="appointmentStatusChart" style="height:250px"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title">Appointments per Doctor</h3>
+            </div>
+            <div class="card-body">
+                <canvas id="doctorAppointmentsChart" style="height:250px"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-12">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title">Monthly Appointments</h3>
+            </div>
+            <div class="card-body">
+                <canvas id="monthlyAppointmentsChart" style="height:350px"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
