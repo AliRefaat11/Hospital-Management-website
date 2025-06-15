@@ -39,10 +39,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const stats = await fetchAllStats();
                 populateStatistics(stats); // Call a new function to populate stats and charts
             } else if (tabName === 'doctors') {
-                // Initialize doctor management if it's the doctors tab
+                attachDoctorManagementEventListeners();
+                loadDoctorsAndRender(); // Load doctors when the tab is activated
+            } else if (tabName === 'patients') {
+                // Initialize patient management if it's the patients tab
                 // No specific initialization function needed here as functions are global
                 // Re-attach event listeners for dynamically loaded content
-                attachDoctorManagementEventListeners();
+                attachPatientManagementEventListeners();
             }
 
         } catch (error) {
@@ -167,6 +170,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const initialActiveTab = document.querySelector('.tab-btn.active');
     if (initialActiveTab) {
         loadTabContent(initialActiveTab.dataset.tab);
+    } else if (document.body.classList.contains('doctors-management-page')) {
+        // This handles cases where the doctors management page is loaded directly
+        loadDoctorsAndRender();
     }
 });
 
@@ -355,3 +361,87 @@ window.showMessage = showMessage;
 window.clearMessages = clearMessages;
 window.filterDoctors = filterDoctors;
 window.loadDoctors = loadDoctors;
+
+// New function to load and render doctors
+async function loadDoctorsAndRender() {
+    const doctorsGrid = document.getElementById('doctorsGrid');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const noResults = document.getElementById('noResults');
+    const doctorsError = document.getElementById('doctors-error');
+
+    if (!doctorsGrid || !loadingSpinner || !noResults || !doctorsError) {
+        console.error("One or more essential DOM elements for doctors management not found.");
+        return;
+    }
+
+    doctorsGrid.innerHTML = ''; // Clear previous results
+    doctorsGrid.style.display = 'none';
+    noResults.style.display = 'none';
+    doctorsError.style.display = 'none';
+    loadingSpinner.style.display = 'flex'; // Show loading spinner
+
+    try {
+        const response = await fetch('/api/doctors');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const result = await response.json();
+        const doctors = result.data; // Assuming your API returns { data: [...] }
+
+        if (doctors && doctors.length > 0) {
+            renderDoctors(doctors);
+            doctorsGrid.style.display = 'grid';
+        } else {
+            noResults.style.display = 'block';
+        }
+
+    } catch (error) {
+        console.error('Error loading doctors:', error);
+        doctorsError.textContent = `Failed to load doctors: ${error.message}`; 
+        doctorsError.style.display = 'block';
+    } finally {
+        loadingSpinner.style.display = 'none'; // Hide loading spinner
+    }
+}
+
+// Function to render doctors into the grid
+function renderDoctors(doctors) {
+    const doctorsGrid = document.getElementById('doctorsGrid');
+    doctorsGrid.innerHTML = ''; // Clear existing content
+
+    doctors.forEach(doctor => {
+        const doctorCard = document.createElement('div');
+        doctorCard.className = 'doctor-card';
+        
+        const initials = (doctor.userId.FName ? doctor.userId.FName.charAt(0) : '') + (doctor.userId.LName ? doctor.userId.LName.charAt(0) : '');
+        
+        let scheduleText = 'Not specified';
+        if (Array.isArray(doctor.schedule) && doctor.schedule.length > 0) {
+            scheduleText = doctor.schedule.join(', ');
+        } else if (typeof doctor.schedule === 'string' && doctor.schedule.trim() !== '') {
+            scheduleText = doctor.schedule.trim();
+        }
+
+        const statusClass = doctor.status === 'active' ? 'status-active' : 'status-inactive';
+
+        doctorCard.innerHTML = `
+            <div class="doctor-avatar">${initials}</div>
+            <div class="doctor-info">
+                <h3>Dr. ${doctor.userId.FName} ${doctor.userId.LName}</h3>
+                <p><i class="fas fa-envelope"></i> ${doctor.userId.Email}</p>
+                <p><i class="fas fa-phone"></i> ${doctor.userId.PhoneNumber}</p>
+                <p><i class="fas fa-venus-mars"></i> ${doctor.userId.Gender}</p>
+                <p><i class="fas fa-user"></i> ${doctor.userId.Age} years old</p>
+                <p><i class="fas fa-stethoscope"></i> ${doctor.specialization}</p>
+                <p><i class="fas fa-star"></i> Rating: ${doctor.rating}/5</p>
+                <p><i class="fas fa-calendar-alt"></i> Schedule: ${scheduleText}</p>
+            </div>
+            <span class="doctor-status ${statusClass}">${doctor.status}</span>
+            <div class="doctor-actions">
+                <button class="action-btn btn-edit" onclick="openEditDoctorModal('${doctor._id}')"><i class="fas fa-edit"></i> Edit</button>
+                <button class="action-btn btn-delete" onclick="confirmDeleteDoctor('${doctor._id}')"><i class="fas fa-trash"></i> Delete</button>
+            </div>
+        `;
+        doctorsGrid.appendChild(doctorCard);
+    });
+}

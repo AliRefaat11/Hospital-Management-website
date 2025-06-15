@@ -77,15 +77,16 @@ const create = async (req, res) => {
             Age: req.body.Age,
             Password: bcrypt.hashSync('defaultPassword123', 10), // Hash the default password
             Role: 'Doctor',
-            DateOfBirth: req.body.DateOfBirth,
+            DateOfBirth: new Date(req.body.DateOfBirth), // Convert to Date object
             Address: req.body.Address
         };
 
         const user = await User.create(userData);
         console.log('User created:', user);
 
-        // Find the department based on specialization (assuming specialization name matches department name)
-        const department = await Department.findOne({ departmentName: req.body.specialization });
+        // Capitalize specialization for department lookup
+        const capitalizedSpecialization = req.body.specialization.charAt(0).toUpperCase() + req.body.specialization.slice(1);
+        const department = await Department.findOne({ departmentName: capitalizedSpecialization });
         console.log('Department found:', department);
 
         if (!department) {
